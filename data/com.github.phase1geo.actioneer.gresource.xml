@@ -2,6 +2,6 @@
 <gresources>
   <gresource prefix="/com/github/phase1geo/actioneer">
     <file alias="Application.css" compressed="true">Application.css</file>
-    <file alias="shortcuts.ui" compressed="true">com.github.phase1geo.minder.shortcuts.ui</file>
+    <file alias="shortcuts.ui" compressed="true">com.github.phase1geo.actioneer.shortcuts.ui</file>
   </gresource>
 </gresources>

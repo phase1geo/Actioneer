@@ -1,5 +1,5 @@
   project('com.github.phase1geo.actioneer', ['vala', 'c'],
-    version : '1.13.1',
+    version : '1.0.0',
     license: 'GPL-3.0'
 )
 

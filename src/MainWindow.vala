@@ -75,7 +75,12 @@ public class MainWindow : Hdy.ApplicationWindow {
 
     /* TBD - Create title toolbar */
 
+    var top_box = new Box( Orientation.VERTICAL, 0 );
+    top_box.pack_start( _header, false, true, 0 );
+    // top_box.pack_start( _pane, true, true, 0 );
+
     /* Display the UI */
+    add( top_box );
     show_all();
 
   }
@@ -107,25 +112,16 @@ public class MainWindow : Hdy.ApplicationWindow {
   /* Displays the shortcuts cheatsheet */
   private void action_shortcuts() {
 
-    // var builder = new Builder.from_resource( "/com/github/phase1geo/minder/shortcuts.ui" );
-    // var win     = builder.get_object( "shortcuts" ) as ShortcutsWindow;
-    // var da      = get_current_da();
+    var builder = new Builder.from_resource( "/com/github/phase1geo/actioneer/shortcuts.ui" );
+    var win     = builder.get_object( "shortcuts" ) as ShortcutsWindow;
 
-    // win.transient_for = this;
-    // win.view_name     = null;
+    win.transient_for = this;
+    win.view_name     = null;
 
     /* Display the most relevant information based on the current state */
-    // if( da.is_node_editable() || da.is_connection_editable() ) {
-    //   win.section_name = "text-editing";
-    // } else if( da.is_node_selected() ) {
-    //   win.section_name = "node";
-    // } else if( da.is_connection_selected() ) {
-    //   win.section_name = "connection";
-    // } else {
-    //   win.section_name = "general";
-    // }
+    win.section_name = "general";
 
-    // win.show();
+    win.show();
 
   }
 
