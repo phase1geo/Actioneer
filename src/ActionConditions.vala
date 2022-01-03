@@ -21,6 +21,8 @@
 
 public class ActionConditions {
 
+  public static const string xml_node = "conditions";
+
   private bool                   _match_all;
   private SList<ActionCondition> _conditions;
 

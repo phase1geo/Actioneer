@@ -21,6 +21,8 @@
 
 public class DirActions {
 
+  public static string xml_node = "dir-actions";
+
   private string           _dirname;
   private SList<DirAction> _actions;
 
@@ -59,7 +61,7 @@ public class DirActions {
   /* Saves the directory action as XML */
   public Xml.Node* save() {
 
-    Xml.Node* node = new Xml.Node( null, "diractions" );
+    Xml.Node* node = new Xml.Node( null, xml_node );
 
     node->set_prop( "dirname", _dirname );
 
@@ -80,7 +82,7 @@ public class DirActions {
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
-      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == "action") ) {
+      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == DirAction.xml_node) ) {
         var action = new DirAction();
         action.load( it );
         _actions.append( action );

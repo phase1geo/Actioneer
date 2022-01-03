@@ -19,22 +19,174 @@
 * Authored by: Trevor Williams <phase1geo@gmail.com>
 */
 
+public enum ConditionType {
+  TEXT,
+  DATE
+}
+
+public enum ActionConditionType {
+  NAME,
+  EXTENSION,
+  FULLNAME,
+  CREATE_DATE,
+  MODIFY_DATE,
+  MIME,
+  CONTENT,
+  NUM;
+
+  public string to_string() {
+    switch( this ) {
+      case NAME        :  return( "name" );
+      case EXTENSION   :  return( "extension" );
+      case FULLNAME    :  return( "fullname" );
+      case CREATE_DATE :  return( "creation-date" );
+      case MODIFY_DATE :  return( "modification-date" );
+      case MIME        :  return( "mime" );
+      case CONTENT     :  return( "content" );
+      default          :  assert_not_reached();
+    }
+  }
+
+  public ActionConditionType parse( string val ) {
+    switch( val ) {
+      case "name"              :  return( NAME );
+      case "extension"         :  return( EXTENSION );
+      case "fullname"          :  return( FULLNAME );
+      case "creation-date"     :  return( CREATE_DATE );
+      case "modification-date" :  return( MODIFY_DATE );
+      case "mime"              :  return( MIME );
+      case "content"           :  return( CONTENT );
+      default                  :  assert_not_reached();
+    }
+  }
+
+  public ConditionType condition_type() {
+    switch( this ) {
+      case NAME        :  return( ConditionType.TEXT );
+      case EXTENSION   :  return( ConditionType.TEXT );
+      case FULLNAME    :  return( ConditionType.TEXT );
+      case CREATE_DATE :  return( ConditionType.DATE );
+      case MODIFY_DATE :  return( ConditionType.DATE );
+      case MIME        :  return( ConditionType.TEXT );
+      case CONTENT     :  return( ConditionType.TEXT );
+      default          :  assert_not_reached();
+    }
+  }
+
+  private string? get_fullname( string pathname ) {
+    return( Filename.display_basename( pathname ) );
+  }
+
+  private string? get_name( string pathname ) {
+    var parts = get_fullname( pathname ).split( "." );
+    return( string.joinv( ".", parts[0:parts.length - 2] ) );
+  }
+
+  private string? get_extension( string pathname ) {
+    var parts = get_fullname( pathname ).split( "." );
+    return( parts[parts.length - 1] );
+  }
+
+  private FileInfo get_file_info( string pathname ) {
+    File.FOOBAR
+  }
+
+  private DateTime? get_create_date( string pathname ) {
+    FOOBAR
+  }
+
+  private DateTime? get_modify_date( string pathname ) {
+    FOOBAR
+  }
+
+  private string? get_mime( string pathname ) {
+    // TBD
+    return( "" );
+  }
+
+  private string? get_contents( string pathname ) {
+    try {
+      FileUtils.get_contents( pathname, out contents );
+      return( contents );
+    } catch( FileError e ) {
+      return( null );
+    }
+  }
+
+  public string 
+
+}
+
 public class ActionCondition {
+
+  public static const string xml_node = "condition";
+
+  private ActionConditionType _type = ActionConditionType.NAME;
+  private TextCondition?      _text = null;
+  private DateCondition?      _date = null;
+
+  public ActionConditionType type {
+    get {
+      return( _type );
+    }
+    set {
+      if( _type != value ) {
+        _type = value;
+        switch( _type.condition_type() ) {
+          case ConditionType.TEXT :
+            _text = new TextCondition();
+            _date = null;
+            break;
+          case ConditionType.DATE :
+            _text = null;
+            _date = new DateCondition();
+            break;
+        }
+      }
+    }
+  }
 
   /* Default constructor */
   public ActionCondition() {}
 
   /* Returns true if the given pathname passes this condition check */
-  public virtual bool check( string pathname ) {
-    return( false );
+  public bool check( string pathname ) {
+    switch( type.condition_type() ) {
+      case ConditionType.TEXT :  return( _text.check( FOOBAR ) );
+      case ConditionType.DATE :  return( _date.check( FOOBAR ) );
+      default                 :  return( false );
+    }
   }
 
   /* Saves this condition in XML format */
-  public virtual Xml.Node* save() {
-    return( null );
+  public Xml.Node* save() {
+
+    Xml.Node* node = new Xml.Node( null, xml_node );
+
+    node->set_prop( "type", type );
+
+    switch( type.condition_type() ) {
+      case ConditionType.TEXT :  _text.save( node );  break;
+      case ConditionType.DATE :  _date.save( node );  break;
+    }
+
+    return( node );
+
   }
 
   /* Loads this condition from XML format */
-  public virtual void load( Xml.Node* node ) {}
+  public void load( Xml.Node* node ) {
+
+    var t = node->get_prop( "type" );
+    if( t != null ) {
+      type = ActionConditionType.parse( t );
+    }
+
+    switch( type.condition_type() ) {
+      case ConditionType.TEXT :  _text.load( node );  break;
+      case ConditionType.DATE :  _date.load( node );  break;
+    }
+
+  }
 
 }

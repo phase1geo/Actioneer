@@ -4,7 +4,9 @@ sources += files(
     'Application.vala',
     'DirAction.vala',
     'DirActions.vala',
+    'DirList.vala',
     'FileAction.vala',
+    'FileActions.vala',
     'MainWindow.vala'
 )
 

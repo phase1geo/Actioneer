@@ -21,9 +21,11 @@
 
 public class DirAction {
 
+  public static string xml_node = "dir-action";
+
   private string            _name;
   private ActionConditions  _conditions;
-  private SList<FileAction> _actions;
+  private FileActions       _actions;
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
@@ -32,14 +34,14 @@ public class DirAction {
   public DirAction() {
     _name       = "";
     _conditions = new ActionConditions();
-    _actions    = new SList<FileAction>();
+    _actions    = new FileActions();
   }
 
   /* Constructor */
   public DirAction.with_name( string name ) {
     _name       = name;
     _conditions = new ActionConditions();
-    _actions    = new SList<FileAction>();
+    _actions    = new FileActions();
   }
 
   /* Runs the current action on the given directory */
@@ -54,9 +56,7 @@ public class DirAction {
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
         if( _conditions.check( path ) ) {
-          _actions.foreach((action) => {
-            action.execute( path );
-          });
+          _actions.execute( path );
         }
       }
 
@@ -70,7 +70,7 @@ public class DirAction {
   /* Save the directory action to the given XML file */
   public Xml.Node* save() {
 
-    Xml.Node* node = new Xml.Node( null, "diraction" );
+    Xml.Node* node = new Xml.Node( null, xml_node );
 
     node->set_prop( "name", _name );
 
@@ -95,7 +95,7 @@ public class DirAction {
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
       if( it->type == Xml.ElementType.ELEMENT_NODE ) {
         switch( it->name ) {
-          case "conditions" :
+          case ActionConditions.xml_node :
             _conditions.load( it );
             break;
           case "fileaction" :

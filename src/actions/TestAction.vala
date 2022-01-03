@@ -6,7 +6,7 @@ public class TestAction : FileAction {
   }
 
   /* Executes the test action */
-  public override bool execute( string pathname ) {
+  public override bool execute( ref string pathname ) {
     stdout.printf( "Doing nothing to %s", pathname );
     return( true );
   }
