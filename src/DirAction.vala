@@ -21,7 +21,7 @@
 
 public class DirAction {
 
-  public static string xml_node = "dir-action";
+  public static const string xml_node = "dir-action";
 
   private string            _name;
   private ActionConditions  _conditions;
@@ -42,6 +42,22 @@ public class DirAction {
     _name       = name;
     _conditions = new ActionConditions();
     _actions    = new FileActions();
+  }
+
+  public void add_condition( ActionCondition condition ) {
+    _conditions.add( condition );
+  }
+
+  public void remove_condition( ActionCondition condition ) {
+    _conditions.remove( condition );
+  }
+
+  public void add_action( FileAction action ) {
+    _actions.add( action );
+  }
+
+  public void remove_action( FileAction action ) {
+    _actions.remove( action );
   }
 
   /* Runs the current action on the given directory */

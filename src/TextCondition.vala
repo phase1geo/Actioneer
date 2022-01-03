@@ -77,8 +77,8 @@ public enum TextMatchType {
 
 public class TextCondition {
 
-  public TextMatchType type { get; set; default = TextMatchType.IS; }
-  public string?       text { get; set; default = null; }
+  public TextMatchType match_type { get; set; default = TextMatchType.IS; }
+  public string        text       { get; set; default = ""; }
 
   /* Default constructor */
   public TextCondition() {}
@@ -86,21 +86,19 @@ public class TextCondition {
   /* Returns true if the file string matches the stored type and text */
   public bool check( string act ) {
     if( text == null ) return( false );
-    return( _type.matches( act, text ) );
+    return( match_type.matches( act, text ) );
   }
 
   public void save( Xml.Node* node ) {
-
-    node->set_prop( "type", _type.to_string() );
-    node->set_prop( "text", _text );
-
+    node->set_prop( "match_type", match_type.to_string() );
+    node->set_prop( "text", text );
   }
 
   public void load( Xml.Node* node ) {
 
-    var typ = node->get_prop( "type" );
+    var typ = node->get_prop( "match_type" );
     if( typ != null ) {
-      type = TextMatchType.parse( typ );
+      match_type = TextMatchType.parse( typ );
     }
 
     var txt = node->get_prop( "text" );

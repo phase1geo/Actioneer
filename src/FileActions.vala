@@ -30,10 +30,12 @@ public class FileActions {
 
   /* Executes all of the actions in serial order */
   public bool execute( string pathname ) {
-    var path = pathname;
+    var path   = pathname;
+    var retval = true;
     _actions.foreach((action) => {
-      action.execute( ref path );
+      retval &= action.execute( ref path );
     });
+    return( retval );
   }
 
   /* Saves this instance in XML format */

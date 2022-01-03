@@ -60,17 +60,12 @@ public enum ActionConditionType {
     }
   }
 
-  public ConditionType condition_type() {
-    switch( this ) {
-      case NAME        :  return( ConditionType.TEXT );
-      case EXTENSION   :  return( ConditionType.TEXT );
-      case FULLNAME    :  return( ConditionType.TEXT );
-      case CREATE_DATE :  return( ConditionType.DATE );
-      case MODIFY_DATE :  return( ConditionType.DATE );
-      case MIME        :  return( ConditionType.TEXT );
-      case CONTENT     :  return( ConditionType.TEXT );
-      default          :  assert_not_reached();
-    }
+  public bool is_text() {
+    return( (this == NAME) || (this == EXTENSION) || (this == FULLNAME) || (this == MIME) || (this == CONTENT) );
+  }
+
+  public bool is_date() {
+    return( (this == CREATE_DATE) || (this == MODIFY_DATE) );
   }
 
   private string? get_fullname( string pathname ) {
@@ -93,7 +88,9 @@ public enum ActionConditionType {
   }
 
   private DateTime? get_create_date( string pathname ) {
-    return( get_file_info( pathname ).get_creation_date_time() );
+    return( null );
+    // TBD
+    // return( get_file_info( pathname ).get_creation_date_time() );
   }
 
   private DateTime? get_modify_date( string pathname ) {
@@ -144,37 +141,31 @@ public class ActionCondition {
   private TextCondition?      _text = null;
   private DateCondition?      _date = null;
 
-  public ActionConditionType type {
+  public TextCondition? text {
     get {
-      return( _type );
+      return( _text );
     }
-    set {
-      if( _type != value ) {
-        _type = value;
-        switch( _type.condition_type() ) {
-          case ConditionType.TEXT :
-            _text = new TextCondition();
-            _date = null;
-            break;
-          case ConditionType.DATE :
-            _text = null;
-            _date = new DateCondition();
-            break;
-        }
-      }
+  }
+  public DateCondition? date {
+    get {
+      return( _date );
     }
   }
 
   /* Default constructor */
   public ActionCondition() {}
 
+  /* Constructor */
+  public ActionCondition.with_type( ActionConditionType type ) {
+    _type = type;
+    _text = type.is_text() ? new TextCondition() : null;
+    _date = type.is_date() ? new DateCondition() : null;
+  }
+
   /* Returns true if the given pathname passes this condition check */
   public bool check( string pathname ) {
-    switch( type.condition_type() ) {
-      case ConditionType.TEXT :  return( _text.check( type.text_from_pathname( pathname ) ) );
-      case ConditionType.DATE :  return( _date.check( type.date_from_pathname( pathname ) ) );
-      default                 :  return( false );
-    }
+    return( (_type.is_text() && _text.check( _type.text_from_pathname( pathname ) )) ||
+            (_type.is_date() && _date.check( _type.date_from_pathname( pathname ) )) );
   }
 
   /* Saves this condition in XML format */
@@ -182,11 +173,12 @@ public class ActionCondition {
 
     Xml.Node* node = new Xml.Node( null, xml_node );
 
-    node->set_prop( "type", type.to_string() );
+    node->set_prop( "type", _type.to_string() );
 
-    switch( type.condition_type() ) {
-      case ConditionType.TEXT :  _text.save( node );  break;
-      case ConditionType.DATE :  _date.save( node );  break;
+    if( _text != null ) {
+      _text.save( node );
+    } else if( _date != null ) {
+      _date.save( node );
     }
 
     return( node );
@@ -197,13 +189,21 @@ public class ActionCondition {
   public void load( Xml.Node* node ) {
 
     var t = node->get_prop( "type" );
-    if( t != null ) {
-      type = ActionConditionType.parse( t );
-    }
 
-    switch( type.condition_type() ) {
-      case ConditionType.TEXT :  _text.load( node );  break;
-      case ConditionType.DATE :  _date.load( node );  break;
+    if( t != null ) {
+
+      _type = ActionConditionType.parse( t );
+
+      if( _type.is_text() ) {
+        _text = new TextCondition();
+        _text.load( node );
+      }
+
+      if( _type.is_date() ) {
+        _date = new DateCondition();
+        _date.load( node );
+      }
+
     }
 
   }

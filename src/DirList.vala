@@ -1,12 +1,18 @@
 public class DirList {
 
-  private DirActions _dir_actions;
+  private SList<DirActions> _dir_actions;
 
   /* Default constructor */
   public DirList() {
+    _dir_actions = new SList<DirActions>();
+  }
 
-    _dir_actions = new DirActions();
+  public void add_directory( DirActions dir ) {
+    _dir_actions.append( dir );
+  }
 
+  public void remove_directory( DirActions dir ) {
+    _dir_actions.remove( dir );
   }
 
   /* Returns the rules.xml complete filepath */
@@ -31,10 +37,14 @@ public class DirList {
 
     Xml.Doc*  doc  = new Xml.Doc( "1.0" );
     Xml.Node* root = new Xml.Node( null, "actioneer-rules" );
+
     root->set_prop( "version", Actioneer.version );
 
-    root->add_child( _dir_actions.save() );
+    _dir_actions.foreach((action) => {
+      root->add_child( action.save() );
+    });
 
+    doc->set_root_element( root );
     doc->save_format_file( rules, 1 );
     delete doc;
 
@@ -54,8 +64,9 @@ public class DirList {
 
     for( Xml.Node* it=root->children; it!=null; it=it->next ) {
       if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == DirActions.xml_node) ) {
-        _dir_actions.load( it );
-        break;
+        var dir = new DirActions();
+        dir.load( it );
+        _dir_actions.append( dir );
       }
     }
 

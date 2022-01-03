@@ -23,24 +23,24 @@ public class ActionConditions {
 
   public static const string xml_node = "conditions";
 
-  private bool                   _match_all;
   private SList<ActionCondition> _conditions;
+
+  public bool match_all { get; set; default = true; }
 
   /* Default constructor */
   public ActionConditions() {
-    _match_all = true;
     _conditions = new SList<ActionCondition>();
   }
 
-  public int num_conditions() {
+  public int size() {
     return( (int)_conditions.length() );
   }
 
-  public void add_condition( ActionCondition condition ) {
+  public void add( ActionCondition condition ) {
     _conditions.append( condition );
   }
 
-  public void remove_condition( ActionCondition condition ) {
+  public void remove( ActionCondition condition ) {
     _conditions.remove( condition );
   }
 
@@ -53,7 +53,7 @@ public class ActionConditions {
 
     bool pass;
 
-    if( _match_all ) {
+    if( match_all ) {
       pass = true;
       _conditions.foreach((condition) => {
         pass &= condition.check( path );
@@ -74,7 +74,7 @@ public class ActionConditions {
 
     Xml.Node* node = new Xml.Node( null, "conditions" );
 
-    node->set_prop( "matchall", _match_all.to_string() );
+    node->set_prop( "matchall", match_all.to_string() );
 
     _conditions.foreach((condition) => {
       node->add_child( condition.save() );
@@ -87,9 +87,9 @@ public class ActionConditions {
   /* Loads the given condition from XML format */
   public void load( Xml.Node* node ) {
 
-    var match_all = node->get_prop( "matchall" );
-    if( match_all != null ) {
-      _match_all = bool.parse( match_all );
+    var all = node->get_prop( "matchall" );
+    if( all != null ) {
+      match_all = bool.parse( all );
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {

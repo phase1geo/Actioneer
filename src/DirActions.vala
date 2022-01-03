@@ -21,13 +21,20 @@
 
 public class DirActions {
 
-  public static string xml_node = "dir-actions";
+  public static const string xml_node = "dir-actions";
 
-  private string           _dirname;
+  private string?          _dirname;
   private SList<DirAction> _actions;
 
-  /* Constructor */
+  /* Default constructor */
   public DirActions() {
+    _dirname = null;
+    _actions = new SList<DirAction>();
+  }
+
+  /* Constructor */
+  public DirActions.with_directory( string dirname ) {
+    _dirname = dirname;
     _actions = new SList<DirAction>();
   }
 

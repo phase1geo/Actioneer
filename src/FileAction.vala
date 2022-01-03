@@ -51,28 +51,25 @@ public enum FileActionType {
 
 public class FileAction {
 
-  public static string xml_node = "file-action";
+  public static const string xml_node = "file-action";
 
   private FileActionType _type;
-  private File           _file;
+  private File?          _file;
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
 
-  public FileActionType type {
-    get {
-      return( _type );
-    }
-    set {
-      if( _type != value ) {
-        _type = value;
-      }
-    }
-  }
-
   /* Default constructor */
   public FileAction() {
     _type = FileActionType.MOVE;
+    _file = null;
+  }
+
+  /* Constructor */
+  public FileAction.with_filename( FileActionType type, string filename ) {
+    assert( type.is_file_type() );
+    _type = type;
+    _file = File.new_for_path( filename );
   }
 
   /*
@@ -101,8 +98,9 @@ public class FileAction {
     Xml.Node* node = new Xml.Node( null, xml_node );
 
     node->set_prop( "type", _type.to_string() );
+    node->set_prop( "file", _file.get_path() );
 
-    return( null );
+    return( node );
 
   }
 
@@ -112,6 +110,11 @@ public class FileAction {
     var type = node->get_prop( "type" );
     if( type != null ) {
       _type = FileActionType.parse( type );
+    }
+
+    var file = node->get_prop( "file" );
+    if( file != null ) {
+      _file = File.new_for_path( file );
     }
 
   }

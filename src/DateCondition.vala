@@ -143,30 +143,30 @@ public enum DateMatchType {
 
 public class DateCondition {
 
-  public DateMatchType type      { get; set; default = NUM; }
-  public DateTime      exp       { get; set; default = new DateTime.now(); }
-  public int           num       { get; set; default = 0; }
-  public TimeType      time_type { get; set; default = TimeType.DAY; }
+  public DateMatchType match_type { get; set; default = DateMatchType.IS; }
+  public DateTime      exp        { get; set; default = new DateTime.now(); }
+  public int           num        { get; set; default = 0; }
+  public TimeType      time_type  { get; set; default = TimeType.DAY; }
 
   /* Default constructor */
   public DateCondition() {}
 
   public bool check( DateTime date ) {
-    if( type.is_absolute() ) {
-      return( type.absolute_matches( date, exp ) );
-    } else if( type.is_relative() ) {
-      return( type.relative_matches( date, num, time_type ) );
+    if( match_type.is_absolute() ) {
+      return( match_type.absolute_matches( date, exp ) );
+    } else if( match_type.is_relative() ) {
+      return( match_type.relative_matches( date, num, time_type ) );
     }
     return( false );
   }
 
   public void save( Xml.Node* node ) {
 
-    node->set_prop( "type", type.to_string() );
+    node->set_prop( "match_type", match_type.to_string() );
 
-    if( type.is_absolute() ) {
+    if( match_type.is_absolute() ) {
       node->set_prop( "date-time", exp.to_string() );
-    } else if( type.is_relative() ) {
+    } else if( match_type.is_relative() ) {
       node->set_prop( "num",    num.to_string() );
       node->set_prop( "amount", time_type.to_string() );
     }
@@ -175,9 +175,9 @@ public class DateCondition {
 
   public void load( Xml.Node* node ) {
 
-    var t = node->get_prop( "type" );
+    var t = node->get_prop( "match_type" );
     if( t != null ) {
-      type = DateMatchType.parse( t );
+      match_type = DateMatchType.parse( t );
     }
 
     var dt = node->get_prop( "date-time" );

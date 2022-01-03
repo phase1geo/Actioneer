@@ -29,7 +29,9 @@ public class Actioneer : Granite.Application {
 
   private static bool          show_version = false;
   private static bool          run_rules    = false;
+  private static bool          create       = false;
   private        MainWindow    appwin;
+  private        DirList       dirlist;
   private        GLib.Settings iface_settings;
 
   public  static GLib.Settings settings;
@@ -40,6 +42,35 @@ public class Actioneer : Granite.Application {
     Object( application_id: "com.github.phase1geo.actioneer", flags: ApplicationFlags.HANDLES_OPEN );
 
     startup.connect( start_application );
+
+  }
+
+  private void create_data() {
+
+    var dir    = new DirActions.with_directory( "/home/trevorw/Downloads" );
+    var rule1  = new DirAction.with_name( "Trash Old Files" );
+    var rule2  = new DirAction.with_name( "Move to Temporary" );
+    var cond11 = new ActionCondition.with_type( ActionConditionType.MODIFY_DATE );
+    var cond21 = new ActionCondition.with_type( ActionConditionType.FULLNAME );
+    var act11  = new FileAction.with_filename( FileActionType.MOVE, "/home/trevorw/Documents" );
+    var act21  = new FileAction.with_filename( FileActionType.MOVE, "/home/trevorw/Documents" );
+
+    cond11.date.match_type = DateMatchType.LAST;
+    cond11.date.num        = 1;
+    cond11.date.time_type  = TimeType.MINUTE;
+
+    rule1.add_condition( cond11 );
+    rule1.add_action( act11 );
+
+    cond21.text.text = "file_to_move.txt";
+
+    rule2.add_condition( cond21 );
+    rule2.add_action( act21 );
+
+    dir.add( rule1 );
+    dir.add( rule2 );
+
+    dirlist.add_directory( dir );
 
   }
 
@@ -55,6 +86,17 @@ public class Actioneer : Granite.Application {
 
     /* Create the main window */
     appwin = new MainWindow( this, settings );
+
+    /* List of directories and their rules */
+    dirlist = new DirList();
+    dirlist.load();
+
+    if( create ) {
+      create_data();
+    }
+
+    /* Save the results */
+    dirlist.save();
 
     /* Handle any changes to the position of the window */
     appwin.configure_event.connect(() => {
@@ -82,12 +124,13 @@ public class Actioneer : Granite.Application {
   private void parse_arguments( ref unowned string[] args ) {
 
     var context = new OptionContext( "- Actioneer Options" );
-    var options = new OptionEntry[3];
+    var options = new OptionEntry[4];
 
     /* Create the command-line options */
     options[0] = {"version", 0, 0, OptionArg.NONE, ref show_version, _( "Display version number" ), null};
     options[1] = {"run", 'r', 0, OptionArg.NONE, ref run_rules, _( "Runs Actioneer rules" ), null};
-    options[2] = {null};
+    options[2] = {"create", 'c', 0, OptionArg.NONE, ref create, _( "Create rules in app" ), null};
+    options[3] = {null};
 
     /* Parse the arguments */
     try {
