@@ -1,6 +1,6 @@
 public class FileActions {
 
-  public static string xml_node = "file-actions";
+  public static const string xml_node = "file-actions";
 
   private SList<FileAction> _actions;
 
@@ -9,10 +9,30 @@ public class FileActions {
     _actions = new SList<FileAction>();
   }
 
+  /* Returns the number of stored file actions */
+  public int num_actions() {
+    return( (int)_actions.length );
+  }
+
+  /* Returns the action at the specified index */
+  public FileAction get_action( int index ) {
+    return( _actions.nth_data( index ) );
+  }
+
+  /* Adds the given file action to the list */
+  public void add( FileAction action ) {
+    _actions.append( action );
+  }
+
+  public void remove( FileAction action ) {
+    _actions.remove( action );
+  }
+
   /* Executes all of the actions in serial order */
-  public bool execute( string dirname ) {
+  public bool execute( string pathname ) {
+    var path = pathname;
     _actions.foreach((action) => {
-      action.execute( dirname );
+      action.execute( ref path );
     });
   }
 

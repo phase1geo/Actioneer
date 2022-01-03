@@ -93,14 +93,10 @@ public class ActionConditions {
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
-      if( it->type == Xml.ElementType.ELEMENT_NODE ) {
-        ActionCondition? condition = null;
-        switch( it->name ) {
-          case "condition_test" :  condition = new TestCondition();  break;
-        }
-        if( condition != null ) {
-          _conditions.append( condition );
-        }
+      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == ActionCondition.xml_node) ) {
+        var condition = new ActionCondition();
+        condition.load( it );
+        _conditions.append( condition );
       }
     }
 

@@ -1,22 +1,50 @@
 public enum FileActionType {
   MOVE,
+  COPY,
   RENAME,
   NUM;
 
   public string to_string() {
     switch( this ) {
       case MOVE   :  return( "move" );
+      case COPY   :  return( "copy" );
       case RENAME :  return( "rename" );
       default     :  assert_not_reached();
     }
   }
 
-  public FileActionType parse( string val ) {
+  public static FileActionType parse( string val ) {
     switch( val ) {
       case "move"   :  return( MOVE );
+      case "copy"   :  return( COPY );
       case "rename" :  return( RENAME );
       default       :  assert_not_reached();
     }
+  }
+
+  private bool do_move( ref string pathname, File new_file ) {
+    var ofile  = File.new_for_path( pathname );
+    var retval = ofile.move( new_file, NONE );
+    pathname   = new_file.get_path();
+    return( retval );
+  }
+
+  private bool do_copy( string pathname, File new_file ) {
+    var ofile  = File.new_for_path( pathname );
+    return( ofile.copy( new_file, NONE ) );
+  }
+
+  public bool file_execute( ref string pathname, File new_file ) {
+    switch( this ) {
+      case MOVE   :  return( do_move( ref pathname, new_file ) );
+      case COPY   :  return( do_copy( pathname, new_file ) );
+      case RENAME :  return( do_move( ref pathname, new_file ) );
+      default     :  assert_not_reached();
+    }
+  }
+
+  public bool is_file_type() {
+    return( (this == MOVE) || (this == COPY) || (this == RENAME) );
   }
 
 }
@@ -26,6 +54,7 @@ public class FileAction {
   public static string xml_node = "file-action";
 
   private FileActionType _type;
+  private File           _file;
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
@@ -43,7 +72,7 @@ public class FileAction {
 
   /* Default constructor */
   public FileAction() {
-    _type = FileTypeAction.MOVE;
+    _type = FileActionType.MOVE;
   }
 
   /*
@@ -52,7 +81,18 @@ public class FileAction {
    pathname is changed by the action, updates the pathname value.
   */
   public bool execute( ref string pathname ) {
+
+    if( _type.is_file_type() ) {
+      try {
+        return( _type.file_execute( ref pathname, _file ) );
+      } catch( Error e ) {
+        err    = true;
+        errmsg = e.message;
+      }
+    }
+
     return( false );
+
   }
 
   /* Save this instance in XML format */
@@ -60,7 +100,7 @@ public class FileAction {
 
     Xml.Node* node = new Xml.Node( null, xml_node );
 
-    node->set_prop( "type", _type );
+    node->set_prop( "type", _type.to_string() );
 
     return( null );
 
@@ -71,8 +111,7 @@ public class FileAction {
 
     var type = node->get_prop( "type" );
     if( type != null ) {
-      _type   = FileActionType.parse( type );
-      _action = _type.action();
+      _type = FileActionType.parse( type );
     }
 
   }

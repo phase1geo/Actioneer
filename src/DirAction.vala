@@ -75,10 +75,7 @@ public class DirAction {
     node->set_prop( "name", _name );
 
     node->add_child( _conditions.save() );
-
-    _actions.foreach((action) => {
-      node->add_child( action.save() );
-    });
+    node->add_child( _actions.save() );
 
     return( node );
 
@@ -95,14 +92,8 @@ public class DirAction {
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
       if( it->type == Xml.ElementType.ELEMENT_NODE ) {
         switch( it->name ) {
-          case ActionConditions.xml_node :
-            _conditions.load( it );
-            break;
-          case "fileaction" :
-            var action = new FileAction();
-            action.load( it );
-            _actions.append( action );
-            break;
+          case ActionConditions.xml_node :  _conditions.load( it );  break;
+          case FileActions.xml_node      :  _actions.load( it );     break;
         }
       }
     }

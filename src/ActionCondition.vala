@@ -47,7 +47,7 @@ public enum ActionConditionType {
     }
   }
 
-  public ActionConditionType parse( string val ) {
+  public static ActionConditionType parse( string val ) {
     switch( val ) {
       case "name"              :  return( NAME );
       case "extension"         :  return( EXTENSION );
@@ -88,15 +88,16 @@ public enum ActionConditionType {
   }
 
   private FileInfo get_file_info( string pathname ) {
-    File.FOOBAR
+    var file = File.new_for_path( pathname );
+    return( file.query_info( "time::*", 0 ) );
   }
 
   private DateTime? get_create_date( string pathname ) {
-    FOOBAR
+    return( get_file_info( pathname ).get_creation_date_time() );
   }
 
   private DateTime? get_modify_date( string pathname ) {
-    FOOBAR
+    return( get_file_info( pathname ).get_modification_date_time() );
   }
 
   private string? get_mime( string pathname ) {
@@ -106,6 +107,7 @@ public enum ActionConditionType {
 
   private string? get_contents( string pathname ) {
     try {
+      var contents = "";
       FileUtils.get_contents( pathname, out contents );
       return( contents );
     } catch( FileError e ) {
@@ -113,7 +115,24 @@ public enum ActionConditionType {
     }
   }
 
-  public string 
+  public string text_from_pathname( string pathname ) {
+    switch( this ) {
+      case NAME      :  return( get_name( pathname ) );
+      case EXTENSION :  return( get_extension( pathname ) );
+      case FULLNAME  :  return( get_fullname( pathname ) );
+      case MIME      :  return( get_mime( pathname ) );
+      case CONTENT   :  return( get_contents( pathname ) );
+      default        :  assert_not_reached();
+    }
+  }
+
+  public DateTime date_from_pathname( string pathname ) {
+    switch( this ) {
+      case CREATE_DATE :  return( get_create_date( pathname ) );
+      case MODIFY_DATE :  return( get_modify_date( pathname ) );
+      default          :  assert_not_reached();
+    }
+  }
 
 }
 
@@ -152,8 +171,8 @@ public class ActionCondition {
   /* Returns true if the given pathname passes this condition check */
   public bool check( string pathname ) {
     switch( type.condition_type() ) {
-      case ConditionType.TEXT :  return( _text.check( FOOBAR ) );
-      case ConditionType.DATE :  return( _date.check( FOOBAR ) );
+      case ConditionType.TEXT :  return( _text.check( type.text_from_pathname( pathname ) ) );
+      case ConditionType.DATE :  return( _date.check( type.date_from_pathname( pathname ) ) );
       default                 :  return( false );
     }
   }
@@ -163,7 +182,7 @@ public class ActionCondition {
 
     Xml.Node* node = new Xml.Node( null, xml_node );
 
-    node->set_prop( "type", type );
+    node->set_prop( "type", type.to_string() );
 
     switch( type.condition_type() ) {
       case ConditionType.TEXT :  _text.save( node );  break;

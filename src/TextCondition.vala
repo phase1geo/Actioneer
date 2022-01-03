@@ -21,7 +21,7 @@ public enum TextMatchType {
     }
   }
 
-  public TextMatchType parse( string val ) {
+  public static TextMatchType parse( string val ) {
     switch( val ) {
       case "is"              :  return( IS );
       case "is-not"          :  return( IS_NOT );
@@ -56,15 +56,16 @@ public enum TextMatchType {
 
   /* Returns true if the actual string matches the regular expression defined by pattern */
   private bool matches_pattern( string act, string pattern ) {
-    return( Regex.matches_simple( pattern, act ) );
+    return( Regex.match_simple( pattern, act ) );
   }
 
+  /* Returns true if the given expected string matches the actual string according to the type */
   public bool matches( string act, string exp ) {
     switch( this ) {
       case IS              :  return( is_matches( act, exp ) );
       case IS_NOT          :  return( !is_matches( act, exp ) );
-      case CONTAINS        :  return( contains_matches( act, exp ) );
-      case CONTAINS_NOT    :  return( !contains_matches( act, exp ) );
+      case CONTAINS        :  return( contains( act, exp ) );
+      case CONTAINS_NOT    :  return( !contains( act, exp ) );
       case STARTS_WITH     :  return( starts_with( act, exp ) );
       case ENDS_WITH       :  return( ends_with( act, exp ) );
       case MATCHES_PATTERN :  return( matches_pattern( act, exp ) );
