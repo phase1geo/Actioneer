@@ -72,13 +72,16 @@ public class DirAction {
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
         if( _conditions.check( path ) ) {
+          stdout.printf( "Executing actions on %s\n", path );
           _actions.execute( path );
         }
       }
 
     } catch( FileError e ) {
+
       err    = true;
       errmsg = e.message;
+
     }
 
   }

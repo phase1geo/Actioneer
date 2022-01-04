@@ -60,6 +60,7 @@ public class DirActions {
 
   /* Runs the directory actions for this directory */
   public void run() {
+    stdout.printf( "Running rules on directory %s\n", _dirname );
     _actions.foreach((action) => {
       action.run( _dirname );
     });

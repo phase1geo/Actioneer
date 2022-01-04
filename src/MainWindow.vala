@@ -24,11 +24,12 @@ using Gdk;
 
 public class MainWindow : Hdy.ApplicationWindow {
 
-  private GLib.Settings     _settings;
-  private Hdy.HeaderBar     _header;
-  private Gtk.AccelGroup?   _accel_group = null;
+  private GLib.Settings   _settings;
+  private Hdy.HeaderBar   _header;
+  private Gtk.AccelGroup? _accel_group = null;
 
   private const GLib.ActionEntry[] action_entries = {
+    { "action_run",       action_run },
     { "action_quit",      action_quit },
     { "action_prefs",     action_prefs },
     { "action_shortcuts", action_shortcuts }
@@ -55,6 +56,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     /* Create the header bar */
     _header = new Hdy.HeaderBar();
     _header.set_show_close_button( true );
+    populate_header();
 
     /* Set the main window data */
     title = _( "Actioneer" );
@@ -92,10 +94,29 @@ public class MainWindow : Hdy.ApplicationWindow {
   /* Adds keyboard shortcuts for the menu actions */
   private void add_keyboard_shortcuts( Gtk.Application app ) {
 
+    app.set_accels_for_action( "win.action_run",       { "<Control>r" } );
     app.set_accels_for_action( "win.action_quit",      { "<Control>q" } );
     app.set_accels_for_action( "win.action_prefs",     { "<Control>comma" } );
     app.set_accels_for_action( "win.action_shortcuts", { "<Control>question" } );
 
+  }
+
+  /* Add widgets to header bar */
+  private void populate_header() {
+
+    var run_btn = new Button.from_icon_name( "media-playback-start", IconSize.LARGE_TOOLBAR );
+    // new_btn.set_tooltip_markup( Utils.tooltip_with_accel( _( "New File" ), "<Control>r" ) );
+    run_btn.add_accelerator( "clicked", _accel_group, 'r', Gdk.ModifierType.CONTROL_MASK, AccelFlags.VISIBLE );
+    run_btn.clicked.connect( action_run );
+    _header.pack_start( run_btn );
+
+  }
+
+  /* Called when the user uses Control-r keyboard shortcut to run the current actions */
+  private void action_run() {
+    Actioneer? app = null;
+    @get( "application", ref app );
+    app.dirlist.run();
   }
 
   /* Called when the user uses the Control-q keyboard shortcut */

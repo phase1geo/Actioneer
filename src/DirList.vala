@@ -15,6 +15,13 @@ public class DirList {
     _dir_actions.remove( dir );
   }
 
+  /* Run the actions for each listed directory */
+  public void run() {
+    _dir_actions.foreach((action) => {
+      action.run();
+    });
+  }
+
   /* Returns the rules.xml complete filepath */
   private string? rules_filename( bool create_if_nonexistent ) {
 

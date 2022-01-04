@@ -19,11 +19,6 @@
 * Authored by: Trevor Williams <phase1geo@gmail.com>
 */
 
-public enum ConditionType {
-  TEXT,
-  DATE
-}
-
 public enum ActionConditionType {
   NAME,
   EXTENSION,
@@ -68,40 +63,47 @@ public enum ActionConditionType {
     return( (this == CREATE_DATE) || (this == MODIFY_DATE) );
   }
 
+  /* Returns the full filename (without the leading directory path) of the given filename */
   private string? get_fullname( string pathname ) {
     return( Filename.display_basename( pathname ) );
   }
 
+  /* Returns the basename (minus the extension) of the given filename */
   private string? get_name( string pathname ) {
     var parts = get_fullname( pathname ).split( "." );
     return( string.joinv( ".", parts[0:parts.length - 2] ) );
   }
 
+  /* Returns the extension of the given filename */
   private string? get_extension( string pathname ) {
     var parts = get_fullname( pathname ).split( "." );
     return( parts[parts.length - 1] );
   }
 
+  /* Returns the FileInfo associated with the given filename */
   private FileInfo get_file_info( string pathname ) {
     var file = File.new_for_path( pathname );
-    return( file.query_info( "time::*", 0 ) );
+    return( file.query_info( "time::*,standard::*", 0 ) );
   }
 
+  /* Returns the creation date of the given filename */
   private DateTime? get_create_date( string pathname ) {
-    return( null );
-    // TBD
-    // return( get_file_info( pathname ).get_creation_date_time() );
+     return( new DateTime.from_unix_local( (int64)get_file_info( pathname ).get_attribute_uint64( "time::created" ) ) );
   }
 
+  /* Returns the modification date of the given filename */
   private DateTime? get_modify_date( string pathname ) {
     return( get_file_info( pathname ).get_modification_date_time() );
   }
 
+  /* Returns the MIME type of the given filename */
   private string? get_mime( string pathname ) {
-    // TBD
-    return( "" );
+    var content_type = get_file_info( pathname ).get_content_type();
+    var mime_type    = ContentType.get_mime_type( content_type );
+    return( mime_type );
   }
 
+  /* Returns the file contents of the given file for searching */
   private string? get_contents( string pathname ) {
     try {
       var contents = "";
@@ -112,6 +114,7 @@ public enum ActionConditionType {
     }
   }
 
+  /* Returns the current text value associated with the given filename */
   public string text_from_pathname( string pathname ) {
     switch( this ) {
       case NAME      :  return( get_name( pathname ) );
@@ -123,6 +126,7 @@ public enum ActionConditionType {
     }
   }
 
+  /* Returns the current date value associated with the given filename */
   public DateTime date_from_pathname( string pathname ) {
     switch( this ) {
       case CREATE_DATE :  return( get_create_date( pathname ) );

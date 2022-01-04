@@ -31,9 +31,9 @@ public class Actioneer : Granite.Application {
   private static bool          run_rules    = false;
   private static bool          create       = false;
   private        MainWindow    appwin;
-  private        DirList       dirlist;
   private        GLib.Settings iface_settings;
 
+  public         DirList       dirlist;
   public  static GLib.Settings settings;
   public  static string        version = "1.0.0";
 
@@ -52,6 +52,7 @@ public class Actioneer : Granite.Application {
     var rule2  = new DirAction.with_name( "Move to Temporary" );
     var cond11 = new ActionCondition.with_type( ActionConditionType.MODIFY_DATE );
     var cond21 = new ActionCondition.with_type( ActionConditionType.FULLNAME );
+    var cond22 = new ActionCondition.with_type( ActionConditionType.MIME );
     var act11  = new FileAction.with_filename( FileActionType.MOVE, "/home/trevorw/Documents" );
     var act21  = new FileAction.with_filename( FileActionType.MOVE, "/home/trevorw/Documents" );
 
@@ -63,8 +64,10 @@ public class Actioneer : Granite.Application {
     rule1.add_action( act11 );
 
     cond21.text.text = "file_to_move.txt";
+    cond22.text.text = "text/plain";
 
     rule2.add_condition( cond21 );
+    rule2.add_condition( cond22 );
     rule2.add_action( act21 );
 
     dir.add( rule1 );
@@ -97,6 +100,11 @@ public class Actioneer : Granite.Application {
 
     /* Save the results */
     dirlist.save();
+
+    /* If we need to run rules, do it now */
+    if( run_rules ) {
+      dirlist.run();
+    }
 
     /* Handle any changes to the position of the window */
     appwin.configure_event.connect(() => {

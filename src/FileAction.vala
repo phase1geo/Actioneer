@@ -24,8 +24,9 @@ public enum FileActionType {
 
   private bool do_move( ref string pathname, File new_file ) {
     var ofile  = File.new_for_path( pathname );
-    var retval = ofile.move( new_file, NONE );
-    pathname   = new_file.get_path();
+    var nfile  = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
+    var retval = ofile.move( nfile, NONE );
+    pathname   = nfile.get_path();
     return( retval );
   }
 
