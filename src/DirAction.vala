@@ -27,8 +27,15 @@ public class DirAction {
   private ActionConditions  _conditions;
   private FileActions       _actions;
 
-  public bool   err    { get; set; default = false; }
-  public string errmsg { get; set; default = ""; }
+  public bool   enabled { get; set; default = true; }
+  public string dirname {
+    get {
+      return( _name );
+    }
+  }
+
+  public bool   err     { get; set; default = false; }
+  public string errmsg  { get; set; default = ""; }
 
   /* Default constructor */
   public DirAction() {
@@ -63,6 +70,8 @@ public class DirAction {
   /* Runs the current action on the given directory */
   public void run( string dirname ) {
 
+    if( !enabled ) return;
+
     try {
 
       string? name = null;
@@ -92,6 +101,7 @@ public class DirAction {
     Xml.Node* node = new Xml.Node( null, xml_node );
 
     node->set_prop( "name", _name );
+    node->set_prop( "enabled", enabled.to_string() );
 
     node->add_child( _conditions.save() );
     node->add_child( _actions.save() );
@@ -106,6 +116,11 @@ public class DirAction {
     var name = node->get_prop( "name" );
     if( name != null ) {
       _name = name;
+    }
+
+    var e = node->get_prop( "enabled" );
+    if( e != null ) {
+      enabled = bool.parse( e );
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {

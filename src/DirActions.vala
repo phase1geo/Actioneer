@@ -26,6 +26,13 @@ public class DirActions {
   private string?          _dirname;
   private SList<DirAction> _actions;
 
+  public bool enabled { get; set; default = true; }
+  public string dirname {
+    get {
+      return( _dirname );
+    }
+  }
+
   /* Default constructor */
   public DirActions() {
     _dirname = null;
@@ -60,6 +67,7 @@ public class DirActions {
 
   /* Runs the directory actions for this directory */
   public void run() {
+    if( !enabled ) return;
     stdout.printf( "Running rules on directory %s\n", _dirname );
     _actions.foreach((action) => {
       action.run( _dirname );
@@ -72,6 +80,7 @@ public class DirActions {
     Xml.Node* node = new Xml.Node( null, xml_node );
 
     node->set_prop( "dirname", _dirname );
+    node->set_prop( "enabled", enabled.to_string() );
 
     _actions.foreach((action) => {
       node->add_child( action.save() );
@@ -87,6 +96,11 @@ public class DirActions {
     var n = node->get_prop( "dirname" );
     if( n != null ) {
       _dirname = n;
+    }
+
+    var e = node->get_prop( "enabled" );
+    if( e != null ) {
+      enabled = bool.parse( e );
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {

@@ -7,8 +7,29 @@ public class DirList {
     _dir_actions = new SList<DirActions>();
   }
 
-  public void add_directory( DirActions dir ) {
+  /* Returns the number of stored directory actions */
+  public int size() {
+    return( (int)_dir_actions.length() );
+  }
+
+  public DirActions get_directory( int index ) {
+    return( _dir_actions.nth_data( index ) );
+  }
+
+  public DirActions? find_directory( string dirname ) {
+    DirActions? found = null;
+    _dir_actions.foreach((action) => {
+      if( action.dirname == dirname ) {
+        found = action;
+      }
+    });
+    return( found );
+  }
+
+  public bool add_directory( DirActions dir ) {
+    if( find_directory( dir.dirname ) != null ) return( false );
     _dir_actions.append( dir );
+    return( true );
   }
 
   public void remove_directory( DirActions dir ) {
@@ -74,6 +95,7 @@ public class DirList {
         var dir = new DirActions();
         dir.load( it );
         _dir_actions.append( dir );
+        stdout.printf( "Adding directory (%u)\n", _dir_actions.length() );
       }
     }
 

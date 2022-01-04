@@ -34,6 +34,7 @@ public class Actioneer : Granite.Application {
   private        GLib.Settings iface_settings;
 
   public         DirList       dirlist;
+  public         Controller    controller;
   public  static GLib.Settings settings;
   public  static string        version = "1.0.0";
 
@@ -105,6 +106,9 @@ public class Actioneer : Granite.Application {
     if( run_rules ) {
       dirlist.run();
     }
+
+    /* Create the data controller */
+    controller = new Controller( appwin, dirlist );
 
     /* Handle any changes to the position of the window */
     appwin.configure_event.connect(() => {
