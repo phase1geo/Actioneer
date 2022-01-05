@@ -73,6 +73,12 @@ public class FileAction {
     _file = File.new_for_path( filename );
   }
 
+  /* Copy constructor */
+  public FileAction.copy( FileAction other ) {
+    _type = other._type;
+    _file = File.new_for_path( other._file.get_path() );
+  }
+
   /*
    Executes the action and returns true if it was successful.  If true is returned,
    the err and errmsg value will be updated with the error information.  If the

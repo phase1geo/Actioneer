@@ -32,6 +32,15 @@ public class ActionConditions {
     _conditions = new SList<ActionCondition>();
   }
 
+  /* Copies the contents of the specified conditions instance to ourself */
+  public void copy( ActionConditions other ) {
+    match_all = other.match_all;
+    _conditions = new SList<ActionCondition>();
+    other._conditions.foreach((cond) => {
+      _conditions.append( new ActionCondition.copy( cond ) ); 
+    });
+  }
+
   public int size() {
     return( (int)_conditions.length() );
   }

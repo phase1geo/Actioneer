@@ -151,6 +151,14 @@ public class DateCondition {
   /* Default constructor */
   public DateCondition() {}
 
+  /* Copy constructor */
+  public DateCondition.copy( DateCondition other ) {
+    match_type = other.match_type;
+    exp        = new DateTime.from_iso8601( other.exp.format_iso8601(), null );
+    num        = other.num;
+    time_type  = other.time_type;
+  }
+
   public bool check( DateTime date ) {
     if( match_type.is_absolute() ) {
       return( match_type.absolute_matches( date, exp ) );
@@ -165,7 +173,7 @@ public class DateCondition {
     node->set_prop( "match_type", match_type.to_string() );
 
     if( match_type.is_absolute() ) {
-      node->set_prop( "date-time", exp.to_string() );
+      node->set_prop( "date-time", exp.format_iso8601() );
     } else if( match_type.is_relative() ) {
       node->set_prop( "num",    num.to_string() );
       node->set_prop( "amount", time_type.to_string() );

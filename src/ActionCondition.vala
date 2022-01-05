@@ -166,6 +166,17 @@ public class ActionCondition {
     _date = type.is_date() ? new DateCondition() : null;
   }
 
+  /* Copy constructor */
+  public ActionCondition.copy( ActionCondition other ) {
+    _type = other._type;
+    if( other._text != null ) {
+      _text = new TextCondition.copy( other._text );
+    }
+    if( other._date != null ) {
+      _date = new DateCondition.copy( other._date );
+    }
+  }
+
   /* Returns true if the given pathname passes this condition check */
   public bool check( string pathname ) {
     return( (_type.is_text() && _text.check( _type.text_from_pathname( pathname ) )) ||

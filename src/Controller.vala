@@ -4,7 +4,8 @@ public class Controller {
 
   private MainWindow _win;
   private DirList    _data;
-  private DirActions _current_dir;
+  private DirActions _current_dir  = null;
+  private DirAction  _current_rule = null;
 
   /* Default constructor */
   public Controller( MainWindow win, DirList data ) {
@@ -23,6 +24,10 @@ public class Controller {
     win.rule_list.added.connect( rule_added );
     win.rule_list.removed.connect( rule_removed );
     win.rule_list.selected.connect( rule_selected );
+
+    /* Connect to the rule form */
+    win.rule_stack.form.save_requested.connect( form_save );
+    win.rule_stack.form.cancel_requested.connect( form_cancelled );
 
     initialize();
 
@@ -52,6 +57,9 @@ public class Controller {
 
     }
 
+    /* Make sure that the welcome1 page is shown */
+    _win.rule_stack.visible_child_name = "welcome1";
+
   }
 
   private void populate_rules( DirActions dir ) {
@@ -68,7 +76,14 @@ public class Controller {
   
     }
 
+    /* Make sure that the welcome2 page is shown */
+    _win.rule_stack.visible_child_name = "welcome2";
+
   }
+
+  // =========================================================
+  // DIRECTORY LIST
+  // =========================================================
 
   private void directory_enable_changed( TreeView view, Gtk.ListStore model, TreePath path ) {
 
@@ -104,20 +119,6 @@ public class Controller {
 
   }
 
-  private DirActions? get_selected_directory( TreeView view, Gtk.ListStore model, out TreeIter it ) {
-
-    /* Get the selected directory row */
-    view.get_selection().get_selected( null, out it );
-
-    /* Get the stored directory name */
-    string? dirname = null;
-    model.get( it, 1, &dirname, -1 );
-
-    /* Remove the selected directory from the structures */
-    return( (dirname == null) ? null : _data.find_directory( dirname ) );
-
-  }
-
   /* Called whenever a directory is removed from the UI */
   private void directory_removed( TreeView view, Gtk.ListStore model ) {
 
@@ -133,40 +134,107 @@ public class Controller {
 
   }
 
+  private DirActions? get_selected_directory( TreeView view, Gtk.ListStore model, out TreeIter it ) {
+
+    /* Get the selected directory row */
+    if( !view.get_selection().get_selected( null, out it ) ) return( null );
+
+    /* Get the stored directory name */
+    string? dirname = null;
+    model.get( it, 1, &dirname, -1 );
+
+    /* Remove the selected directory from the structures */
+    return( (dirname == null) ? null : _data.find_directory( dirname ) );
+
+  }
+
   /* Called whenever a directory selection changes in the UI */
   private void directory_selected( TreeView view, Gtk.ListStore model ) {
 
     TreeIter it;
-    _current_dir = get_selected_directory( view, model, out it );
-    if( _current_dir == null ) return;
+    var dir = get_selected_directory( view, model, out it );
 
-    /* Update the rule list */
-    populate_rules( _current_dir );
+    if( dir == null ) {
+
+      /* Clear the rule list */
+      _win.rule_list.model.clear();
+
+      /* Show the welcome1 stack page */
+      _win.rule_stack.visible_child_name = "welcome1";
+
+    } else if( dir != _current_dir ) {
+
+      /* Update the rule list */
+      populate_rules( _current_dir );
+
+    }
+
+    /* Save the currently selected directory */
+    _current_dir = dir;
 
   }
 
+  // =========================================================
+  // RULE LIST
+  // =========================================================
+
   private void rule_enable_changed( TreeView view, Gtk.ListStore model, TreePath path ) {
 
-    // TBD
+    /* Get the iterator associated with the model */
+    TreeIter it;
+    if( !model.get_iter( out it, path ) ) return;
+
+    string? name = null;
+    model.get( it, 1, &name, -1 );
+
+    /* Update the model */
+    if( name != null ) {
+      var rule = _current_dir.find_rule( name );
+      if( rule != null ) {
+        rule.enabled = !rule.enabled;
+        model.set( it, 0, rule.enabled, -1 );
+      }
+    }
 
   }
 
   private void rule_added( TreeView view, Gtk.ListStore model, string name ) {
 
-    // TBD
+    /* Create a new directory action */
+    var rule = new DirAction.with_name( name );
+    if( !_current_dir.add_rule( rule ) ) {
+      stdout.printf( "?????\n" );
+      return;
+    }
+
+    /* Update the treeview model */
+    TreeIter it;
+    model.append( out it );
+    model.set( it, 0, rule.enabled, 1, rule.name, -1 );
+
+    /* Select the newly added row */
+    view.get_selection().select_iter( it );
 
   }
 
   private void rule_removed( TreeView view, Gtk.ListStore model ) {
 
-    // TBD
+    TreeIter it;
+    var rule = get_selected_rule( view, model, out it );
+    if( rule == null ) return;
+
+    /* Delete the directory */
+    _current_dir.remove_rule( rule );
+
+    /* Update the treeview model */
+    model.remove( ref it );
 
   }
 
   private DirAction? get_selected_rule( TreeView view, Gtk.ListStore model, out TreeIter it ) {
 
     /* Get the selected directory row */
-    view.get_selection().get_selected( null, out it );
+    if( !view.get_selection().get_selected( null, out it ) ) return( null );
 
     /* Get the stored directory name */
     string? rule = null;
@@ -181,9 +249,56 @@ public class Controller {
 
     TreeIter it;
     var rule = get_selected_rule( view, model, out it );
-    if( rule == null ) return;
 
-    stdout.printf( "Rule selected\n" );
+    if( rule == null ) {
+
+      _win.rule_stack.visible_child_name = "welcome1";
+
+    } else if( (rule != _current_rule) || (_win.rule_stack.visible_child_name != "form") ) {
+
+      _win.rule_stack.form.initialize( rule );
+      _win.rule_stack.visible_child_name = "form";
+
+    }
+
+    /* Save the currently selected rule */
+    _current_rule = rule;
+
+  }
+
+  // =========================================================
+  // RULE FORM
+  // =========================================================
+
+  private void form_save( DirAction rule ) {
+
+    TreeIter it;
+    _win.rule_list.view.get_selection().get_selected( null, out it );
+
+    /* Update the rule list item */
+    _win.rule_list.model.set( it, 1, rule.name, -1 );
+
+    /* Copy the rule into the current rule */
+    _current_rule.copy( rule );
+
+    /* Clear the list selection */
+    _win.rule_list.view.get_selection().unselect_iter( it );
+
+    /* Save the content */
+    _data.save();
+
+    /* Display the welcome2 banner */
+    _win.rule_stack.visible_child_name = "welcome2";
+
+  }
+
+  private void form_cancelled() {
+
+    TreeIter it;
+    _win.rule_list.view.get_selection().get_selected( null, out it );
+    _win.rule_list.view.get_selection().unselect_iter( it );
+
+    _win.rule_stack.visible_child_name = "welcome2";
 
   }
 

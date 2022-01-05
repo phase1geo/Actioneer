@@ -9,6 +9,13 @@ public class FileActions {
     _actions = new SList<FileAction>();
   }
 
+  public void copy( FileActions other ) {
+    _actions = new SList<FileAction>();
+    other._actions.foreach((action) => {
+      _actions.append( new FileAction.copy( action ) );
+    });
+  }
+
   /* Returns the number of stored file actions */
   public int num_actions() {
     return( (int)_actions.length );

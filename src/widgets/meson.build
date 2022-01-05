@@ -1,5 +1,7 @@
 sources += files(
     'DirectoryList.vala',
     'EnableList.vala',
-    'RuleList.vala'
+    'RuleForm.vala',
+    'RuleList.vala',
+    'RuleStack.vala'
 )

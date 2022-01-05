@@ -67,8 +67,10 @@ public class DirActions {
   }
 
   /* Adds a new directory action */
-  public void add_rule( DirAction action ) {
+  public bool add_rule( DirAction action ) {
+    if( find_rule( action.name ) != null ) return( false );
     _actions.append( action );
+    return( true );
   }
 
   /* Removes the directory action from the stored list */

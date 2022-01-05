@@ -29,6 +29,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   private Gtk.AccelGroup? _accel_group = null;
   private DirectoryList   _dir_list;
   private RuleList        _rule_list;
+  private RuleStack       _rule_stack;
 
   private const GLib.ActionEntry[] action_entries = {
     { "action_run",       action_run },
@@ -49,10 +50,11 @@ public class MainWindow : Hdy.ApplicationWindow {
     }
   }
 
-  public signal void dir_enable_changed( TreeView view, Gtk.ListStore model, TreePath path );
-  public signal void dir_added( TreeView view, Gtk.ListStore model, string pathname );
-  public signal void dir_removed( TreeView view, Gtk.ListStore model );
-  public signal void dir_selected( TreeView view, Gtk.ListStore model );
+  public RuleStack rule_stack {
+    get {
+      return( _rule_stack );
+    }
+  }
 
   /* Create the main window UI */
   public MainWindow( Gtk.Application app, GLib.Settings settings ) {
@@ -91,15 +93,16 @@ public class MainWindow : Hdy.ApplicationWindow {
     /* Create left pane (contains directory and rule lists */
     var left_pane = new Paned( Orientation.HORIZONTAL );
 
-    _dir_list  = new DirectoryList( this );
-    _rule_list = new RuleList( this );
+    _dir_list   = new DirectoryList( this );
+    _rule_list  = new RuleList( this );
+    _rule_stack = new RuleStack( this );
 
     left_pane.pack1( _dir_list,  true, false );
     left_pane.pack2( _rule_list, true, false );
 
     var top_pane = new Paned( Orientation.HORIZONTAL );
-    top_pane.pack1( left_pane, true, true );
-    top_pane.pack2( create_content_stack(), true, true );
+    top_pane.pack1( left_pane,   true, true );
+    top_pane.pack2( _rule_stack, true, true );
 
     var top_box = new Box( Orientation.VERTICAL, 0 );
     top_box.pack_start( _header,  false, true, 0 );
@@ -113,14 +116,6 @@ public class MainWindow : Hdy.ApplicationWindow {
 
   static construct {
     Hdy.init();
-  }
-
-  private Box create_content_stack() {
-
-    var box = new Box( Orientation.VERTICAL, 0 );
-
-    return( box );
-
   }
 
   /* Adds keyboard shortcuts for the menu actions */

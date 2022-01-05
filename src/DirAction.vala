@@ -33,6 +33,14 @@ public class DirAction {
       return( _name );
     }
   }
+  public bool match_all {
+    get {
+      return( _conditions.match_all );
+    }
+    set {
+      _conditions.match_all = value;
+    }
+  }
 
   public bool   err     { get; set; default = false; }
   public string errmsg  { get; set; default = ""; }
@@ -49,6 +57,12 @@ public class DirAction {
     _name       = name;
     _conditions = new ActionConditions();
     _actions    = new FileActions();
+  }
+
+  public void copy( DirAction rule ) {
+    _name = rule.name;
+    _conditions.copy( rule._conditions );
+    _actions.copy( rule._actions );
   }
 
   public void add_condition( ActionCondition condition ) {

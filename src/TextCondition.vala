@@ -83,6 +83,12 @@ public class TextCondition {
   /* Default constructor */
   public TextCondition() {}
 
+  /* Copy constructor */
+  public TextCondition.copy( TextCondition other ) {
+    match_type = other.match_type;
+    text       = other.text;
+  }
+
   /* Returns true if the file string matches the stored type and text */
   public bool check( string act ) {
     if( text == null ) return( false );
