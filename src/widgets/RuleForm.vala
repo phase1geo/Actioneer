@@ -2,8 +2,8 @@ using Gtk;
 
 public class RuleForm : Box {
 
-  private const string MATCH_ALL = _( "Match All Conditions" );
-  private const string MATCH_ANY = _( "Match Any Conditions" );
+  private const string MATCH_ALL = _( "Match ALL Conditions" );
+  private const string MATCH_ANY = _( "Match ANY Condition" );
 
   private Entry      _name_entry;
   private MenuButton _match_mb;
@@ -63,6 +63,7 @@ public class RuleForm : Box {
     var match_menu = new Gtk.Menu();
     match_menu.add( match_all );
     match_menu.add( match_any );
+    match_menu.show_all();
 
     _match_mb.popup = match_menu;
 
