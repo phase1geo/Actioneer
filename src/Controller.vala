@@ -4,6 +4,7 @@ public class Controller {
 
   private MainWindow _win;
   private DirList    _data;
+  private DirActions _current_dir;
 
   /* Default constructor */
   public Controller( MainWindow win, DirList data ) {
@@ -11,10 +12,17 @@ public class Controller {
     _win  = win;
     _data = data;
 
-    win.dir_enable_changed.connect( directory_enable_changed );
-    win.dir_added.connect( directory_added );
-    win.dir_removed.connect( directory_removed );
-    win.dir_selected.connect( directory_selected );
+    /* Connect to the directory list signals */
+    win.dir_list.enable_changed.connect( directory_enable_changed );
+    win.dir_list.added.connect( directory_added );
+    win.dir_list.removed.connect( directory_removed );
+    win.dir_list.selected.connect( directory_selected );
+
+    /* Connect to the rule list signals */
+    win.rule_list.enable_changed.connect( rule_enable_changed );
+    win.rule_list.added.connect( rule_added );
+    win.rule_list.removed.connect( rule_removed );
+    win.rule_list.selected.connect( rule_selected );
 
     initialize();
 
@@ -22,17 +30,42 @@ public class Controller {
 
   /* Called when the UI is ready to have its model updated */
   private void initialize() {
+    populate_dirs();
+    if( _data.size() > 0 ) {
+      _current_dir = _data.get_directory( 0 );
+      _win.dir_list.view.get_selection().select_path( new TreePath.first() );
+    }
+  }
+
+  private void populate_dirs() {
+
+    _win.dir_list.model.clear();
 
     for( int i=0; i<_data.size(); i++ ) {
 
       var dir = _data.get_directory( i );
-      stdout.printf( "dir.enabled: %s, dir.dirname: %s\n", dir.enabled.to_string(), dir.dirname );
 
       /* Add the directory information to the model */
       TreeIter it;
-      _win.dir_model.append( out it );
-      _win.dir_model.set( it, 0, dir.enabled, 1, dir.dirname, -1 );
+      _win.dir_list.model.append( out it );
+      _win.dir_list.model.set( it, 0, dir.enabled, 1, dir.dirname, -1 );
 
+    }
+
+  }
+
+  private void populate_rules( DirActions dir ) {
+
+    _win.rule_list.model.clear();
+
+    for( int j=0; j<dir.num_rules(); j++ ) {
+
+      var rule = dir.get_rule( j );
+
+      TreeIter it2;
+      _win.rule_list.model.append( out it2 );
+      _win.rule_list.model.set( it2, 0, rule.enabled, 1, rule.name, -1 );
+  
     }
 
   }
@@ -104,10 +137,53 @@ public class Controller {
   private void directory_selected( TreeView view, Gtk.ListStore model ) {
 
     TreeIter it;
-    var dir = get_selected_directory( view, model, out it );
-    if( dir == null ) return;
+    _current_dir = get_selected_directory( view, model, out it );
+    if( _current_dir == null ) return;
 
-    stdout.printf( "Directory selected\n" );
+    /* Update the rule list */
+    populate_rules( _current_dir );
+
+  }
+
+  private void rule_enable_changed( TreeView view, Gtk.ListStore model, TreePath path ) {
+
+    // TBD
+
+  }
+
+  private void rule_added( TreeView view, Gtk.ListStore model, string name ) {
+
+    // TBD
+
+  }
+
+  private void rule_removed( TreeView view, Gtk.ListStore model ) {
+
+    // TBD
+
+  }
+
+  private DirAction? get_selected_rule( TreeView view, Gtk.ListStore model, out TreeIter it ) {
+
+    /* Get the selected directory row */
+    view.get_selection().get_selected( null, out it );
+
+    /* Get the stored directory name */
+    string? rule = null;
+    model.get( it, 1, &rule, -1 );
+
+    /* Remove the selected directory from the structures */
+    return( (rule == null) ? null : _current_dir.find_rule( rule ) );
+
+  }
+
+  private void rule_selected( TreeView view, Gtk.ListStore model ) {
+
+    TreeIter it;
+    var rule = get_selected_rule( view, model, out it );
+    if( rule == null ) return;
+
+    stdout.printf( "Rule selected\n" );
 
   }
 

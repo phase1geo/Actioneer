@@ -71,8 +71,8 @@ public class Actioneer : Granite.Application {
     rule2.add_condition( cond22 );
     rule2.add_action( act21 );
 
-    dir.add( rule1 );
-    dir.add( rule2 );
+    dir.add_rule( rule1 );
+    dir.add_rule( rule2 );
 
     dirlist.add_directory( dir );
 

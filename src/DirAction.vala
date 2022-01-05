@@ -28,7 +28,7 @@ public class DirAction {
   private FileActions       _actions;
 
   public bool   enabled { get; set; default = true; }
-  public string dirname {
+  public string name {
     get {
       return( _name );
     }

@@ -27,8 +27,8 @@ public class MainWindow : Hdy.ApplicationWindow {
   private GLib.Settings   _settings;
   private Hdy.HeaderBar   _header;
   private Gtk.AccelGroup? _accel_group = null;
-  private TreeView        _dir_view;
-  private Gtk.ListStore   _dir_model;
+  private DirectoryList   _dir_list;
+  private RuleList        _rule_list;
 
   private const GLib.ActionEntry[] action_entries = {
     { "action_run",       action_run },
@@ -37,15 +37,15 @@ public class MainWindow : Hdy.ApplicationWindow {
     { "action_shortcuts", action_shortcuts }
   };
 
-  public Gtk.ListStore dir_model {
+  public DirectoryList dir_list {
     get {
-      return( _dir_model );
+      return( _dir_list );
     }
   }
 
-  public GLib.Settings settings {
+  public RuleList rule_list {
     get {
-      return( _settings );
+      return( _rule_list );
     }
   }
 
@@ -88,14 +88,14 @@ public class MainWindow : Hdy.ApplicationWindow {
     _header.set_show_close_button( true );
     populate_header();
 
-    /* Create the directory model */
-    _dir_model = new Gtk.ListStore( 2, typeof(bool), typeof(string) );
-
     /* Create left pane (contains directory and rule lists */
     var left_pane = new Paned( Orientation.HORIZONTAL );
 
-    left_pane.pack1( create_directory_pane(), true, false );
-    left_pane.pack2( create_rule_pane(),      true, false );
+    _dir_list  = new DirectoryList( this );
+    _rule_list = new RuleList( this );
+
+    left_pane.pack1( _dir_list,  true, false );
+    left_pane.pack2( _rule_list, true, false );
 
     var top_pane = new Paned( Orientation.HORIZONTAL );
     top_pane.pack1( left_pane, true, true );
@@ -113,80 +113,6 @@ public class MainWindow : Hdy.ApplicationWindow {
 
   static construct {
     Hdy.init();
-  }
-
-  private void setup_directory_list() {
-
-    /* Add checkbox column */
-    var toggle = new CellRendererToggle();
-    toggle.toggled.connect((path) => {
-      var tpath = new TreePath.from_string( path );
-      dir_enable_changed( _dir_view, _dir_model, tpath );
-    });
-    var enable = new TreeViewColumn.with_attributes( null, toggle, "active", 0, null );
-    enable.set_sizing( TreeViewColumnSizing.FIXED );
-    enable.set_fixed_width( 50 );
-    _dir_view.append_column( enable );
-
-    /* Add directory name column */
-    var text = new CellRendererText();
-    var name = new TreeViewColumn.with_attributes( null, text, "text", 1, null );
-    name.set_sizing( TreeViewColumnSizing.FIXED );
-    name.set_fixed_width( 150 );
-    _dir_view.append_column( name );
-
-  }
-
-  private Box create_directory_pane() {
-
-    var lbl = new Label( _( "Directories" ) );
-    lbl.margin = 10;
-
-    /* Create button bar at the bottom of the pane */
-    var add_btn = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
-    add_btn.set_tooltip_text( _( "Add directory to manage" ) );
-    add_btn.clicked.connect( action_add_directory );
-
-    var del_btn = new Button.from_icon_name( "list-remove-symbolic", IconSize.SMALL_TOOLBAR );
-    del_btn.set_tooltip_text( _( "Delete selected directory" ) );
-    del_btn.set_sensitive( false );
-    del_btn.clicked.connect( action_remove_directory );
-
-    var bbox = new Box( Orientation.HORIZONTAL, 5 );
-    bbox.margin = 5;
-    bbox.pack_start( add_btn, false, false, 0 );
-    bbox.pack_start( del_btn, false, false, 0 );
-
-    /* Create list */
-    _dir_view = new TreeView.with_model( _dir_model );
-    _dir_view.headers_visible = false;
-    _dir_view.get_selection().mode = SelectionMode.BROWSE;
-    _dir_view.get_selection().changed.connect(() => {
-      del_btn.set_sensitive( _dir_view.get_selection().get_selected( null, null ) );
-      dir_selected( _dir_view, _dir_model );
-    });
-    setup_directory_list();
-
-    var list_sw = new ScrolledWindow( null, null );
-    list_sw.set_policy( PolicyType.NEVER, PolicyType.AUTOMATIC );
-    list_sw.add( _dir_view );
-
-    /* Pack everything in the pane */
-    var box = new Box( Orientation.VERTICAL, 0 );
-    box.pack_start( lbl,     false, true, 0 );
-    box.pack_start( list_sw, true,  true, 0 );
-    box.pack_end(   bbox,    false, true, 0 );
-
-    return( box );
-
-  }
-
-  private Box create_rule_pane() {
-
-    var box = new Box( Orientation.VERTICAL, 0 );
-
-    return( box );
-
   }
 
   private Box create_content_stack() {
@@ -231,17 +157,6 @@ public class MainWindow : Hdy.ApplicationWindow {
     @get( "application", ref app );
     app.dirlist.save();
     destroy();
-  }
-
-  private void action_add_directory() {
-    var dialog = new FileChooserNative( _( "Choose Directory" ), this, FileChooserAction.SELECT_FOLDER, _( "Choose" ), _( "Cancel" ) );
-    if( dialog.run() == ResponseType.ACCEPT ) {
-      dir_added( _dir_view, _dir_model, dialog.get_filename() );
-    }
-  }
-
-  private void action_remove_directory() {
-    dir_removed( _dir_view, _dir_model );
   }
 
   /* Displays the preferences dialog */

@@ -13,3 +13,4 @@ sources += files(
     'TextCondition.vala'
 )
 
+subdir('widgets')

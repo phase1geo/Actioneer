@@ -46,22 +46,33 @@ public class DirActions {
   }
 
   /* Returns the number of actions stored */
-  public int num_actions() {
+  public int num_rules() {
     return( (int)_actions.length() );
   }
 
+  /* Returns the rule that matches the given name, if found. */
+  public DirAction? find_rule( string name ) {
+    DirAction? rule = null;
+    _actions.foreach((action) => {
+      if( action.name == name ) {
+        rule = action;
+      }
+    });
+    return( rule );
+  }
+
   /* Returns the index at the given position */
-  public DirAction get_action( int index ) {
+  public DirAction get_rule( int index ) {
     return( _actions.nth_data( index ) );
   }
 
   /* Adds a new directory action */
-  public void add( DirAction action ) {
+  public void add_rule( DirAction action ) {
     _actions.append( action );
   }
 
   /* Removes the directory action from the stored list */
-  public void remove( DirAction action ) {
+  public void remove_rule( DirAction action ) {
     _actions.remove( action );
   }
 
