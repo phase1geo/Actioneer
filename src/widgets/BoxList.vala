@@ -7,6 +7,8 @@ public class BoxList : Box {
   /* Default constructor */
   public BoxList( string add_label ) {
 
+    Object( orientation: Orientation.VERTICAL, spacing: 0 );
+
     _list_box = new Box( Orientation.VERTICAL, 0 );
 
     var add_btn = new Button.with_label( add_label );
@@ -16,6 +18,9 @@ public class BoxList : Box {
 
     var bbox = new Box( Orientation.HORIZONTAL, 0 );
     bbox.pack_start( add_btn, false, false, 0 );
+
+    pack_start( _list_box, false, true, 0 );
+    pack_start( bbox,      false, true, 0 );
 
   }
 
@@ -64,6 +69,7 @@ public class BoxList : Box {
   private void add_item() {
     var item = create_item( (int)_list_box.get_children().length() );
     _list_box.pack_start( item, false, true, 0 ); 
+    _list_box.show_all();
   }
 
   protected virtual int get_menubutton_size() {

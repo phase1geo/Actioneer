@@ -5,9 +5,11 @@ public class RuleForm : Box {
   private const string MATCH_ALL = _( "Match ALL Conditions" );
   private const string MATCH_ANY = _( "Match ANY Condition" );
 
-  private Entry      _name_entry;
-  private MenuButton _match_mb;
-  private bool       _match_all = true;
+  private Entry         _name_entry;
+  private MenuButton    _match_mb;
+  private bool          _match_all = true;
+  private CondBoxList   _conditions;
+  private ActionBoxList _actions;
 
   public signal void save_requested( DirAction rule );
   public signal void cancel_requested();
@@ -70,11 +72,11 @@ public class RuleForm : Box {
     var match_box = new Box( Orientation.HORIZONTAL, 0 );
     match_box.pack_start( _match_mb, false, false, 0 );
 
-    var cond_box = new Box( Orientation.VERTICAL, 0 );
+    _conditions = new CondBoxList();
 
     var box = new Box( Orientation.VERTICAL, 0 );
-    box.pack_start( match_box, false, true, 0 );
-    box.pack_start( cond_box,  false, true, 0 );
+    box.pack_start( match_box,   false, true, 0 );
+    box.pack_start( _conditions, false, true, 0 );
 
     frame.add( box );
 
@@ -86,9 +88,9 @@ public class RuleForm : Box {
 
     var frame = new Frame( _( "Actions" ) );
 
-    var box = new Box( Orientation.VERTICAL, 0 );
+    _actions = new ActionBoxList();
 
-    frame.add( box );
+    frame.add( _actions );
 
     return( frame );
 
