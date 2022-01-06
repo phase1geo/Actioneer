@@ -7,13 +7,8 @@ public class CondBoxList : BoxList {
     base( _( "Add Condition" ) );
   }
 
-  protected override int get_menubutton_size() {
-    return( ActionConditionType.NUM );
-  }
-
-  protected override string get_menubutton_label( int index ) {
-    var type = (ActionConditionType)index;
-    return( type.to_string() );
+  protected override OptMenu get_option_menu() {
+    return( new CondOptMenu() );
   }
 
   protected override void insert_item( int index, Box box ) {

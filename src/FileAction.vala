@@ -13,6 +13,15 @@ public enum FileActionType {
     }
   }
 
+  public string label() {
+    switch( this ) {
+      case MOVE   :  return( _( "Move" ) );
+      case COPY   :  return( _( "Copy" ) );
+      case RENAME :  return( _( "Rename" ) );
+      default     :  assert_not_reached();
+    }
+  }
+
   public static FileActionType parse( string val ) {
     switch( val ) {
       case "move"   :  return( MOVE );

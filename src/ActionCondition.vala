@@ -42,6 +42,19 @@ public enum ActionConditionType {
     }
   }
 
+  public string label() {
+    switch( this ) {
+      case NAME        :  return( _( "Name" ) );
+      case EXTENSION   :  return( _( "Extension" ) );
+      case FULLNAME    :  return( _( "Full Name" ) );
+      case CREATE_DATE :  return( _( "Creation Date" ) );
+      case MODIFY_DATE :  return( _( "Modification Date" ) );
+      case MIME        :  return( _( "MIME Type" ) );
+      case CONTENT     :  return( _( "Content" ) );
+      default          :  assert_not_reached();
+    }
+  }
+
   public static ActionConditionType parse( string val ) {
     switch( val ) {
       case "name"              :  return( NAME );

@@ -7,13 +7,8 @@ public class ActionBoxList : BoxList {
     base( _( "Add Action" ) );
   }
 
-  protected override int get_menubutton_size() {
-    return( FileActionType.NUM );
-  }
-
-  protected override string get_menubutton_label( int index ) {
-    var type = (FileActionType)index;
-    return( type.to_string() );
+  protected override OptMenu get_option_menu() {
+    return( new ActionOptMenu() );
   }
 
   protected override void insert_item( int index, Box box ) {

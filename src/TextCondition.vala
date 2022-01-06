@@ -21,6 +21,19 @@ public enum TextMatchType {
     }
   }
 
+  public string label() {
+    switch( this ) {
+      case IS              :  return( "is" );
+      case IS_NOT          :  return( "is not" );
+      case CONTAINS        :  return( "contains" );
+      case CONTAINS_NOT    :  return( "does not contain" );
+      case STARTS_WITH     :  return( "starts with" );
+      case ENDS_WITH       :  return( "ends with" );
+      case MATCHES_PATTERN :  return( "matches regex pattern" );
+      default              :  assert_not_reached();
+    }
+  }
+
   public static TextMatchType parse( string val ) {
     switch( val ) {
       case "is"              :  return( IS );

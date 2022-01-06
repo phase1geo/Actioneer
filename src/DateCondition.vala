@@ -21,6 +21,19 @@ public enum TimeType {
     }
   }
 
+  public string label() {
+    switch( this ) {
+      case NOW    :  return( "now" );
+      case MINUTE :  return( "minute(s)" );
+      case HOUR   :  return( "hour(s)" );
+      case DAY    :  return( "day(s)" );
+      case WEEK   :  return( "week(s)" );
+      case MONTH  :  return( "month(s)" );
+      case YEAR   :  return( "year(s)" );
+      default     :  assert_not_reached();
+    }
+  }
+
   public static TimeType parse( string val ) {
     switch( val ) {
       case "now"    :  return( NOW );
@@ -69,6 +82,20 @@ public enum DateMatchType {
       case LAST_NOT :  return( "last-not" );
       case NEXT     :  return( "next" );
       case NEXT_NOT :  return( "next-not" );
+      default       :  assert_not_reached();
+    }
+  }
+
+  public string label() {
+    switch( this ) {
+      case IS       :  return( "is" );
+      case IS_NOT   :  return( "is not" );
+      case BEFORE   :  return( "before" );
+      case AFTER    :  return( "after" );
+      case LAST     :  return( "in the last" );
+      case LAST_NOT :  return( "not in the last" );
+      case NEXT     :  return( "in the next" );
+      case NEXT_NOT :  return( "not in the next" );
       default       :  assert_not_reached();
     }
   }

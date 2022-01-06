@@ -6,8 +6,7 @@ public class RuleForm : Box {
   private const string MATCH_ANY = _( "Match ANY Condition" );
 
   private Entry         _name_entry;
-  private MenuButton    _match_mb;
-  private bool          _match_all = true;
+  private MatchOptMenu  _match_mb;
   private CondBoxList   _conditions;
   private ActionBoxList _actions;
 
@@ -49,25 +48,7 @@ public class RuleForm : Box {
 
     var frame = new Frame( _( "Conditions" ) );
 
-    _match_mb = new MenuButton();
-
-    var match_all = new Gtk.MenuItem.with_label( MATCH_ALL );
-    match_all.activate.connect(() => {
-      _match_mb.label = MATCH_ALL;
-      _match_all = true;
-    });
-    var match_any = new Gtk.MenuItem.with_label( MATCH_ANY );
-    match_any.activate.connect(() => {
-      _match_mb.label = MATCH_ANY;
-      _match_all = false;
-    });
-
-    var match_menu = new Gtk.Menu();
-    match_menu.add( match_all );
-    match_menu.add( match_any );
-    match_menu.show_all();
-
-    _match_mb.popup = match_menu;
+    _match_mb = new MatchOptMenu();
 
     var match_box = new Box( Orientation.HORIZONTAL, 0 );
     match_box.pack_start( _match_mb, false, false, 0 );
@@ -121,7 +102,7 @@ public class RuleForm : Box {
   public void initialize( DirAction rule ) {
 
     _name_entry.text = rule.name;
-    _match_mb.label  = rule.match_all ? MATCH_ALL : MATCH_ANY;
+    _match_mb.set_current_item( rule.match_all ? (int)MatchType.ALL : (int)MatchType.ANY );
 
   }
 
@@ -130,7 +111,7 @@ public class RuleForm : Box {
 
     var rule = new DirAction.with_name( _name_entry.text );
 
-    rule.match_all = _match_all;
+    rule.match_all = (_match_mb.get_current_item() == MatchType.ALL);
 
     return( rule );
 
