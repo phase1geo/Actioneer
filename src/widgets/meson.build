@@ -1,24 +1,14 @@
 sources += files(
     'ActionBoxList.vala',
-    'ActionFileBox.vala',
-    'ActionInterface.vala',
-    'ActionOptMenu.vala',
-    'ActionRenameBox.vala',
     'BoxList.vala',
     'CondBoxList.vala',
-    'CondDateBox.vala',
-    'CondInterface.vala',
-    'CondMimeBox.vala',
-    'CondOptMenu.vala',
-    'CondTextBox.vala',
-    'DateOptMenu.vala',
     'DirectoryList.vala',
     'EnableList.vala',
-    'MatchOptMenu.vala',
-    'OptMenu.vala',
     'RuleForm.vala',
     'RuleList.vala',
-    'RuleStack.vala',
-    'TextOptMenu.vala',
-    'TimeOptMenu.vala'
+    'RuleStack.vala'
 )
+
+subdir('actions')
+subdir('conditions')
+subdir('menubuttons')
