@@ -158,6 +158,11 @@ public class ActionCondition {
   private TextCondition?      _text = null;
   private DateCondition?      _date = null;
 
+  public ActionConditionType cond_type {
+    get {
+      return( _type );
+    }
+  }
   public TextCondition? text {
     get {
       return( _text );
