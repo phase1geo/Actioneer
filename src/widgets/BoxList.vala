@@ -37,6 +37,7 @@ public class BoxList : Box {
         ibox.remove( ibox.get_children().nth_data( 0 ) );
       }
       insert_item( i, ibox );
+      ibox.show_all();
     });
 
     /* Add close button */

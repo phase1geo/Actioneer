@@ -5,10 +5,6 @@ public class CondDateBox : CondInterface, Box {
   private DateOptMenu _menu;
   private Box         _dbox;
 
-  public DateTime      exp        { get; set; default = new DateTime.now(); }
-  public int           num        { get; set; default = 0; }
-  public TimeType      time_type  { get; set; default = TimeType.DAY; }
-
   /* Default constructor */
   public CondDateBox() {
 
