@@ -37,6 +37,7 @@ public class RuleForm : Box {
     var frame = new Frame( _( "Rule Name" ) );
 
     _name_entry = new Entry();
+    _name_entry.margin = 10;
 
     frame.add( _name_entry );
 
@@ -55,7 +56,8 @@ public class RuleForm : Box {
 
     _conditions = new CondBoxList();
 
-    var box = new Box( Orientation.VERTICAL, 0 );
+    var box = new Box( Orientation.VERTICAL, 10 );
+    box.margin = 10;
     box.pack_start( match_box,   false, true, 0 );
     box.pack_start( _conditions, false, true, 0 );
 
@@ -70,6 +72,7 @@ public class RuleForm : Box {
     var frame = new Frame( _( "Actions" ) );
 
     _actions = new ActionBoxList();
+    _actions.margin = 10;
 
     frame.add( _actions );
 
@@ -90,7 +93,6 @@ public class RuleForm : Box {
     });
 
     var box = new Box( Orientation.HORIZONTAL, 10 );
-    box.margin = 10;
     box.pack_end( save_btn,   false, false, 0 );
     box.pack_end( cancel_btn, false, false, 0 );
 

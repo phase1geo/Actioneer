@@ -15,9 +15,9 @@ public class ActionBoxList : BoxList {
     Box item;
     var type = (FileActionType)index;
     switch( type ) {
-      case MOVE        :  item = new ActionFileBox();    break;
-      case COPY        :  item = new ActionFileBox();    break;
-      case RENAME      :  item = new ActionRenameBox();  break;
+      case MOVE        :  item = new ActionFileBox( type );    break;
+      case COPY        :  item = new ActionFileBox( type );    break;
+      case RENAME      :  item = new ActionRenameBox( type );  break;
       default          :  assert_not_reached();
     }
     box.pack_start( item, false, true, 0 );

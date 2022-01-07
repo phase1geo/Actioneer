@@ -7,9 +7,9 @@ public class BoxList : Box {
   /* Default constructor */
   public BoxList( string add_label ) {
 
-    Object( orientation: Orientation.VERTICAL, spacing: 0 );
+    Object( orientation: Orientation.VERTICAL, spacing: 10 );
 
-    _list_box = new Box( Orientation.VERTICAL, 0 );
+    _list_box = new Box( Orientation.VERTICAL, 10 );
 
     var add_btn = new Button.with_label( add_label );
     add_btn.clicked.connect(() => {
@@ -26,11 +26,11 @@ public class BoxList : Box {
 
   private Box create_item() {
 
-    var box = new Box( Orientation.HORIZONTAL, 0 );
-    box.margin = 10;
+    var box = new Box( Orientation.HORIZONTAL, 10 );
+    box.margin_left = 10;
 
     var mb   = get_option_menu();
-    var ibox = new Box( Orientation.VERTICAL, 0 );
+    var ibox = new Box( Orientation.VERTICAL, 10 );
 
     mb.activated.connect((i) => {
       if( ibox.get_children().length() > 0 ) {
@@ -49,6 +49,8 @@ public class BoxList : Box {
     box.pack_start( mb,    false, false, 0 );
     box.pack_start( ibox,  false, true,  0 );
     box.pack_end(   close, false, false, 0 );
+
+    mb.activated( 0 );
 
     return( box );
 

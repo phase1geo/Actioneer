@@ -66,6 +66,12 @@ public class FileAction {
   private FileActionType _type;
   private File?          _file;
 
+  public File? file {
+    get {
+      return( _file );
+    }
+  }
+
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
 

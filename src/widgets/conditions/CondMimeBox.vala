@@ -2,29 +2,75 @@ using Gtk;
 
 public class CondMimeBox : CondInterface, Box {
 
-  private TextOptMenu _text;
-  private MimeOptMenu _mime;
+  private TextOptMenu         _text;
+  private ComboBox            _cb;
+  private ActionConditionType _type;
 
   /* Default constructor */
-  public CondMimeBox() {
+  public CondMimeBox( ActionConditionType type ) {
 
-    Object( orientation: Orientation.HORIZONTAL, spacing: 0 );
+    Object( orientation: Orientation.HORIZONTAL, spacing: 10 );
+
+    _type = type;
+
+    var model  = new Gtk.ListStore( 1, typeof(string) );
+    var filter = new Gtk.TreeModelFilter( model, null );
+    filter.set_visible_func( filter_results );
 
     _text = new TextOptMenu();
-    _mime = new MimeOptMenu();
+    _cb   = new ComboBox.with_model_and_entry( filter );
+    _cb.entry_text_column = 0;
+
+    var entry = (Entry)_cb.get_child();
+    entry.changed.connect(() => {
+      filter.refilter();
+      _cb.popup();
+    });
+
+    /* Setup filter */
+
+    populate_mime_model( model);
 
     pack_start( _text, false, false, 0 );
-    pack_start( _mime, false, false, 0 );
+    pack_start( _cb,   false, true,  0 );
 
     show_all();
 
   }
 
+  private bool filter_results( TreeModel model, TreeIter it ) {
+
+    var text  = "";
+    var entry = (Entry)_cb.get_child();
+
+    model.get( it, 0, &text, -1 );
+
+    return( (entry.text == "") || text.contains( entry.text ) );
+
+  }
+
+  private void populate_mime_model( Gtk.ListStore model ) {
+
+    /* Get the list of MIME types available and sort them alphabetically */
+    var mime_types = ContentType.list_registered();
+    mime_types.sort( strcmp );
+
+    /* Populate the model with the list of values */
+    mime_types.foreach((item) => {
+      TreeIter it;
+      model.append( out it );
+      model.set( it, 0, item, -1 );
+    });
+
+  }
+
   public ActionCondition get_data() {
 
-    var data = new ActionCondition();
+    var data  = new ActionCondition.with_type( _type );
+    var entry = (Entry)_cb.get_child();
 
-    // TBD
+    data.text.match_type = (TextMatchType)_text.get_current_item();
+    data.text.text       = entry.text;
 
     return( data );
 
@@ -32,7 +78,10 @@ public class CondMimeBox : CondInterface, Box {
 
   public void set_data( ActionCondition data ) {
 
-    // TBD
+    var entry = (Entry)_cb.get_child();
+
+    _text.set_current_item( (int)data.text.match_type );
+    entry.text = data.text.text;
 
   }
 

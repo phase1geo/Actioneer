@@ -95,7 +95,6 @@ public class DirList {
         var dir = new DirActions();
         dir.load( it );
         _dir_actions.append( dir );
-        stdout.printf( "Adding directory (%u)\n", _dir_actions.length() );
       }
     }
 

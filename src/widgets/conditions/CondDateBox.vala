@@ -2,14 +2,19 @@ using Gtk;
 
 public class CondDateBox : CondInterface, Box {
 
-  private DateOptMenu _menu;
-  private Box         _dbox;
+  private DateOptMenu                _menu;
+  private Box                        _dbox;
+  private Granite.Widgets.DatePicker _picker;
+  private Entry                      _entry;
+  private TimeOptMenu                _amount;
+  private ActionConditionType        _type;
 
   /* Default constructor */
-  public CondDateBox() {
+  public CondDateBox( ActionConditionType type ) {
 
-    Object( orientation: Orientation.HORIZONTAL, spacing: 0 );
+    Object( orientation: Orientation.HORIZONTAL, spacing: 10 );
 
+    _type = type;
     _menu = new DateOptMenu();
     _menu.activated.connect( menu_activated );
 
@@ -42,31 +47,35 @@ public class CondDateBox : CondInterface, Box {
   }
 
   private void add_absolute_menu() {
-
-    var picker = new Granite.Widgets.DatePicker();
-
-    _dbox.pack_start( picker, false, true, 0 );
-
+    _picker = new Granite.Widgets.DatePicker();
+    _dbox.pack_start( _picker, false, true, 0 );
   }
 
   private void add_relative_menu() {
 
-    var entry = new Entry();
-    entry.input_purpose = InputPurpose.DIGITS;
+    _entry = new Entry();
+    _entry.input_purpose = InputPurpose.DIGITS;
 
-    var amount = new TimeOptMenu();
+    _amount = new TimeOptMenu();
 
-    _dbox.pack_start( entry,  false, false, 0 );
-    _dbox.pack_start( amount, false, false, 0 );
+    _dbox.pack_start( _entry,  false, false, 0 );
+    _dbox.pack_start( _amount, false, false, 0 );
 
   }
 
   public ActionCondition get_data() {
 
-    var type = (ActionConditionType)_menu.get_current_item();
-    var data = new ActionCondition.with_type( type );
+    var data = new ActionCondition.with_type( _type );
+    var type = (DateMatchType)_menu.get_current_item();
 
-    // TBD
+    data.date.match_type = type;
+
+    if( type.is_absolute() ) {
+      data.date.exp = _picker.date;
+    } else if( type.is_relative() ) {
+      data.date.num = int.parse( _entry.text );
+      data.date.time_type = (TimeType)_amount.get_current_item();
+    }
 
     return( data );
 
@@ -74,7 +83,16 @@ public class CondDateBox : CondInterface, Box {
 
   public void set_data( ActionCondition data ) {
 
-    _menu.set_current_item( (int)data.cond_type );
+    var type = data.date.match_type;
+
+    _menu.set_current_item( (int)type );
+
+    if( type.is_absolute() ) {
+      _picker.date = data.date.exp;
+    } else if( type.is_relative() ) {
+      _entry.text = data.date.num.to_string();
+      _amount.set_current_item( (int)data.date.time_type );
+    }
 
   }
 

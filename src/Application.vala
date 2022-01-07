@@ -30,11 +30,11 @@ public class Actioneer : Granite.Application {
   private static bool          show_version = false;
   private static bool          run_rules    = false;
   private static bool          create       = false;
-  private        MainWindow    appwin;
   private        GLib.Settings iface_settings;
 
   public         DirList       dirlist;
   public         Controller    controller;
+  public  static MainWindow    appwin { get; private set; }
   public  static GLib.Settings settings;
   public  static string        version = "1.0.0";
 
