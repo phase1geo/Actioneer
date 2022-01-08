@@ -83,6 +83,7 @@ public class RuleForm : Box {
   private Box create_button_bar() {
 
     var save_btn = new Button.with_label( _( "Save Changes" ) );
+    save_btn.get_style_context().add_class( "suggested-action" );
     save_btn.clicked.connect(() => {
       save_requested( create_rule() );
     });

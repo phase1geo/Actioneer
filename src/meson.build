@@ -10,7 +10,9 @@ sources += files(
     'FileAction.vala',
     'FileActions.vala',
     'MainWindow.vala',
-    'TextCondition.vala'
+    'TextCondition.vala',
+    'TokenText.vala',
+    'Utils.vala'
 )
 
 subdir('widgets')

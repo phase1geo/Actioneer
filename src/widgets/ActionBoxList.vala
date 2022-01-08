@@ -20,7 +20,7 @@ public class ActionBoxList : BoxList {
       case RENAME      :  item = new ActionRenameBox( type );  break;
       default          :  assert_not_reached();
     }
-    box.pack_start( item, false, true, 0 );
+    box.pack_start( item, true, true, 0 );
   }
 
 }

@@ -40,21 +40,33 @@ public enum FileActionType {
   }
 
   private bool do_copy( string pathname, File new_file ) {
-    var ofile  = File.new_for_path( pathname );
+    var ofile = File.new_for_path( pathname );
     return( ofile.copy( new_file, NONE ) );
   }
 
-  public bool file_execute( ref string pathname, File new_file ) {
+  private bool do_rename( ref string pathname, TokenText token_text ) {
+    var ofile  = File.new_for_path( pathname );
+    var nfile  = File.new_for_path( Path.build_filename( ofile.get_path(), token_text.generate_text( ofile ) ) );
+    var retval = ofile.move( nfile, NONE );
+    pathname   = nfile.get_path();
+    return( retval );
+  }
+
+  public bool file_execute( ref string pathname, File new_file, TokenText token_text ) {
     switch( this ) {
       case MOVE   :  return( do_move( ref pathname, new_file ) );
       case COPY   :  return( do_copy( pathname, new_file ) );
-      case RENAME :  return( do_move( ref pathname, new_file ) );
+      case RENAME :  return( do_rename( ref pathname, token_text ) );
       default     :  assert_not_reached();
     }
   }
 
   public bool is_file_type() {
     return( (this == MOVE) || (this == COPY) || (this == RENAME) );
+  }
+
+  public bool is_tokenized() {
+    return( this == RENAME );
   }
 
 }
@@ -65,33 +77,42 @@ public class FileAction {
 
   private FileActionType _type;
   private File?          _file;
+  private TokenText?     _token_text;
 
   public File? file {
     get {
       return( _file );
     }
   }
+  public TokenText? token_text {
+    get {
+      return( _token_text );
+    }
+  }
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
 
-  /* Default constructor */
+  /* Default Constructor */
   public FileAction() {
     _type = FileActionType.MOVE;
     _file = null;
+    _token_text = null;
   }
 
   /* Constructor */
   public FileAction.with_filename( FileActionType type, string filename ) {
     assert( type.is_file_type() );
-    _type = type;
-    _file = File.new_for_path( filename );
+    _type       = type;
+    _file       = File.new_for_path( filename );
+    _token_text = type.is_tokenized() ? new TokenText() : null;
   }
 
   /* Copy constructor */
   public FileAction.copy( FileAction other ) {
-    _type = other._type;
-    _file = File.new_for_path( other._file.get_path() );
+    _type       = other._type;
+    _file       = File.new_for_path( other._file.get_path() );
+    _token_text = _type.is_tokenized() ? new TokenText.copy( other._token_text ) : null;
   }
 
   /*
@@ -103,7 +124,7 @@ public class FileAction {
 
     if( _type.is_file_type() ) {
       try {
-        return( _type.file_execute( ref pathname, _file ) );
+        return( _type.file_execute( ref pathname, _file, _token_text ) );
       } catch( Error e ) {
         err    = true;
         errmsg = e.message;
