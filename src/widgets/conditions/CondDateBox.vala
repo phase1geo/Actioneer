@@ -1,6 +1,6 @@
 using Gtk;
 
-public class CondDateBox : CondInterface, Box {
+public class CondDateBox : CondBase {
 
   private DateOptMenu                _menu;
   private Box                        _dbox;
@@ -12,9 +12,8 @@ public class CondDateBox : CondInterface, Box {
   /* Default constructor */
   public CondDateBox( ActionConditionType type ) {
 
-    Object( orientation: Orientation.HORIZONTAL, spacing: 10 );
+    base( type );
 
-    _type = type;
     _menu = new DateOptMenu();
     _menu.activated.connect( menu_activated );
 

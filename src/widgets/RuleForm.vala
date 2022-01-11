@@ -35,6 +35,8 @@ public class RuleForm : Box {
   private Frame create_name_frame() {
 
     var frame = new Frame( _( "Rule Name" ) );
+    frame.get_style_context().add_class( Granite.STYLE_CLASS_CARD );
+    frame.get_style_context().add_class( Granite.STYLE_CLASS_ROUNDED );
 
     _name_entry = new Entry();
     _name_entry.margin = 10;
@@ -48,6 +50,8 @@ public class RuleForm : Box {
   private Frame create_condition_frame() {
 
     var frame = new Frame( _( "Conditions" ) );
+    frame.get_style_context().add_class( Granite.STYLE_CLASS_CARD );
+    frame.get_style_context().add_class( Granite.STYLE_CLASS_ROUNDED );
 
     _match_mb = new MatchOptMenu();
 
@@ -70,6 +74,8 @@ public class RuleForm : Box {
   private Frame create_action_frame() {
 
     var frame = new Frame( _( "Actions" ) );
+    frame.get_style_context().add_class( Granite.STYLE_CLASS_CARD );
+    frame.get_style_context().add_class( Granite.STYLE_CLASS_ROUNDED );
 
     _actions = new ActionBoxList();
     _actions.margin = 10;
@@ -115,6 +121,8 @@ public class RuleForm : Box {
     var rule = new DirAction.with_name( _name_entry.text );
 
     rule.match_all = (_match_mb.get_current_item() == MatchType.ALL);
+    _conditions.get_data( rule );
+    _actions.get_data( rule );
 
     return( rule );
 

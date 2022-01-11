@@ -1,17 +1,15 @@
 using Gtk;
 
-public class CondTextBox : CondInterface, Box {
+public class CondTextBox : CondBase {
 
   private TextOptMenu         _menu;
   private Entry               _entry;
-  private ActionConditionType _type;
 
   /* Default constructor */
   public CondTextBox( ActionConditionType type ) {
 
-    Object( orientation: Orientation.HORIZONTAL, spacing: 10 );
+    base( type );
 
-    _type  = type;
     _menu  = new TextOptMenu();
     _entry = new Entry();
 

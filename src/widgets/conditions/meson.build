@@ -1,6 +1,6 @@
 sources += files(
+    'CondBase.vala',
     'CondDateBox.vala',
-    'CondInterface.vala',
     'CondMimeBox.vala',
     'CondTextBox.vala'
 )

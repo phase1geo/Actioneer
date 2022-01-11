@@ -1,5 +1,5 @@
 sources += files(
+    'ActionBase.vala',
     'ActionFileBox.vala',
-    'ActionInterface.vala',
     'ActionRenameBox.vala'
 )

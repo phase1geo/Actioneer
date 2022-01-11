@@ -2,6 +2,8 @@ using Gtk;
 
 public class CondBoxList : BoxList {
 
+  private List<CondBase> _conditions;
+
   /* Default constructor */
   public CondBoxList() {
     base( _( "Add Condition" ) );
@@ -12,7 +14,7 @@ public class CondBoxList : BoxList {
   }
 
   protected override void insert_item( int index, Box box ) {
-    Box item;
+    CondBase item;
     var type = (ActionConditionType)index;
     switch( type ) {
       case NAME        :  item = new CondTextBox( type );  break;
@@ -24,7 +26,22 @@ public class CondBoxList : BoxList {
       case CONTENT     :  item = new CondTextBox( type );  break;
       default          :  assert_not_reached();
     }
-    box.pack_start( item, false, true, 0 );
+    _conditions.append( item );
+    box.pack_start( (Box)item, false, true, 0 );
+  }
+
+  public override void get_data( DirAction action ) {
+    _conditions.foreach((cond) => {
+      action.add_condition( cond.get_data() );
+    });
+  }
+
+  public override void set_data( DirAction action ) {
+    for( int i=0; i<action.num_conditions(); i++ ) {
+      var cond = action.get_condition( i );
+      add_item( (int)cond.cond_type );
+      _conditions.nth_data( _conditions.length() - 1 ).set_data( cond );
+    }
   }
 
 }

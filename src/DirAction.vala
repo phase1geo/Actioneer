@@ -65,12 +65,28 @@ public class DirAction {
     _actions.copy( rule._actions );
   }
 
+  public int num_conditions() {
+    return( _conditions.size() );
+  }
+
+  public ActionCondition get_condition( int index ) {
+    return( _conditions.get_condition( index ) );
+  }
+
   public void add_condition( ActionCondition condition ) {
     _conditions.add( condition );
   }
 
   public void remove_condition( ActionCondition condition ) {
     _conditions.remove( condition );
+  }
+
+  public int num_actions() {
+    return( _actions.size() );
+  }
+
+  public FileAction get_action( int index ) {
+    return( _actions.get_action( index ) );
   }
 
   public void add_action( FileAction action ) {

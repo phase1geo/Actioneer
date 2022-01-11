@@ -1,17 +1,14 @@
 using Gtk;
 
-public class CondMimeBox : CondInterface, Box {
+public class CondMimeBox : CondBase {
 
-  private TextOptMenu         _text;
-  private ComboBox            _cb;
-  private ActionConditionType _type;
+  private TextOptMenu _text;
+  private ComboBox    _cb;
 
   /* Default constructor */
   public CondMimeBox( ActionConditionType type ) {
 
-    Object( orientation: Orientation.HORIZONTAL, spacing: 10 );
-
-    _type = type;
+    base( type );
 
     var model  = new Gtk.ListStore( 1, typeof(string) );
     var filter = new Gtk.TreeModelFilter( model, null );

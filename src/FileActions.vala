@@ -17,7 +17,7 @@ public class FileActions {
   }
 
   /* Returns the number of stored file actions */
-  public int num_actions() {
+  public int size() {
     return( (int)_actions.length );
   }
 

@@ -79,6 +79,11 @@ public class FileAction {
   private File?          _file;
   private TokenText?     _token_text;
 
+  public FileActionType action_type {
+    get {
+      return( _type );
+    }
+  }
   public File? file {
     get {
       return( _file );
@@ -98,6 +103,13 @@ public class FileAction {
     _type = FileActionType.MOVE;
     _file = null;
     _token_text = null;
+  }
+
+  /* Constructor */
+  public FileAction.with_type( FileActionType type ) {
+    _type = type;
+    _file = null;
+    _token_text = type.is_tokenized() ? new TokenText() : null;
   }
 
   /* Constructor */

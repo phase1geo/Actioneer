@@ -1,16 +1,13 @@
 using Gtk;
 
-public class ActionFileBox : ActionInterface, Box {
+public class ActionFileBox : ActionBase {
 
-  private Entry          _entry;
-  private FileActionType _type;
+  private Entry _entry;
 
   /* Default constructor */
   public ActionFileBox( FileActionType type ) {
 
-    Object( orientation: Orientation.HORIZONTAL, spacing: 10 );
-
-    _type = type;
+    base( type );
 
     _entry = new Entry();
     _entry.can_focus        = false;

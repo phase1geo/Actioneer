@@ -124,74 +124,74 @@ public enum TextTokenModifier {
 
 }
 
-public class TokenText {
+public class TextToken {
 
-  public class TextToken {
+  public static const string xml_node = "text-token";
 
-    public static const string xml_node = "text-token";
+  public TextTokenType     token_type { get; private set; default = TextTokenType.TEXT; }
+  public string            text       { get; set; default = ""; }
+  public TextTokenModifier modifier   { get; set; default = TextTokenModifier.NONE; }
 
-    public TextTokenType     token_type { get; private set; default = TextTokenType.TEXT; }
-    public string            text       { get; set; default = ""; }
-    public TextTokenModifier modifier   { get; set; default = TextTokenModifier.NONE; }
+  /* Default constructor */
+  public TextToken() {}
 
-    /* Default constructor */
-    public TextToken() {}
+  /* Constructor */
+  public TextToken.with_type( TextTokenType type ) {
+    assert( !type.is_text() && !type.is_date() );
+    token_type = type;
+  }
 
-    /* Constructor */
-    public TextToken.with_type( TextTokenType type ) {
-      assert( !type.is_text() && !type.is_date() );
-      token_type = type;
+  /* Constructor */
+  public TextToken.with_date_pattern( TextTokenType type, string pattern ) {
+    assert( type.is_date() );
+    token_type = type;
+    text = pattern;
+  }
+
+  /* Constructor with text */
+  public TextToken.with_text( string txt ) {
+    text = txt;
+  }
+
+  /* Copy constructor */
+  public TextToken.copy( TextToken other ) {
+    token_type = other.token_type;
+    text       = other.text;
+  }
+
+  /* Generates the text associated with this token */
+  public string generate_text( File file ) {
+    return( modifier.format( token_type.convert( file, text ) ) );
+  }
+
+  /* Saves this instance in XML format */
+  public Xml.Node* save() {
+    Xml.Node* node = new Xml.Node( null, xml_node );
+    node->set_prop( "type", token_type.to_string() );
+    node->set_prop( "text", text );
+    node->set_prop( "modifier", modifier.to_string() );
+    return( node );
+  }
+
+  /* Loads this instance from XML format */
+  public void load( Xml.Node* node ) {
+    var t = node->get_prop( "type" );
+    if( t != null ) {
+      token_type = TextTokenType.parse( t );
     }
-
-    /* Constructor */
-    public TextToken.with_date_pattern( TextTokenType type, string pattern ) {
-      assert( type.is_date() );
-      token_type = type;
-      text = pattern;
-    }
-
-    /* Constructor with text */
-    public TextToken.with_text( string txt ) {
+    var txt = node->get_prop( "text" );
+    if( txt != null ) {
       text = txt;
     }
-
-    /* Copy constructor */
-    public TextToken.copy( TextToken other ) {
-      token_type = other.token_type;
-      text       = other.text;
+    var mod = node->get_prop( "modifier" );
+    if( mod != null ) {
+      modifier = TextTokenModifier.parse( mod );
     }
-
-    /* Generates the text associated with this token */
-    public string generate_text( File file ) {
-      return( modifier.format( token_type.convert( file, text ) ) );
-    }
-
-    /* Saves this instance in XML format */
-    public Xml.Node* save() {
-      Xml.Node* node = new Xml.Node( null, xml_node );
-      node->set_prop( "type", token_type.to_string() );
-      node->set_prop( "text", text );
-      node->set_prop( "modifier", modifier.to_string() );
-      return( node );
-    }
-
-    /* Loads this instance from XML format */
-    public void load( Xml.Node* node ) {
-      var t = node->get_prop( "type" );
-      if( t != null ) {
-        token_type = TextTokenType.parse( t );
-      }
-      var txt = node->get_prop( "text" );
-      if( txt != null ) {
-        text = txt;
-      }
-      var mod = node->get_prop( "modifier" );
-      if( mod != null ) {
-        modifier = TextTokenModifier.parse( mod );
-      }
-    }
-
   }
+
+}
+
+public class TokenText {
 
   public static const string xml_node = "token-text";
 
@@ -208,6 +208,21 @@ public class TokenText {
     other._tokens.foreach((token) => {
       _tokens.append( new TextToken.copy( token ) );
     });
+  }
+
+  /* Returns the number of tokens stored */
+  public int num_tokens() {
+    return( (int)_tokens.length() );
+  }
+
+  /* Returns the token at the given index */
+  public TextToken get_token( int index ) {
+    return( _tokens.nth_data( index ) );
+  }
+
+  /* Adds the given token to the list */
+  public void add_token( TextToken token ) {
+    _tokens.append( token );
   }
 
   /* Generates the text string based on the tokens */

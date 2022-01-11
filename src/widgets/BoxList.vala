@@ -4,6 +4,8 @@ public class BoxList : Box {
 
   private Box _list_box;
 
+  protected OptMenu mb;
+
   /* Default constructor */
   public BoxList( string add_label ) {
 
@@ -24,12 +26,12 @@ public class BoxList : Box {
 
   }
 
-  private Box create_item() {
+  private Box create_item( int activate ) {
 
     var box = new Box( Orientation.HORIZONTAL, 10 );
     box.margin_left = 10;
 
-    var mb   = get_option_menu();
+    var mb = get_option_menu();
     var ibox = new Box( Orientation.VERTICAL, 10 );
 
     mb.activated.connect((i) => {
@@ -50,14 +52,14 @@ public class BoxList : Box {
     box.pack_start( ibox,  false, true,  0 );
     box.pack_end(   close, false, false, 0 );
 
-    mb.activated( 0 );
+    mb.activated( activate );
 
     return( box );
 
   }
 
-  private void add_item() {
-    var item = create_item();
+  protected void add_item( int activate = 0 ) {
+    var item = create_item( activate );
     _list_box.pack_start( item, false, true, 0 ); 
     _list_box.show_all();
   }
@@ -68,6 +70,14 @@ public class BoxList : Box {
   }
 
   protected virtual void insert_item( int index, Box box ) {
+    assert( false );
+  }
+
+  public virtual void get_data( DirAction action ) {
+    assert( false );
+  }
+
+  public virtual void set_data( DirAction action ) {
     assert( false );
   }
 
