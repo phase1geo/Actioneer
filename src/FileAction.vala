@@ -162,7 +162,14 @@ public class FileAction {
     Xml.Node* node = new Xml.Node( null, xml_node );
 
     node->set_prop( "type", _type.to_string() );
-    node->set_prop( "file", _file.get_path() );
+
+    if( _file != null ) {
+      node->set_prop( "file", _file.get_path() );
+    }
+
+    if( _token_text != null ) {
+      node->add_child( _token_text.save() );
+    }
 
     return( node );
 
@@ -179,6 +186,13 @@ public class FileAction {
     var file = node->get_prop( "file" );
     if( file != null ) {
       _file = File.new_for_path( file );
+    }
+
+    for( Xml.Node* it=node->children; it!=null; it=it->next ) {
+      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->next == TokenText.xml_node) ) {
+        _token_text = new TokenText();
+        _token_text.load( it );
+      }
     }
 
   }

@@ -234,8 +234,23 @@ public class ActionRenameBox : ActionBase {
         var token = new TextToken.with_text( lbl.label );
         data.token_text.add_token( token );
       } else if( (w as Button) != null ) {
-        var btn = (Button)w;
-        stdout.printf( "HERE! button name: %s\n", btn.name );
+        var btn   = (Button)w;
+        var found = false;
+        var i     = 0;
+        while( (i < TextTokenType.NUM) && !found ) {
+          var type = (TextTokenType)i;
+          for( int j=0; j<TextTokenModifier.NUM; j++ ) {
+            var mod = (TextTokenModifier)j;
+            if( btn.label == mod.format( type.label() ) ) {
+              var token = new TextToken.with_type( type );
+              token.modifier = mod;
+              data.token_text.add_token( token );
+              found = true;
+              break;
+            }
+          }
+          i++;
+        }
       }
     });
     return( data );
