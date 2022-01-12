@@ -62,7 +62,7 @@ public class CondDateBox : CondBase {
 
   }
 
-  public ActionCondition get_data() {
+  public override ActionCondition get_data() {
 
     var data = new ActionCondition.with_type( _type );
     var type = (DateMatchType)_menu.get_current_item();
@@ -80,7 +80,9 @@ public class CondDateBox : CondBase {
 
   }
 
-  public void set_data( ActionCondition data ) {
+  public override void set_data( ActionCondition data ) {
+
+    stdout.printf( "In CondDateBox.set_data\n" );
 
     var type = data.date.match_type;
 

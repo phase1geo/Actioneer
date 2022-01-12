@@ -9,6 +9,8 @@ public class ActionFileBox : ActionBase {
 
     base( type );
 
+    var label = new Label( type.pretext() );
+
     _entry = new Entry();
     _entry.can_focus        = false;
     _entry.placeholder_text = _( "Select a folder" );
@@ -19,6 +21,7 @@ public class ActionFileBox : ActionBase {
     button.set_tooltip_text( _( "Browse filesystem" ) );
     button.clicked.connect( open_file );
 
+    pack_start( label,  false, false, 0 );
     pack_start( _entry, false, true,  0 );
     pack_end(   button, false, false, 0 );
 
@@ -31,12 +34,13 @@ public class ActionFileBox : ActionBase {
     }
   }
 
-  public FileAction get_data() {
+  public override FileAction get_data() {
     var data = new FileAction.with_filename( _type, _entry.text );
     return( data );
   }
 
-  public void set_data( FileAction data ) {
+  public override void set_data( FileAction data ) {
+    stdout.printf( "In ActionFileBox.set_data\n" );
     _entry.text = data.file.get_path();
   }
 

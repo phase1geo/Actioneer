@@ -52,7 +52,7 @@ public class BoxList : Box {
     box.pack_start( ibox,  false, true,  0 );
     box.pack_end(   close, false, false, 0 );
 
-    mb.activated( activate );
+    mb.set_current_item( activate );
 
     return( box );
 
@@ -62,6 +62,13 @@ public class BoxList : Box {
     var item = create_item( activate );
     _list_box.pack_start( item, false, true, 0 ); 
     _list_box.show_all();
+  }
+
+  /* Removes all elements from this box list in the UI */
+  public void clear() {
+    _list_box.get_children().foreach((item) => {
+      _list_box.remove( item );
+    });
   }
 
   protected virtual OptMenu get_option_menu() {

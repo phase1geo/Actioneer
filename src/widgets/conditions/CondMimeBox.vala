@@ -4,6 +4,7 @@ public class CondMimeBox : CondBase {
 
   private TextOptMenu _text;
   private ComboBox    _cb;
+  private bool        _allow_popup = false;
 
   /* Default constructor */
   public CondMimeBox( ActionConditionType type ) {
@@ -21,10 +22,12 @@ public class CondMimeBox : CondBase {
     var entry = (Entry)_cb.get_child();
     entry.changed.connect(() => {
       filter.refilter();
-      _cb.popup();
+      stdout.printf( "Calling popup!\n" );
+      if( _allow_popup ) {
+        _cb.popup();
+      }
+      _allow_popup = true;
     });
-
-    /* Setup filter */
 
     populate_mime_model( model);
 
@@ -61,7 +64,7 @@ public class CondMimeBox : CondBase {
 
   }
 
-  public ActionCondition get_data() {
+  public override ActionCondition get_data() {
 
     var data  = new ActionCondition.with_type( _type );
     var entry = (Entry)_cb.get_child();
@@ -73,7 +76,7 @@ public class CondMimeBox : CondBase {
 
   }
 
-  public void set_data( ActionCondition data ) {
+  public override void set_data( ActionCondition data ) {
 
     var entry = (Entry)_cb.get_child();
 

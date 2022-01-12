@@ -37,7 +37,7 @@ public class Controller {
   private void initialize() {
     populate_dirs();
     if( _data.size() > 0 ) {
-      _current_dir = _data.get_directory( 0 );
+      // _current_dir = _data.get_directory( 0 );
       _win.dir_list.view.get_selection().select_path( new TreePath.first() );
     }
   }
@@ -165,7 +165,7 @@ public class Controller {
     } else if( dir != _current_dir ) {
 
       /* Update the rule list */
-      populate_rules( _current_dir );
+      populate_rules( dir );
 
     }
 
@@ -203,7 +203,6 @@ public class Controller {
     /* Create a new directory action */
     var rule = new DirAction.with_name( name );
     if( !_current_dir.add_rule( rule ) ) {
-      stdout.printf( "?????\n" );
       return;
     }
 

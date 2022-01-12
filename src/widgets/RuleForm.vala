@@ -113,6 +113,12 @@ public class RuleForm : Box {
     _name_entry.text = rule.name;
     _match_mb.set_current_item( rule.match_all ? (int)MatchType.ALL : (int)MatchType.ANY );
 
+    _conditions.clear();
+    _conditions.set_data( rule );
+
+    _actions.clear();
+    _actions.set_data( rule );
+
   }
 
   /* Called to create a DirAction rule that will be saved */
@@ -121,6 +127,7 @@ public class RuleForm : Box {
     var rule = new DirAction.with_name( _name_entry.text );
 
     rule.match_all = (_match_mb.get_current_item() == MatchType.ALL);
+
     _conditions.get_data( rule );
     _actions.get_data( rule );
 

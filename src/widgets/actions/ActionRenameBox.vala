@@ -17,6 +17,9 @@ public class ActionRenameBox : ActionBase {
 
     base( type );
 
+    var label = new Label( type.pretext() );
+    pack_start( label, false, false, 0 );
+
     _tbox = new Box( Orientation.HORIZONTAL, 2 );
 
     var sw = new ScrolledWindow( null, null );
@@ -221,10 +224,9 @@ public class ActionRenameBox : ActionBase {
     return( btn );
   }
 
-  public FileAction get_data() {
+  public override FileAction get_data() {
     var data = new FileAction.with_type( _type );
     _tbox.get_children().foreach((w) => {
-      stdout.printf( "w.name: %s\n", w.name );
       if( (w as EventBox) != null ) {
         var ebox  = (EventBox)w;
         var frame = (Frame)ebox.get_child();
@@ -232,13 +234,14 @@ public class ActionRenameBox : ActionBase {
         var token = new TextToken.with_text( lbl.label );
         data.token_text.add_token( token );
       } else if( (w as Button) != null ) {
-        stdout.printf( "HERE!\n" );
+        var btn = (Button)w;
+        stdout.printf( "HERE! button name: %s\n", btn.name );
       }
     });
     return( data );
   }
 
-  public void set_data( FileAction data ) {
+  public override void set_data( FileAction data ) {
     var token_text = data.token_text;
     for( int i=0; i<token_text.num_tokens(); i++ ) {
       var token = token_text.get_token( i );

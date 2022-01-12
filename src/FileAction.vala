@@ -22,6 +22,15 @@ public enum FileActionType {
     }
   }
 
+  public string pretext() {
+    switch( this ) {
+      case MOVE   :  return( _( "to folder" ) );
+      case COPY   :  return( _( "to folder" ) );
+      case RENAME :  return( _( "file as" ) );
+      default     :  assert_not_reached();
+    }
+  }
+
   public static FileActionType parse( string val ) {
     switch( val ) {
       case "move"   :  return( MOVE );

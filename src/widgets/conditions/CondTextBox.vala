@@ -25,7 +25,7 @@ public class CondTextBox : CondBase {
 
   }
 
-  public ActionCondition get_data() {
+  public override ActionCondition get_data() {
 
     var data = new ActionCondition.with_type( _type );
 
@@ -36,7 +36,7 @@ public class CondTextBox : CondBase {
 
   }
 
-  public void set_data( ActionCondition data ) {
+  public override void set_data( ActionCondition data ) {
     _menu.set_current_item( (int)data.text.match_type );
     _entry.text = data.text.text;
   }
