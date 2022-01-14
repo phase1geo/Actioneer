@@ -23,20 +23,39 @@ public class RuleForm : Box {
     var actions    = create_action_frame();
     var bbox       = create_button_bar();
 
-    pack_start( name,       false, true, 0 );
-    pack_start( conditions, false, true, 0 );
-    pack_start( actions,    false, true, 0 );
-    pack_end(   bbox,       false, true, 0 );
+    var mid_box = new Box( Orientation.VERTICAL, 10 );
+    mid_box.pack_start( conditions, false, true, 0 );
+    mid_box.pack_start( actions,    false, true, 0 );
+
+    var sw = new ScrolledWindow( null, null );
+    sw.set_policy( PolicyType.NEVER, PolicyType.AUTOMATIC );
+    sw.add( mid_box );
+
+    pack_start( name, false, true, 0 );
+    pack_start( sw,   true,  true, 0 );
+    pack_end(   bbox, false, true, 0 );
 
     show_all();
 
   }
 
-  private Frame create_name_frame() {
+  private Frame create_frame( string name ) {
 
-    var frame = new Frame( _( "Rule Name" ) );
+    var frame = new Frame( "<b>" + name + "</b>" );
     frame.get_style_context().add_class( Granite.STYLE_CLASS_CARD );
     frame.get_style_context().add_class( Granite.STYLE_CLASS_ROUNDED );
+
+    var label = (Label)frame.label_widget;
+    label.use_markup = true;
+    label.margin = 5;
+
+    return( frame );
+
+  }
+
+  private Frame create_name_frame() {
+
+    var frame = create_frame( _( "Rule Name" ) );
 
     _name_entry = new Entry();
     _name_entry.margin = 10;
@@ -49,9 +68,7 @@ public class RuleForm : Box {
 
   private Frame create_condition_frame() {
 
-    var frame = new Frame( _( "Conditions" ) );
-    frame.get_style_context().add_class( Granite.STYLE_CLASS_CARD );
-    frame.get_style_context().add_class( Granite.STYLE_CLASS_ROUNDED );
+    var frame = create_frame( _( "Conditions" ) );
 
     _match_mb = new MatchOptMenu();
 
@@ -73,9 +90,7 @@ public class RuleForm : Box {
 
   private Frame create_action_frame() {
 
-    var frame = new Frame( _( "Actions" ) );
-    frame.get_style_context().add_class( Granite.STYLE_CLASS_CARD );
-    frame.get_style_context().add_class( Granite.STYLE_CLASS_ROUNDED );
+    var frame = create_frame( _( "Actions" ) );
 
     _actions = new ActionBoxList();
     _actions.margin = 10;

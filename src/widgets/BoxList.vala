@@ -14,6 +14,7 @@ public class BoxList : Box {
     _list_box = new Box( Orientation.VERTICAL, 10 );
 
     var add_btn = new Button.with_label( add_label );
+    add_btn.get_style_context().add_class( "add-item" );
     add_btn.clicked.connect(() => {
       add_item();
     });

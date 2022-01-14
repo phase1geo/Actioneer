@@ -24,11 +24,14 @@
 @define-color textColorPrimaryShadow @SILVER_500;
 @define-color colorAccent            @GRAPE_700;
 
-.theme-selected {
-  background: blue;
-  color: white;
+.token {
+  background: lightblue;
 }
 
-.theme-font-selected {
-  color: white;
+.add-item {
+  background: lightgreen;
+}
+
+.view {
+  padding: 5px;
 }

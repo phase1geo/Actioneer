@@ -88,6 +88,11 @@ public class Actioneer : Granite.Application {
     weak IconTheme default_theme = IconTheme.get_default();
     default_theme.add_resource_path( "/com/github/phase1geo/actioneer" );
 
+    /* Add the application CSS */
+    var provider = new Gtk.CssProvider ();
+    provider.load_from_resource( "/com/github/phase1geo/actioneer/Application.css" );
+    Gtk.StyleContext.add_provider_for_screen( Gdk.Screen.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION );
+
     /* Create the main window */
     appwin = new MainWindow( this, settings );
 

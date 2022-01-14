@@ -20,19 +20,10 @@ public class ActionRenameBox : ActionBase {
     var label = new Label( type.pretext() );
     pack_start( label, false, false, 0 );
 
-    _tbox = new Box( Orientation.HORIZONTAL, 2 );
-
-    var sw = new ScrolledWindow( null, null );
-    sw.hscrollbar_policy = PolicyType.EXTERNAL;
-    sw.vscrollbar_policy = PolicyType.NEVER;
-    sw.hexpand = true;
-    sw.hexpand_set = true;
-    sw.add( _tbox );
-
-    pack_start( sw, true, true, 0 );
-
     var add = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
+    add.set_tooltip_text( _( "Click to select filename rename token" ) );
     add.get_style_context().add_class( "circular" );
+    add.get_style_context().add_class( "token" );
     add.clicked.connect(() => {
       Gtk.Menu menu;
       add_token_menu( out menu, null, TokenModifyType.BEFORE );
@@ -44,6 +35,17 @@ public class ActionRenameBox : ActionBase {
     _add_reveal.transition_duration = 0;
     _add_reveal.add( add );
     pack_start( _add_reveal, false, false, 0 );
+
+    _tbox = new Box( Orientation.HORIZONTAL, 2 );
+
+    var sw = new ScrolledWindow( null, null );
+    sw.hscrollbar_policy = PolicyType.EXTERNAL;
+    sw.vscrollbar_policy = PolicyType.NEVER;
+    sw.hexpand = true;
+    sw.hexpand_set = true;
+    sw.add( _tbox );
+
+    pack_start( sw, true, true, 0 );
 
     /* Create default tokens */
     insert_token( 0, TextTokenType.FILE_BASE, null, TextTokenModifier.NONE );
@@ -124,7 +126,7 @@ public class ActionRenameBox : ActionBase {
     remove.activate.connect(() => {
       _tbox.remove( w ); 
       if( _tbox.get_children().length() == 0 ) {
-        _add_reveal.reveal_child = false;
+        _add_reveal.reveal_child = true;
       }
       show_all();
     });
@@ -177,6 +179,7 @@ public class ActionRenameBox : ActionBase {
     label.margin_right = 3;
     var frame = new Frame( null );
     frame.add( label );
+    frame.get_style_context().add_class( "token" );
     var ebox = new EventBox();
     ebox.add( frame );
     ebox.button_press_event.connect((e) => {
@@ -209,6 +212,7 @@ public class ActionRenameBox : ActionBase {
   private Widget insert_button( TextTokenType type ) {
     var btn = new Button.with_label( type.label() );
     btn.get_style_context().add_class( "circular" );
+    btn.get_style_context().add_class( "token" );
     btn.button_press_event.connect((e) => {
       if( e.button == Gdk.BUTTON_PRIMARY ) {
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
@@ -258,9 +262,13 @@ public class ActionRenameBox : ActionBase {
 
   public override void set_data( FileAction data ) {
     var token_text = data.token_text;
-    for( int i=0; i<token_text.num_tokens(); i++ ) {
-      var token = token_text.get_token( i );
-      insert_token( i, token.token_type, token.text, token.modifier );
+    if( token_text == null ) {
+      _add_reveal.reveal_child = true;
+    } else {
+      for( int i=0; i<token_text.num_tokens(); i++ ) {
+        var token = token_text.get_token( i );
+        insert_token( i, token.token_type, token.text, token.modifier );
+      }
     }
   }
 
