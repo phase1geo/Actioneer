@@ -12,3 +12,4 @@ sources += files(
 subdir('actions')
 subdir('conditions')
 subdir('menubuttons')
+subdir('tokenbox')
