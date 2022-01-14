@@ -157,6 +157,7 @@ public class TextToken {
   public TextToken.copy( TextToken other ) {
     token_type = other.token_type;
     text       = other.text;
+    modifier   = other.modifier;
   }
 
   /* Generates the text associated with this token */

@@ -261,6 +261,9 @@ public class ActionRenameBox : ActionBase {
   }
 
   public override void set_data( FileAction data ) {
+    _tbox.get_children().foreach((w) => {
+      _tbox.remove( w );
+    });
     var token_text = data.token_text;
     if( token_text == null ) {
       _add_reveal.reveal_child = true;
@@ -269,6 +272,7 @@ public class ActionRenameBox : ActionBase {
         var token = token_text.get_token( i );
         insert_token( i, token.token_type, token.text, token.modifier );
       }
+      _tbox.show_all();
     }
   }
 

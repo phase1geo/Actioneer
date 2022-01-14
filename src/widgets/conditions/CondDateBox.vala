@@ -82,8 +82,6 @@ public class CondDateBox : CondBase {
 
   public override void set_data( ActionCondition data ) {
 
-    stdout.printf( "In CondDateBox.set_data\n" );
-
     var type = data.date.match_type;
 
     _menu.set_current_item( (int)type );

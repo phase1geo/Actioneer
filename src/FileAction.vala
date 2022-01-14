@@ -132,8 +132,8 @@ public class FileAction {
   /* Copy constructor */
   public FileAction.copy( FileAction other ) {
     _type       = other._type;
-    _file       = File.new_for_path( other._file.get_path() );
-    _token_text = _type.is_tokenized() ? new TokenText.copy( other._token_text ) : null;
+    _file       = (other._file       == null) ? null : File.new_for_path( other._file.get_path() );
+    _token_text = (other._token_text == null) ? null : new TokenText.copy( other._token_text );
   }
 
   /*
@@ -189,7 +189,7 @@ public class FileAction {
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
-      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->next == TokenText.xml_node) ) {
+      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == TokenText.xml_node) ) {
         _token_text = new TokenText();
         _token_text.load( it );
       }

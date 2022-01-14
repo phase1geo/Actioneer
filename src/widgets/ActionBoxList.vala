@@ -13,16 +13,33 @@ public class ActionBoxList : BoxList {
     return( new ActionOptMenu() );
   }
 
-  protected override void insert_item( int index, Box box ) {
+  protected override void add_row( int row_type ) {
+    _actions.append( new ActionBase( (FileActionType)0 ) );
+    base.add_row( row_type );
+  }
+
+  protected override void delete_row( int index ) {
+    base.delete_row( index );
+    _actions.remove( _actions.nth_data( index ) );
+  }
+
+  protected override void clear() {
+    base.clear();
+    _actions.foreach((action) => {
+      _actions.remove( action );
+    });
+  }
+
+  protected override void set_row_content( int index, int row_type, Box box ) {
     ActionBase item;
-    var type = (FileActionType)index;
+    var type = (FileActionType)row_type;
     switch( type ) {
       case MOVE        :  item = new ActionFileBox( type );    break;
       case COPY        :  item = new ActionFileBox( type );    break;
       case RENAME      :  item = new ActionRenameBox( type );  break;
       default          :  assert_not_reached();
     }
-    _actions.append( item );
+    _actions.nth( index ).data = item;
     box.pack_start( (Box)item, true, true, 0 );
   }
 
@@ -35,7 +52,7 @@ public class ActionBoxList : BoxList {
   public override void set_data( DirAction action ) {
     for( int i=0; i<action.num_actions(); i++ ) {
       var act = action.get_action( i );
-      add_item( (int)act.action_type );
+      add_row( (int)act.action_type );
       _actions.nth_data( _actions.length() - 1 ).set_data( act );
     }
   }

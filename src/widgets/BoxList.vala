@@ -16,7 +16,7 @@ public class BoxList : Box {
     var add_btn = new Button.with_label( add_label );
     add_btn.get_style_context().add_class( "add-item" );
     add_btn.clicked.connect(() => {
-      add_item();
+      add_row( 0 );
     });
 
     var bbox = new Box( Orientation.HORIZONTAL, 0 );
@@ -27,7 +27,7 @@ public class BoxList : Box {
 
   }
 
-  private Box create_item( int activate ) {
+  protected virtual void add_row( int row_type ) {
 
     var box = new Box( Orientation.HORIZONTAL, 10 );
     box.margin_left = 10;
@@ -35,38 +35,49 @@ public class BoxList : Box {
     var mb = get_option_menu();
     var ibox = new Box( Orientation.VERTICAL, 10 );
 
-    mb.activated.connect((i) => {
+    mb.activated.connect((rt) => {
       if( ibox.get_children().length() > 0 ) {
         ibox.remove( ibox.get_children().nth_data( 0 ) );
       }
-      insert_item( i, ibox );
+      set_row_content( get_index( box ), rt, ibox );
       ibox.show_all();
     });
 
     /* Add close button */
     var close = new Button.from_icon_name( "window-close-symbolic", IconSize.SMALL_TOOLBAR );
     close.clicked.connect(() => {
-      box.parent.remove( box );
+      delete_row( get_index( box ) );
     });
 
     box.pack_start( mb,    false, false, 0 );
     box.pack_start( ibox,  false, true,  0 );
     box.pack_end(   close, false, false, 0 );
 
-    mb.set_current_item( activate );
+    _list_box.pack_start( box, false, true, 0 ); 
+    _list_box.show_all();
 
-    return( box );
+    mb.set_current_item( row_type );
 
   }
 
-  protected void add_item( int activate = 0 ) {
-    var item = create_item( activate );
-    _list_box.pack_start( item, false, true, 0 ); 
-    _list_box.show_all();
+  private int get_index( Box box ) {
+    var index = -1;
+    var i     = 0;
+    _list_box.get_children().foreach((b) => {
+      if( b == box ) {
+        index = i;
+      }
+      i++;
+    });
+    return( index );
+  }
+
+  protected virtual void delete_row( int index ) {
+    _list_box.remove( _list_box.get_children().nth_data( index ) );
   }
 
   /* Removes all elements from this box list in the UI */
-  public void clear() {
+  public virtual void clear() {
     _list_box.get_children().foreach((item) => {
       _list_box.remove( item );
     });
@@ -77,7 +88,7 @@ public class BoxList : Box {
     return( new OptMenu() );
   }
 
-  protected virtual void insert_item( int index, Box box ) {
+  protected virtual void set_row_content( int index, int row_type, Box box ) {
     assert( false );
   }
 

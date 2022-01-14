@@ -22,7 +22,6 @@ public class CondMimeBox : CondBase {
     var entry = (Entry)_cb.get_child();
     entry.changed.connect(() => {
       filter.refilter();
-      stdout.printf( "Calling popup!\n" );
       if( _allow_popup ) {
         _cb.popup();
       }

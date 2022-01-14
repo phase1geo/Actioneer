@@ -62,7 +62,6 @@ public class OptMenu : MenuButton {
   public int get_current_item() {
     int index = -1;
     int i     = 0;
-    stdout.printf( "Getting current item (%u)\n", popup.get_children().length() );
     popup.get_children().foreach((item) => {
       if( (item as Gtk.MenuItem).label != label ) {
         index = i;

@@ -13,9 +13,26 @@ public class CondBoxList : BoxList {
     return( new CondOptMenu() );
   }
 
-  protected override void insert_item( int index, Box box ) {
+  protected override void add_row( int row_type ) {
+    _conditions.append( new CondBase( (ActionConditionType)0 ) );
+    base.add_row( row_type );
+  }
+
+  protected override void delete_row( int index ) {
+    base.delete_row( index );
+    _conditions.remove( _conditions.nth_data( index ) );
+  }
+
+  protected override void clear() {
+    base.clear();
+    _conditions.foreach((cond) => {
+      _conditions.remove( cond );
+    });
+  }
+
+  protected override void set_row_content( int index, int row_type, Box box ) {
     CondBase item;
-    var type = (ActionConditionType)index;
+    var type = (ActionConditionType)row_type;
     switch( type ) {
       case NAME        :  item = new CondTextBox( type );  break;
       case EXTENSION   :  item = new CondTextBox( type );  break;
@@ -26,7 +43,7 @@ public class CondBoxList : BoxList {
       case CONTENT     :  item = new CondTextBox( type );  break;
       default          :  assert_not_reached();
     }
-    _conditions.append( item );
+    _conditions.nth( index ).data = item;
     box.pack_start( (Box)item, false, true, 0 );
   }
 
@@ -39,7 +56,7 @@ public class CondBoxList : BoxList {
   public override void set_data( DirAction action ) {
     for( int i=0; i<action.num_conditions(); i++ ) {
       var cond = action.get_condition( i );
-      add_item( (int)cond.cond_type );
+      add_row( (int)cond.cond_type );
       _conditions.nth_data( _conditions.length() - 1 ).set_data( cond );
     }
   }

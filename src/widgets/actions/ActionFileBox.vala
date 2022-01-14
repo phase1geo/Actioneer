@@ -40,7 +40,6 @@ public class ActionFileBox : ActionBase {
   }
 
   public override void set_data( FileAction data ) {
-    stdout.printf( "In ActionFileBox.set_data\n" );
     _entry.text = data.file.get_path();
   }
 
