@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-14 20:10-0600\n"
+"POT-Creation-Date: 2022-01-14 20:28-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,9 +43,31 @@ msgid "Run Rules"
 msgstr ""
 
 #: data/com.github.phase1geo.actioneer.appdata.xml.in:8
-msgid "Automate directory/file actions in your filesystem."
+msgid "Automate directory and file actions in your filesystem"
 msgstr ""
 
-#: data/com.github.phase1geo.actioneer.appdata.xml.in:16
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:10
+msgid "Create rules to automate operations on files found within directories."
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:12
+msgid "Watch multiple directories to run operations on."
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:13
+msgid "Create multiple rules per directory."
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:14
+msgid ""
+"Each rule can act on file matching one or more conditions and can perform "
+"one or more actions on those files."
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:15
+msgid "File actions include: move, copy, rename."
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:29
 msgid "Trevor Williams"
 msgstr ""

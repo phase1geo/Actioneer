@@ -5,13 +5,26 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Actioneer</name>
-  <summary>Automate directory/file actions in your filesystem.</summary>
+  <summary>Automate directory and file actions in your filesystem</summary>
   <description>
+    <p>Create rules to automate operations on files found within directories.</p>
+    <ul>
+      <li>Watch multiple directories to run operations on.</li>
+      <li>Create multiple rules per directory.</li>
+      <li>Each rule can act on file matching one or more conditions and can perform one or more actions on those files.</li>
+      <li>File actions include: move, copy, rename.</li>
+    </ul>
   </description>
   <provides>
     <binary>com.github.phase1geo.actioneer</binary>
   </provides>
   <screenshots>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/phase1geo/Actioneer/master/data/screenshots/screenshot-light.png</image>
+    </screenshot>
+    <!--<screenshot>
+      <image>https://raw.githubusercontent.com/phase1geo/Actioneer/master/data/screenshots/screenshot-dark.png</image>
+    </screenshot>-->
   </screenshots>
   <developer_name>Trevor Williams</developer_name>
   <url type="homepage">https://github.com/phase1geo/actioneer/</url>
