@@ -47,7 +47,6 @@ case $1 in
     ;;
 "generate-i18n")
     grep -rc _\( * | grep ^src | grep -v :0 | cut -d : -f 1 | sort -o po/POTFILES
-    echo "data/com.github.phase1geo.actioneer.shortcuts.ui" >> po/POTFILES
     initialize
     ninja com.github.phase1geo.actioneer-pot
     ninja com.github.phase1geo.actioneer-update-po

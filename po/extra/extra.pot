@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the extra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-14 20:10-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:3
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:7
+msgid "Actioneer"
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.desktop.in:4
+msgid "Filesystem automation"
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.desktop.in:5
+msgid "Automate directory/file actions in your filesystem"
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.desktop.in:8
+msgid "com.github.phase1geo.actioneer"
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.desktop.in:13
+msgid "Automation;Directory;File;FileSystem;"
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.desktop.in:17
+msgid "Run Rules"
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:8
+msgid "Automate directory/file actions in your filesystem."
+msgstr ""
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:16
+msgid "Trevor Williams"
+msgstr ""

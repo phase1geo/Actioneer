@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Actioneer
+GenericName=Filesystem automation
+Comment=Automate directory/file actions in your filesystem
+Categories=Utility;Development;
+Exec=com.github.phase1geo.actioneer
+Icon=com.github.phase1geo.actioneer
+Terminal=false
+Type=Application
+X-GNOME-Gettext-Domain=Actioneer
+X-GNOME-UsesNotifications=true
+Keywords=Automation;Directory;File;FileSystem;
+Actions=RunRules;
+
+[Desktop Action RunRules]
+Name=Run Rules
+Exec=com.github.phase1geo.actioneer -r
