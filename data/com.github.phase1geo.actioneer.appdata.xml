@@ -7,7 +7,10 @@
   <name>Actioneer</name>
   <summary>Automate directory and file actions in your filesystem</summary>
   <description>
-    <p>Create rules to automate operations on files found within directories.</p>
+    <p>
+      Create rules to automate operations on files or directories found within directories.  Actioneer allows
+      you to powerfully simplify and organize the content in your file system.
+    </p>
     <ul>
       <li>Watch multiple directories to run operations on.</li>
       <li>Create multiple rules per directory.</li>
