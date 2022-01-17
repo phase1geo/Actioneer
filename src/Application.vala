@@ -93,6 +93,9 @@ public class Actioneer : Granite.Application {
     provider.load_from_resource( "/com/github/phase1geo/actioneer/Application.css" );
     Gtk.StyleContext.add_provider_for_screen( Gdk.Screen.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION );
 
+    /* Handle dark mode changes */
+    handle_dark_mode_preference();
+
     /* Create the main window */
     appwin = new MainWindow( this, settings );
 
@@ -126,6 +129,23 @@ public class Actioneer : Granite.Application {
       settings.set_int( "window-w", size_w );
       settings.set_int( "window-h", size_h );
       return( false );
+    });
+
+  }
+
+  /* Handles any changes to the user dark mode preference */
+  private void handle_dark_mode_preference() {
+
+    // First we get the default instances for Granite.Settings and Gtk.Settings
+    var granite_settings = Granite.Settings.get_default ();
+    var gtk_settings = Gtk.Settings.get_default ();
+
+    // Then, we check if the user's preference is for the dark style and set it if it is
+    gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
+
+    // Finally, we listen to changes in Granite.Settings and update our app if the user changes their preference
+    granite_settings.notify["prefers-color-scheme"].connect (() => {
+        gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
     });
 
   }
