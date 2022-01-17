@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the extra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-14 20:48-0600\n"
+"PO-Revision-Date: 2022-01-17 14:37+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:3
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:7
+msgid "Actioneer"
+msgstr "Actioneer"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:4
+msgid "Filesystem automation"
+msgstr "Bestandssysteem-automatisering"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:5
+msgid "Automate directory/file actions in your filesystem"
+msgstr "Automatiseer map- en bestandsacties"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:8
+msgid "com.github.phase1geo.actioneer"
+msgstr "com.github.phase1geo.actioneer"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:13
+msgid "Automation;Directory;File;FileSystem;"
+msgstr "Automatisering;Map;Bestand;Bestandssysteem;"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:17
+msgid "Run Rules"
+msgstr "Voer regels uit"
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:8
+msgid "Automate directory and file actions in your filesystem"
+msgstr "Automatiseer map- en bestandsacties"
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:10
+msgid ""
+"Create rules to automate operations on files or directories found within "
+"directories. Actioneer allows you to powerfully simplify and organize the "
+"content in your file system."
+msgstr ""
+"Maak regels aan om bestands- en mapacties te automatiseren. Actioneer "
+"maakt het je makkelijk, maar is tegelijk ook zéér krachtig."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:15
+msgid "Watch multiple directories to run operations on."
+msgstr "Monitor meerdere mappen."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:16
+msgid "Create multiple rules per directory."
+msgstr "Maak meerdere regels per map aan."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:17
+msgid ""
+"Each rule can act on file matching one or more conditions and can perform "
+"one or more actions on those files."
+msgstr ""
+"Elke regel kan worden uitgevoerd op basis van één of meerdere voorwaarden "
+"en kan één of meerdere acties bevatten."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:18
+msgid "File actions include: move, copy, rename."
+msgstr "Bestandsacties: verplaatsen, kopiëren, naam wijzigen."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:32
+msgid "Trevor Williams"
+msgstr "Trevor Williams"
