@@ -1,0 +1,266 @@
+# ITALIAN TRANSLATION FOR ACTIONEER.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.phase1geo.actioneer package.
+# ALBANO BATTISTELLA <ALBANO_BATTISTELLA@HOTMAIL.COM>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.phase1geo.actioneer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-14 20:48-0600\n"
+"PO-Revision-Date: 2022-01-19 21:00+0100\n"
+"Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
+"Language-Team: Italian <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/ActionCondition.vala:47
+msgid "Name"
+msgstr "Nome"
+
+#: src/ActionCondition.vala:48 src/TokenText.vala:42
+msgid "Extension"
+msgstr "Estensione"
+
+#: src/ActionCondition.vala:49
+msgid "Full Name"
+msgstr "Nome completo"
+
+#: src/ActionCondition.vala:50 src/TokenText.vala:43
+msgid "Creation Date"
+msgstr "Data di creazione"
+
+#: src/ActionCondition.vala:51 src/TokenText.vala:44
+msgid "Modification Date"
+msgstr "Data di modifica"
+
+#: src/ActionCondition.vala:52
+msgid "MIME Type"
+msgstr "Tipo MIME"
+
+#: src/ActionCondition.vala:53
+msgid "Content"
+msgstr "Contenuto"
+
+#: src/Application.vala:147
+msgid "Display version number"
+msgstr "Visualizza il numero di versione"
+
+#: src/Application.vala:148
+msgid "Runs Actioneer rules"
+msgstr "Esegue le regole di Actioneer"
+
+#: src/Application.vala:149
+msgid "Create rules in app"
+msgstr "Crea regole nell'app"
+
+#: src/Application.vala:158
+#, c-format
+msgid "ERROR: %s\n"
+msgstr "ERRORE: %s\n"
+
+#: src/Application.vala:159
+#, c-format
+msgid "Run '%s --help' to see valid options\n"
+msgstr "Esegui '%s --help' per vedere le opzioni valide\n"
+
+#: src/FileAction.vala:18
+msgid "Move"
+msgstr "Sposta"
+
+#: src/FileAction.vala:19
+msgid "Copy"
+msgstr "Copia"
+
+#: src/FileAction.vala:20
+msgid "Rename"
+msgstr "Rinomina"
+
+#: src/FileAction.vala:27 src/FileAction.vala:28
+msgid "to folder"
+msgstr "alla cartella"
+
+#: src/FileAction.vala:29
+msgid "file as"
+msgstr "file come"
+
+#: src/MainWindow.vala:76
+msgid "Actioneer"
+msgstr "Actioneer"
+
+#: src/TokenText.vala:39
+msgid "Text"
+msgstr "Testo"
+
+#: src/TokenText.vala:40
+msgid "Filename"
+msgstr "Nome file"
+
+#: src/TokenText.vala:41
+msgid "Basename"
+msgstr "Nome di base"
+
+#: src/TokenText.vala:45
+msgid "Today"
+msgstr "Oggi"
+
+#: src/TokenText.vala:106
+msgid "No change"
+msgstr "Nessun cambiamento"
+
+#: src/TokenText.vala:107
+msgid "Lowercase"
+msgstr "Minuscolo"
+
+#: src/TokenText.vala:108
+msgid "Uppercase"
+msgstr "Maiuscolo"
+
+#: src/TokenText.vala:109
+msgid "Titlecase"
+msgstr "Ortografia del titolo"
+
+#: src/widgets/ActionBoxList.vala:9
+msgid "Add Action"
+msgstr "Aggiungi azione"
+
+#: src/widgets/actions/ActionFileBox.vala:16
+msgid "Select a folder"
+msgstr "Seleziona una cartella"
+
+#: src/widgets/actions/ActionFileBox.vala:21
+msgid "Browse filesystem"
+msgstr "Sfoglia il filesystem"
+
+#: src/widgets/actions/ActionFileBox.vala:31 src/widgets/DirectoryList.vala:44
+msgid "Choose Directory"
+msgstr "Scegli Directory"
+
+#: src/widgets/actions/ActionFileBox.vala:31 src/widgets/DirectoryList.vala:44
+msgid "Choose"
+msgstr "Schegli"
+
+#: src/widgets/actions/ActionFileBox.vala:31 src/widgets/DirectoryList.vala:44
+#: src/widgets/RuleForm.vala:112
+msgid "Cancel"
+msgstr "Cancella"
+
+#: src/widgets/actions/ActionRenameBox.vala:24
+msgid "Click to select filename rename token"
+msgstr "Fare clic per selezionare il token di ridenominazione del nome file"
+
+#: src/widgets/actions/ActionRenameBox.vala:113
+#: src/widgets/tokenbox/TokenBox.vala:267
+msgid "Add Before"
+msgstr "Aggiungi prima"
+
+#: src/widgets/actions/ActionRenameBox.vala:117
+#: src/widgets/tokenbox/TokenBox.vala:271
+msgid "Add After"
+msgstr "Aggiungi dopo"
+
+#: src/widgets/actions/ActionRenameBox.vala:121
+#: src/widgets/tokenbox/TokenBox.vala:275
+msgid "Replace With"
+msgstr "Sostituisci con"
+
+#: src/widgets/actions/ActionRenameBox.vala:125
+#: src/widgets/tokenbox/TokenBox.vala:279
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: src/widgets/actions/ActionRenameBox.vala:190
+#: src/widgets/tokenbox/TokenBox.vala:141
+#: src/widgets/tokenbox/TokenBox.vala:226
+msgid "Edit..."
+msgstr "Modifica..."
+
+#: src/widgets/CondBoxList.vala:9
+msgid "Add Condition"
+msgstr "Aggiungi condizione"
+
+#: src/widgets/DirectoryList.vala:32
+msgid "Directories"
+msgstr "Directory"
+
+#: src/widgets/DirectoryList.vala:36
+msgid "Add Directory"
+msgstr "Aggiungi directory"
+
+#: src/widgets/DirectoryList.vala:40
+msgid "Remove Selected Directory"
+msgstr "Rimuovi la directory selezionata"
+
+#: src/widgets/RuleForm.vala:5
+msgid "Match ALL Conditions"
+msgstr "Abbina TUTTE le condizioni"
+
+#: src/widgets/RuleForm.vala:6
+msgid "Match ANY Condition"
+msgstr "Abbina QUALSIASI Condizione"
+
+#: src/widgets/RuleForm.vala:58
+msgid "Rule Name"
+msgstr "Nome regola"
+
+#: src/widgets/RuleForm.vala:71
+msgid "Conditions"
+msgstr "Condizioni"
+
+#: src/widgets/RuleForm.vala:93
+msgid "Actions"
+msgstr "Azioni"
+
+#: src/widgets/RuleForm.vala:106
+msgid "Save Changes"
+msgstr "Salva modifiche"
+
+#: src/widgets/RuleList.vala:36
+msgid "Rules"
+msgstr "Regole"
+
+#: src/widgets/RuleList.vala:40
+msgid "Add Rule"
+msgstr "Aggiungi regola"
+
+#: src/widgets/RuleList.vala:44
+msgid "Remove Selected Rule"
+msgstr "Rimuovi la regola selezionata"
+
+#: src/widgets/RuleList.vala:48
+msgid "New Rule"
+msgstr "Nuova regola"
+
+#: src/widgets/RuleStack.vala:17
+msgid "Welcome to Actioneer"
+msgstr "Benvenuto in Actioneer"
+
+#: src/widgets/RuleStack.vala:17
+msgid "Automate actions on your files!"
+msgstr "Automatizza le azioni sui tuoi file!"
+
+#: src/widgets/RuleStack.vala:18
+msgid "Add a directory to monitor"
+msgstr "Aggiungi una directory da monitorare"
+
+#: src/widgets/RuleStack.vala:18 src/widgets/RuleStack.vala:28
+msgid "Or click on the plus (+) button in the left-most panel"
+msgstr "Oppure fai clic sul pulsante più (+) nel pannello più a sinistra"
+
+#: src/widgets/RuleStack.vala:27
+msgid "Nicely Done!"
+msgstr "Ben fatto!"
+
+#: src/widgets/RuleStack.vala:28
+msgid "Add another directory to monitor"
+msgstr "Aggiungi un'altra directory da monitorare"
+
+#: src/widgets/RuleStack.vala:29
+msgid "Add a rule for the currently selected directory"
+msgstr "Aggiungi una regola per la directory attualmente selezionata"
+
+#: src/widgets/RuleStack.vala:29
+msgid "Or click on the plus (+) button in the center panel"
+msgstr "Oppure fai clic sul pulsante più (+) nel pannello centrale"
