@@ -1,0 +1,80 @@
+# ITALIAN TRANSLATION FOR ACTIONEER.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the extra package.
+# ALBANO BATTISTELLA <ALBANO_BATTISTELLA@HOTMAIL.COM>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-19 23:15-0600\n"
+"PO-Revision-Date: 2022-01-20 20:30+0100\n"
+"Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
+"Language-Team: Italian <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:3
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:7
+msgid "Actioneer"
+msgstr "Actioneer"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:4
+msgid "Filesystem automation"
+msgstr "Automazione del file system"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:5
+msgid "Automate directory/file actions in your filesystem"
+msgstr "Automatizza le azioni di directory/file nel tuo filesystem"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:8
+msgid "com.github.phase1geo.actioneer"
+msgstr "com.github.phase1geo.actioneer"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:13
+msgid "Automation;Directory;File;FileSystem;"
+msgstr "Automazione;Directory;File;FileSystem;"
+
+#: data/com.github.phase1geo.actioneer.desktop.in:17
+msgid "Run Rules"
+msgstr "Regole di esecuzione"
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:8
+msgid "Automate directory and file actions in your filesystem"
+msgstr "Automatizza le azioni di directory e file nel tuo filesystem"
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:10
+msgid ""
+"Create rules to automate operations on files or directories found within "
+"directories. Actioneer allows you to powerfully simplify and organize the "
+"content in your file system."
+msgstr ""
+"Crea regole per automatizzare le operazioni su file o directory che si trovano all'interno di "
+"directory. Actioneer ti consente di semplificare e organizzare in modo potente il "
+"contenuto nel tuo file system."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:15
+msgid "Watch multiple directories to run operations on."
+msgstr "Guarda più directory su cui eseguire operazioni."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:16
+msgid "Create multiple rules per directory."
+msgstr "Crea più regole per directory."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:17
+msgid ""
+"Each rule can act on file matching one or more conditions and can perform "
+"one or more actions on those files."
+msgstr ""
+"Ogni regola può agire su file che soddisfa una o più condizioni e può eseguire "
+"una o più azioni su quei file."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:18
+msgid "File actions include: move, copy, rename."
+msgstr "Le azioni sui file includono: sposta, copia, rinomina."
+
+#: data/com.github.phase1geo.actioneer.appdata.xml.in:32
+msgid "Trevor Williams"
+msgstr "Trevor Williams"
