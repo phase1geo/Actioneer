@@ -7,13 +7,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.phase1geo.actioneer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-14 20:48-0600\n"
+"POT-Creation-Date: 2022-01-19 23:15-0600\n"
 "PO-Revision-Date: 2022-01-19 21:00+0100\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/ActionCondition.vala:47
@@ -44,24 +44,24 @@ msgstr "Tipo MIME"
 msgid "Content"
 msgstr "Contenuto"
 
-#: src/Application.vala:147
+#: src/Application.vala:167
 msgid "Display version number"
 msgstr "Visualizza il numero di versione"
 
-#: src/Application.vala:148
+#: src/Application.vala:168
 msgid "Runs Actioneer rules"
 msgstr "Esegue le regole di Actioneer"
 
-#: src/Application.vala:149
+#: src/Application.vala:169
 msgid "Create rules in app"
 msgstr "Crea regole nell'app"
 
-#: src/Application.vala:158
+#: src/Application.vala:178
 #, c-format
 msgid "ERROR: %s\n"
 msgstr "ERRORE: %s\n"
 
-#: src/Application.vala:159
+#: src/Application.vala:179
 #, c-format
 msgid "Run '%s --help' to see valid options\n"
 msgstr "Esegui '%s --help' per vedere le opzioni valide\n"
@@ -247,7 +247,7 @@ msgstr "Aggiungi una directory da monitorare"
 
 #: src/widgets/RuleStack.vala:18 src/widgets/RuleStack.vala:28
 msgid "Or click on the plus (+) button in the left-most panel"
-msgstr "Oppure fai clic sul pulsante più (+) nel pannello più a sinistra"
+msgstr "Oppure fai clic sul pulsante pi (+) nel pannello pi a sinistra"
 
 #: src/widgets/RuleStack.vala:27
 msgid "Nicely Done!"
@@ -263,4 +263,4 @@ msgstr "Aggiungi una regola per la directory attualmente selezionata"
 
 #: src/widgets/RuleStack.vala:29
 msgid "Or click on the plus (+) button in the center panel"
-msgstr "Oppure fai clic sul pulsante più (+) nel pannello centrale"
+msgstr "Oppure fai clic sul pulsante pi (+) nel pannello centrale"
