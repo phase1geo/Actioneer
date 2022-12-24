@@ -9,14 +9,17 @@ public class RuleForm : Box {
   private MatchOptMenu  _match_mb;
   private CondBoxList   _conditions;
   private ActionBoxList _actions;
+  private MainWindow    _win;
 
   public signal void save_requested( DirAction rule );
   public signal void cancel_requested();
 
   /* Default constructor */
-  public RuleForm() {
+  public RuleForm( MainWindow win ) {
 
     Object( orientation: Orientation.VERTICAL, spacing: 10, margin: 10 );
+
+    _win = win;
 
     var name       = create_name_frame();
     var conditions = create_condition_frame();
@@ -103,6 +106,11 @@ public class RuleForm : Box {
 
   private Box create_button_bar() {
 
+    var test_btn = new Button.with_label( _( "Test" ) );
+    test_btn.clicked.connect(() => {
+      test_rule();
+    });
+
     var save_btn = new Button.with_label( _( "Save Changes" ) );
     save_btn.get_style_context().add_class( "suggested-action" );
     save_btn.clicked.connect(() => {
@@ -115,6 +123,7 @@ public class RuleForm : Box {
     });
 
     var box = new Box( Orientation.HORIZONTAL, 10 );
+    box.pack_start( test_btn, false, false, 0 );
     box.pack_end( save_btn,   false, false, 0 );
     box.pack_end( cancel_btn, false, false, 0 );
 
@@ -147,6 +156,20 @@ public class RuleForm : Box {
     _actions.get_data( rule );
 
     return( rule );
+
+  }
+
+  private void test_rule() {
+
+    /* Get file from user */
+    var dialog = new FileChooserNative( _( "Choose File" ), _win, FileChooserAction.OPEN,
+                                        _( "Choose" ), _( "Cancel" ) );
+
+    if( dialog.run() == ResponseType.ACCEPT ) {
+      var rule   = create_rule();
+      var result = rule.test( dialog.get_filename() );
+      stdout.printf( "Test result: %s\n", result.to_string() );
+    }
 
   }
 

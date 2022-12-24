@@ -35,7 +35,7 @@ public class RuleStack : Stack {
       }
     });
 
-    _form = new RuleForm();
+    _form = new RuleForm( win );
 
     /* Add the elements to the stack */
     transition_type = StackTransitionType.NONE;
