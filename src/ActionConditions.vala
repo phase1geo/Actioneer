@@ -58,21 +58,21 @@ public class ActionConditions {
   }
 
   /* Returns true if the pathname passes all conditions */
-  public bool check( string path ) {
+  public bool check( string path, Array<bool>? results = null ) {
 
-    bool pass;
+    var pass = match_all ? true : false;
 
-    if( match_all ) {
-      pass = true;
-      _conditions.foreach((condition) => {
-        pass &= condition.check( path );
-      });
-    } else {
-      pass = false;
-      _conditions.foreach((condition) => {
-        pass |= condition.check( path );
-      });
-    }
+    _conditions.foreach((condition) => {
+      var passed = condition.check( path );
+      if( match_all ) {
+        pass &= passed;
+      } else {
+        pass |= passed;
+      }
+      if( results != null ) {
+        results.append_val( passed );
+      }
+    });
 
     return( pass );
 

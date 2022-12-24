@@ -159,6 +159,7 @@ public class RuleForm : Box {
 
   }
 
+  /* Tests the conditions of the given rule, providing feedback */
   private void test_rule() {
 
     /* Get file from user */
@@ -166,9 +167,12 @@ public class RuleForm : Box {
                                         _( "Choose" ), _( "Cancel" ) );
 
     if( dialog.run() == ResponseType.ACCEPT ) {
-      var rule   = create_rule();
-      var result = rule.test( dialog.get_filename() );
-      stdout.printf( "Test result: %s\n", result.to_string() );
+      Array<bool> results = new Array<bool>();
+      var rule = create_rule();
+      rule.test( dialog.get_filename(), results );
+      for( int i=0; i<results.length; i++ ) {
+        _conditions.set_test_result( i, results.index( i ) );
+      }
     }
 
   }

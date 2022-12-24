@@ -43,15 +43,19 @@ public class BoxList : Box {
       ibox.show_all();
     });
 
+    /* Add test result */
+    var result = new Label( " " );
+
     /* Add close button */
     var close = new Button.from_icon_name( "window-close-symbolic", IconSize.SMALL_TOOLBAR );
     close.clicked.connect(() => {
       delete_row( get_index( box ) );
     });
 
-    box.pack_start( mb,    false, false, 0 );
-    box.pack_start( ibox,  false, true,  0 );
-    box.pack_end(   close, false, false, 0 );
+    box.pack_start( mb,     false, false, 0 );
+    box.pack_start( ibox,   false, true,  0 );
+    box.pack_end(   close,  false, false, 0 );
+    box.pack_end(   result, false, false, 0 );
 
     _list_box.pack_start( box, false, true, 0 ); 
     _list_box.show_all();
@@ -70,6 +74,16 @@ public class BoxList : Box {
       i++;
     });
     return( index );
+  }
+  
+  public void set_test_result( int index, bool result ) {
+    var row  = (Box)_list_box.get_children().nth_data( index );
+    var rslt = (Label)row.get_children().nth_data( 2 );
+    if( result ) {
+      rslt.label = "P";
+    } else {
+      rslt.label = "F";
+    }
   }
 
   protected virtual void delete_row( int index ) {

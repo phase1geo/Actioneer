@@ -98,8 +98,8 @@ public class DirAction {
   }
 
   /* Runs the given condition test and returns the result */
-  public bool test( string pathname ) {
-    return( _conditions.check( pathname ) );
+  public void test( string pathname, Array<bool> cond_results ) {
+    _conditions.check( pathname, cond_results );
   }
 
   /* Runs the current action on the given directory */
