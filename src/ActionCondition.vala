@@ -151,7 +151,6 @@ public class ActionCondition {
     _text = type.is_text() ? new TextCondition() : null;
     _date = type.is_date() ? new DateCondition() : null;
     _size = type.is_size() ? new SizeCondition() : null;
-    stdout.printf( "type %s is size: %s\n", type.to_string(), type.is_size().to_string() );
   }
 
   /* Copy constructor */

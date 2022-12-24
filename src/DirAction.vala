@@ -97,6 +97,11 @@ public class DirAction {
     _actions.remove( action );
   }
 
+  /* Runs the given condition test and returns the result */
+  public bool test( string pathname ) {
+    return( _conditions.check( pathname ) );
+  }
+
   /* Runs the current action on the given directory */
   public void run( MainWindow win, string dirname ) {
 
