@@ -143,7 +143,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   private void action_run() {
     Actioneer? app = null;
     @get( "application", ref app );
-    app.dirlist.run();
+    app.dirlist.run( this );
   }
 
   /* Called when the user uses the Control-q keyboard shortcut */

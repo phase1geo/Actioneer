@@ -37,9 +37,9 @@ public class DirList {
   }
 
   /* Run the actions for each listed directory */
-  public void run() {
+  public void run( MainWindow win ) {
     _dir_actions.foreach((action) => {
-      action.run();
+      action.run( win );
     });
   }
 

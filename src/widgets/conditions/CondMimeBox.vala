@@ -16,7 +16,9 @@ public class CondMimeBox : CondBase {
     filter.set_visible_func( filter_results );
 
     _text = new TextOptMenu();
-    _cb   = new ComboBox.with_model_and_entry( filter );
+    _text.activated.connect( menu_connected );
+
+    _cb = new ComboBox.with_model_and_entry( filter );
     _cb.entry_text_column = 0;
 
     var entry = (Entry)_cb.get_child();
@@ -35,6 +37,10 @@ public class CondMimeBox : CondBase {
 
     show_all();
 
+  }
+
+  private void menu_connected( int index ) {
+    _cb.grab_focus();
   }
 
   private bool filter_results( TreeModel model, TreeIter it ) {

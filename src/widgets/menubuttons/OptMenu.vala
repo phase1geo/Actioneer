@@ -63,7 +63,7 @@ public class OptMenu : MenuButton {
     int index = -1;
     int i     = 0;
     popup.get_children().foreach((item) => {
-      if( (item as Gtk.MenuItem).label != label ) {
+      if( (item as Gtk.MenuItem).label == label ) {
         index = i;
       }
       i++;

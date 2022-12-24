@@ -10,6 +10,7 @@ sources += files(
     'FileAction.vala',
     'FileActions.vala',
     'MainWindow.vala',
+    'SizeCondition.vala',
     'TextCondition.vala',
     'TokenText.vala',
     'Utils.vala'

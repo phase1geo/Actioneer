@@ -27,6 +27,7 @@ public enum ActionConditionType {
   MODIFY_DATE,
   MIME,
   CONTENT,
+  SIZE,
   NUM;
 
   public string to_string() {
@@ -38,6 +39,7 @@ public enum ActionConditionType {
       case MODIFY_DATE :  return( "modification-date" );
       case MIME        :  return( "mime" );
       case CONTENT     :  return( "content" );
+      case SIZE        :  return( "size" );
       default          :  assert_not_reached();
     }
   }
@@ -51,6 +53,7 @@ public enum ActionConditionType {
       case MODIFY_DATE :  return( _( "Modification Date" ) );
       case MIME        :  return( _( "MIME Type" ) );
       case CONTENT     :  return( _( "Content" ) );
+      case SIZE        :  return( _( "File Size" ) );
       default          :  assert_not_reached();
     }
   }
@@ -64,6 +67,7 @@ public enum ActionConditionType {
       case "modification-date" :  return( MODIFY_DATE );
       case "mime"              :  return( MIME );
       case "content"           :  return( CONTENT );
+      case "size"              :  return( SIZE );
       default                  :  assert_not_reached();
     }
   }
@@ -74,6 +78,10 @@ public enum ActionConditionType {
 
   public bool is_date() {
     return( (this == CREATE_DATE) || (this == MODIFY_DATE) );
+  }
+
+  public bool is_size() {
+    return( this == SIZE );
   }
 
   /* Returns the current text value associated with the given filename */
@@ -97,6 +105,11 @@ public enum ActionConditionType {
     }
   }
 
+  /* Returns the size (in bytes) of the given filename */
+  public int64 size_from_pathname( string pathname ) {
+    return( Utils.file_size( pathname ) );
+  }
+
 }
 
 public class ActionCondition {
@@ -106,6 +119,7 @@ public class ActionCondition {
   private ActionConditionType _type = ActionConditionType.NAME;
   private TextCondition?      _text = null;
   private DateCondition?      _date = null;
+  private SizeCondition?      _size = null;
 
   public ActionConditionType cond_type {
     get {
@@ -122,6 +136,11 @@ public class ActionCondition {
       return( _date );
     }
   }
+  public SizeCondition? size {
+    get {
+      return( _size );
+    }
+  }
 
   /* Default constructor */
   public ActionCondition() {}
@@ -131,6 +150,8 @@ public class ActionCondition {
     _type = type;
     _text = type.is_text() ? new TextCondition() : null;
     _date = type.is_date() ? new DateCondition() : null;
+    _size = type.is_size() ? new SizeCondition() : null;
+    stdout.printf( "type %s is size: %s\n", type.to_string(), type.is_size().to_string() );
   }
 
   /* Copy constructor */
@@ -142,12 +163,16 @@ public class ActionCondition {
     if( other._date != null ) {
       _date = new DateCondition.copy( other._date );
     }
+    if( other._size != null ) {
+      _size = new SizeCondition.copy( other._size );
+    }
   }
 
   /* Returns true if the given pathname passes this condition check */
   public bool check( string pathname ) {
     return( (_type.is_text() && _text.check( _type.text_from_pathname( pathname ) )) ||
-            (_type.is_date() && _date.check( _type.date_from_pathname( pathname ) )) );
+            (_type.is_date() && _date.check( _type.date_from_pathname( pathname ) )) ||
+            (_type.is_size() && _size.check( _type.size_from_pathname( pathname ) )) );
   }
 
   /* Saves this condition in XML format */
@@ -161,6 +186,8 @@ public class ActionCondition {
       _text.save( node );
     } else if( _date != null ) {
       _date.save( node );
+    } else if( _size != null ) {
+      _size.save( node );
     }
 
     return( node );
@@ -184,6 +211,11 @@ public class ActionCondition {
       if( _type.is_date() ) {
         _date = new DateCondition();
         _date.load( node );
+      }
+
+      if( _type.is_size() ) {
+        _size = new SizeCondition();
+        _size.load( node );
       }
 
     }

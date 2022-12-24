@@ -36,11 +36,11 @@ public class FileActions {
   }
 
   /* Executes all of the actions in serial order */
-  public bool execute( string pathname ) {
+  public bool execute( MainWindow win, string pathname ) {
     var path   = pathname;
     var retval = true;
     _actions.foreach((action) => {
-      retval &= action.execute( ref path );
+      retval &= action.execute( win, ref path );
     });
     return( retval );
   }

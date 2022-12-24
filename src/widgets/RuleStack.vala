@@ -15,7 +15,7 @@ public class RuleStack : Stack {
 
     /* Create first welcome page */
     var welcome1 = new Granite.Widgets.Welcome( _( "Welcome to Actioneer" ), _( "Automate actions on your files!" ) );
-    welcome1.append( "directory-add", _( "Add a directory to monitor" ), _( "Or click on the plus (+) button in the left-most panel" ) );
+    welcome1.append( "directory-add", _( "Add a directory to monitor" ), _( "Or click on the plus (+) button in the Directories panel" ) );
     welcome1.activated.connect((index) => {
       switch( index ) {
         case 0  :  win.dir_list.action_add();  break;
@@ -25,8 +25,8 @@ public class RuleStack : Stack {
 
     /* Create the second welcome page */
     var welcome2 = new Granite.Widgets.Welcome( _( "Nicely Done!" ), "" );
-    welcome2.append( "directory-add", _( "Add another directory to monitor" ), _( "Or click on the plus (+) button in the left-most panel" ) );
-    welcome2.append( "action-add", _( "Add a rule for the currently selected directory" ), _( "Or click on the plus (+) button in the center panel" ) );
+    welcome2.append( "directory-add", _( "Add another directory to monitor" ), _( "Or click on the plus (+) button in the Directories panel" ) );
+    welcome2.append( "action-add", _( "Add a rule for the currently selected directory" ), _( "Or click on the plus (+) button in the Rules panel" ) );
     welcome2.activated.connect((index) => {
       switch( index ) {
         case 0  :  win.dir_list.action_add();  break;

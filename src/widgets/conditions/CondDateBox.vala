@@ -7,7 +7,6 @@ public class CondDateBox : CondBase {
   private Granite.Widgets.DatePicker _picker;
   private Entry                      _entry;
   private TimeOptMenu                _amount;
-  private ActionConditionType        _type;
 
   /* Default constructor */
   public CondDateBox( ActionConditionType type ) {
@@ -54,6 +53,8 @@ public class CondDateBox : CondBase {
 
     _entry = new Entry();
     _entry.input_purpose = InputPurpose.DIGITS;
+    _entry.text = "1";
+    _entry.grab_focus();
 
     _amount = new TimeOptMenu();
 

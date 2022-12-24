@@ -25,6 +25,7 @@ public class DirActions {
 
   private string?          _dirname;
   private SList<DirAction> _actions;
+  private MainWindow       _win;
 
   public bool enabled { get; set; default = true; }
   public string dirname {
@@ -79,11 +80,11 @@ public class DirActions {
   }
 
   /* Runs the directory actions for this directory */
-  public void run() {
+  public void run( MainWindow win ) {
     if( !enabled ) return;
     stdout.printf( "Running rules on directory %s\n", _dirname );
     _actions.foreach((action) => {
-      action.run( _dirname );
+      action.run( win, _dirname );
     });
   }
 

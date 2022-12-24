@@ -1,5 +1,4 @@
 public enum TimeType {
-  NOW,
   MINUTE,
   HOUR,
   DAY,
@@ -10,7 +9,6 @@ public enum TimeType {
 
   public string to_string() {
     switch( this ) {
-      case NOW    :  return( "now" );
       case MINUTE :  return( "minute" );
       case HOUR   :  return( "hour" );
       case DAY    :  return( "day" );
@@ -23,7 +21,6 @@ public enum TimeType {
 
   public string label() {
     switch( this ) {
-      case NOW    :  return( "now" );
       case MINUTE :  return( "minute(s)" );
       case HOUR   :  return( "hour(s)" );
       case DAY    :  return( "day(s)" );
@@ -36,7 +33,6 @@ public enum TimeType {
 
   public static TimeType parse( string val ) {
     switch( val ) {
-      case "now"    :  return( NOW );
       case "minute" :  return( MINUTE );
       case "hour"   :  return( HOUR );
       case "day"    :  return( DAY );

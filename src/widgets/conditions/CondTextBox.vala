@@ -11,6 +11,8 @@ public class CondTextBox : CondBase {
     base( type );
 
     _menu  = new TextOptMenu();
+    _menu.activated.connect( menu_activated );
+
     _entry = new Entry();
 
     _entry.hexpand     = true;
@@ -18,11 +20,14 @@ public class CondTextBox : CondBase {
 
     pack_start( _menu,  false, false, 0 );
     pack_start( _entry, false, true,  0 );
+    show_all();
 
     _menu.activated( 0 );
 
-    show_all();
+  }
 
+  private void menu_activated( int index ) {
+    _entry.grab_focus();
   }
 
   public override ActionCondition get_data() {

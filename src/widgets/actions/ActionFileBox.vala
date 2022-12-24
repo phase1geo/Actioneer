@@ -25,6 +25,8 @@ public class ActionFileBox : ActionBase {
     pack_start( _entry, false, true,  0 );
     pack_end(   button, false, false, 0 );
 
+    _entry.grab_focus();
+
   }
 
   private void open_file() {

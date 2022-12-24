@@ -17,6 +17,12 @@ public class Utils {
     return( parts[parts.length - 1] );
   }
 
+  /* Returns the size (in bytes) of the given filename */
+  public static int64 file_size( string pathname ) {
+    var info = file_info( pathname );
+    return( info.get_size() );
+  }
+
   /* Returns the FileInfo associated with the given filename */
   public static FileInfo file_info( string pathname ) {
     var file = File.new_for_path( pathname );

@@ -2,6 +2,8 @@ public enum FileActionType {
   MOVE,
   COPY,
   RENAME,
+  TRASH,
+  NOTIFY,
   NUM;
 
   public string to_string() {
@@ -9,6 +11,8 @@ public enum FileActionType {
       case MOVE   :  return( "move" );
       case COPY   :  return( "copy" );
       case RENAME :  return( "rename" );
+      case TRASH  :  return( "trash" );
+      case NOTIFY :  return( "notify" );
       default     :  assert_not_reached();
     }
   }
@@ -18,6 +22,8 @@ public enum FileActionType {
       case MOVE   :  return( _( "Move" ) );
       case COPY   :  return( _( "Copy" ) );
       case RENAME :  return( _( "Rename" ) );
+      case TRASH  :  return( _( "Trash" ) );
+      case NOTIFY :  return( _( "Notify" ) );
       default     :  assert_not_reached();
     }
   }
@@ -27,6 +33,8 @@ public enum FileActionType {
       case MOVE   :  return( _( "to folder" ) );
       case COPY   :  return( _( "to folder" ) );
       case RENAME :  return( _( "file as" ) );
+      case TRASH  :  return( _( "file" ) );
+      case NOTIFY :  return( _( "with message" ) );
       default     :  assert_not_reached();
     }
   }
@@ -36,6 +44,8 @@ public enum FileActionType {
       case "move"   :  return( MOVE );
       case "copy"   :  return( COPY );
       case "rename" :  return( RENAME );
+      case "trash"  :  return( TRASH );
+      case "notify" :  return( NOTIFY );
       default       :  assert_not_reached();
     }
   }
@@ -61,21 +71,36 @@ public enum FileActionType {
     return( retval );
   }
 
-  public bool file_execute( ref string pathname, File new_file, TokenText token_text ) {
+  private bool do_trash( string pathname ) {
+    var ofile = File.new_for_path( pathname );
+    return( ofile.trash() );
+  }
+
+  private bool do_notify( MainWindow win, string pathname, TokenText token_text ) {
+    var ofile = File.new_for_path( pathname );
+    var msg   = token_text.generate_text( ofile );
+    win.notification( _( "Actioneer" ), msg );
+    return( true );
+  }
+
+  public bool file_execute( MainWindow win, ref string pathname, File? new_file, TokenText? token_text ) {
+
     switch( this ) {
       case MOVE   :  return( do_move( ref pathname, new_file ) );
       case COPY   :  return( do_copy( pathname, new_file ) );
       case RENAME :  return( do_rename( ref pathname, token_text ) );
+      case TRASH  :  return( do_trash( pathname ) );
+      case NOTIFY :  return( do_notify( win, pathname, token_text ) );
       default     :  assert_not_reached();
     }
   }
 
   public bool is_file_type() {
-    return( (this == MOVE) || (this == COPY) || (this == RENAME) );
+    return( (this == MOVE) || (this == COPY) || (this == RENAME) || (this == TRASH) || (this == NOTIFY) );
   }
 
   public bool is_tokenized() {
-    return( this == RENAME );
+    return( (this == RENAME) || (this == NOTIFY) );
   }
 
 }
@@ -141,11 +166,11 @@ public class FileAction {
    the err and errmsg value will be updated with the error information.  If the
    pathname is changed by the action, updates the pathname value.
   */
-  public bool execute( ref string pathname ) {
+  public bool execute( MainWindow win, ref string pathname ) {
 
     if( _type.is_file_type() ) {
       try {
-        return( _type.file_execute( ref pathname, _file, _token_text ) );
+        return( _type.file_execute( win, ref pathname, _file, _token_text ) );
       } catch( Error e ) {
         err    = true;
         errmsg = e.message;

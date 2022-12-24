@@ -41,6 +41,7 @@ public class CondBoxList : BoxList {
       case MODIFY_DATE :  item = new CondDateBox( type );  break;
       case MIME        :  item = new CondMimeBox( type );  break;
       case CONTENT     :  item = new CondTextBox( type );  break;
+      case SIZE        :  item = new CondSizeBox( type );  break;
       default          :  assert_not_reached();
     }
     _conditions.nth( index ).data = item;

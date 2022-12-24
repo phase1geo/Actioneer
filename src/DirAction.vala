@@ -98,7 +98,9 @@ public class DirAction {
   }
 
   /* Runs the current action on the given directory */
-  public void run( string dirname ) {
+  public void run( MainWindow win, string dirname ) {
+
+    stdout.printf( "Running rules for %s, enabled: %s\n", dirname, enabled.to_string() );
 
     if( !enabled ) return;
 
@@ -111,8 +113,7 @@ public class DirAction {
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
         if( _conditions.check( path ) ) {
-          stdout.printf( "Executing actions on %s\n", path );
-          _actions.execute( path );
+          _actions.execute( win, path );
         }
       }
 

@@ -112,7 +112,7 @@ public class Actioneer : Granite.Application {
 
     /* If we need to run rules, do it now */
     if( run_rules ) {
-      dirlist.run();
+      dirlist.run( appwin );
     }
 
     /* Create the data controller */
