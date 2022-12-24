@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-19 23:15-0600\n"
+"POT-Creation-Date: 2022-12-24 10:52-0600\n"
 "PO-Revision-Date: 2022-01-17 14:37+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
@@ -30,10 +30,6 @@ msgstr "Bestandssysteem-automatisering"
 #: data/com.github.phase1geo.actioneer.desktop.in:5
 msgid "Automate directory/file actions in your filesystem"
 msgstr "Automatiseer map- en bestandsacties"
-
-#: data/com.github.phase1geo.actioneer.desktop.in:8
-msgid "com.github.phase1geo.actioneer"
-msgstr "com.github.phase1geo.actioneer"
 
 #: data/com.github.phase1geo.actioneer.desktop.in:13
 msgid "Automation;Directory;File;FileSystem;"
@@ -79,3 +75,6 @@ msgstr "Bestandsacties: verplaatsen, kopiëren, naam wijzigen."
 #: data/com.github.phase1geo.actioneer.appdata.xml.in:32
 msgid "Trevor Williams"
 msgstr "Trevor Williams"
+
+#~ msgid "com.github.phase1geo.actioneer"
+#~ msgstr "com.github.phase1geo.actioneer"

@@ -2,6 +2,7 @@ src/ActionCondition.vala
 src/Application.vala
 src/FileAction.vala
 src/MainWindow.vala
+src/SizeCondition.vala
 src/TokenText.vala
 src/widgets/ActionBoxList.vala
 src/widgets/actions/ActionFileBox.vala

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.phase1geo.actioneer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-19 23:15-0600\n"
+"POT-Creation-Date: 2022-12-24 10:52-0600\n"
 "PO-Revision-Date: 2022-01-19 21:00+0100\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -16,33 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/ActionCondition.vala:47
+#: src/ActionCondition.vala:49
 msgid "Name"
 msgstr "Nome"
 
-#: src/ActionCondition.vala:48 src/TokenText.vala:42
+#: src/ActionCondition.vala:50 src/TokenText.vala:42
 msgid "Extension"
 msgstr "Estensione"
 
-#: src/ActionCondition.vala:49
+#: src/ActionCondition.vala:51
 msgid "Full Name"
 msgstr "Nome completo"
 
-#: src/ActionCondition.vala:50 src/TokenText.vala:43
+#: src/ActionCondition.vala:52 src/TokenText.vala:43
 msgid "Creation Date"
 msgstr "Data di creazione"
 
-#: src/ActionCondition.vala:51 src/TokenText.vala:44
+#: src/ActionCondition.vala:53 src/TokenText.vala:44
 msgid "Modification Date"
 msgstr "Data di modifica"
 
-#: src/ActionCondition.vala:52
+#: src/ActionCondition.vala:54
 msgid "MIME Type"
 msgstr "Tipo MIME"
 
-#: src/ActionCondition.vala:53
+#: src/ActionCondition.vala:55
 msgid "Content"
 msgstr "Contenuto"
+
+#: src/ActionCondition.vala:56
+msgid "File Size"
+msgstr ""
 
 #: src/Application.vala:167
 msgid "Display version number"
@@ -66,29 +70,66 @@ msgstr "ERRORE: %s\n"
 msgid "Run '%s --help' to see valid options\n"
 msgstr "Esegui '%s --help' per vedere le opzioni valide\n"
 
-#: src/FileAction.vala:18
+#: src/FileAction.vala:22
 msgid "Move"
 msgstr "Sposta"
 
-#: src/FileAction.vala:19
+#: src/FileAction.vala:23
 msgid "Copy"
 msgstr "Copia"
 
-#: src/FileAction.vala:20
+#: src/FileAction.vala:24
 msgid "Rename"
 msgstr "Rinomina"
 
-#: src/FileAction.vala:27 src/FileAction.vala:28
+#: src/FileAction.vala:25
+msgid "Trash"
+msgstr ""
+
+#: src/FileAction.vala:26
+msgid "Notify"
+msgstr ""
+
+#: src/FileAction.vala:33 src/FileAction.vala:34
 msgid "to folder"
 msgstr "alla cartella"
 
-#: src/FileAction.vala:29
+#: src/FileAction.vala:35
 msgid "file as"
 msgstr "file come"
 
-#: src/MainWindow.vala:76
+#: src/FileAction.vala:36
+#, fuzzy
+msgid "file"
+msgstr "file come"
+
+#: src/FileAction.vala:37
+msgid "with message"
+msgstr ""
+
+#: src/FileAction.vala:82 src/MainWindow.vala:76
 msgid "Actioneer"
 msgstr "Actioneer"
+
+#: src/SizeCondition.vala:92
+msgid "byte(s)"
+msgstr ""
+
+#: src/SizeCondition.vala:93
+msgid "kilobyte(s)"
+msgstr ""
+
+#: src/SizeCondition.vala:94
+msgid "megabyte(s)"
+msgstr ""
+
+#: src/SizeCondition.vala:95
+msgid "gigabyte(s)"
+msgstr ""
+
+#: src/SizeCondition.vala:96
+msgid "terabyte(s)"
+msgstr ""
 
 #: src/TokenText.vala:39
 msgid "Text"
@@ -134,15 +175,15 @@ msgstr "Seleziona una cartella"
 msgid "Browse filesystem"
 msgstr "Sfoglia il filesystem"
 
-#: src/widgets/actions/ActionFileBox.vala:31 src/widgets/DirectoryList.vala:44
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:44
 msgid "Choose Directory"
 msgstr "Scegli Directory"
 
-#: src/widgets/actions/ActionFileBox.vala:31 src/widgets/DirectoryList.vala:44
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:44
 msgid "Choose"
 msgstr "Schegli"
 
-#: src/widgets/actions/ActionFileBox.vala:31 src/widgets/DirectoryList.vala:44
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:44
 #: src/widgets/RuleForm.vala:112
 msgid "Cancel"
 msgstr "Cancella"
@@ -246,8 +287,9 @@ msgid "Add a directory to monitor"
 msgstr "Aggiungi una directory da monitorare"
 
 #: src/widgets/RuleStack.vala:18 src/widgets/RuleStack.vala:28
-msgid "Or click on the plus (+) button in the left-most panel"
-msgstr "Oppure fai clic sul pulsante pi (+) nel pannello pi a sinistra"
+#, fuzzy
+msgid "Or click on the plus (+) button in the Directories panel"
+msgstr "Oppure fai clic sul pulsante pi (+) nel pannello centrale"
 
 #: src/widgets/RuleStack.vala:27
 msgid "Nicely Done!"
@@ -262,5 +304,6 @@ msgid "Add a rule for the currently selected directory"
 msgstr "Aggiungi una regola per la directory attualmente selezionata"
 
 #: src/widgets/RuleStack.vala:29
-msgid "Or click on the plus (+) button in the center panel"
-msgstr "Oppure fai clic sul pulsante pi (+) nel pannello centrale"
+#, fuzzy
+msgid "Or click on the plus (+) button in the Rules panel"
+msgstr "Oppure fai clic sul pulsante pi (+) nel pannello pi a sinistra"

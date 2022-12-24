@@ -1,6 +1,12 @@
 [Desktop Entry]
+Name[it]=Actioneer
+Name[nl]=Actioneer
 Name=Actioneer
+GenericName[it]=Automazione del file system
+GenericName[nl]=Bestandssysteem-automatisering
 GenericName=Filesystem automation
+Comment[it]=Automatizza le azioni di directory/file nel tuo filesystem
+Comment[nl]=Automatiseer map- en bestandsacties
 Comment=Automate directory/file actions in your filesystem
 Categories=Utility;Development;
 Exec=com.github.phase1geo.actioneer
@@ -9,9 +15,13 @@ Terminal=false
 Type=Application
 X-GNOME-Gettext-Domain=Actioneer
 X-GNOME-UsesNotifications=true
+Keywords[it]=Automazione;Directory;File;FileSystem;
+Keywords[nl]=Automatisering;Map;Bestand;Bestandssysteem;
 Keywords=Automation;Directory;File;FileSystem;
 Actions=RunRules;
 
 [Desktop Action RunRules]
+Name[it]=Regole di esecuzione
+Name[nl]=Voer regels uit
 Name=Run Rules
 Exec=com.github.phase1geo.actioneer -r

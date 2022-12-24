@@ -5,17 +5,31 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Actioneer</name>
+  <name xml:lang="nl">Actioneer</name>
+  <name xml:lang="it">Actioneer</name>
   <summary>Automate directory and file actions in your filesystem</summary>
+  <summary xml:lang="nl">Automatiseer map- en bestandsacties</summary>
+  <summary xml:lang="it">Automatizza le azioni di directory e file nel tuo filesystem</summary>
   <description>
     <p>
       Create rules to automate operations on files or directories found within directories.  Actioneer allows
       you to powerfully simplify and organize the content in your file system.
     </p>
+    <p xml:lang="nl">Maak regels aan om bestands- en mapacties te automatiseren. Actioneer maakt het je makkelijk, maar is tegelijk ook zéér krachtig.</p>
+    <p xml:lang="it">Crea regole per automatizzare le operazioni su file o directory che si trovano all'interno di directory. Actioneer ti consente di semplificare e organizzare in modo potente il contenuto nel tuo file system.</p>
     <ul>
       <li>Watch multiple directories to run operations on.</li>
+      <li xml:lang="nl">Monitor meerdere mappen.</li>
+      <li xml:lang="it">Guarda più directory su cui eseguire operazioni.</li>
       <li>Create multiple rules per directory.</li>
+      <li xml:lang="nl">Maak meerdere regels per map aan.</li>
+      <li xml:lang="it">Crea più regole per directory.</li>
       <li>Each rule can act on file matching one or more conditions and can perform one or more actions on those files.</li>
+      <li xml:lang="nl">Elke regel kan worden uitgevoerd op basis van één of meerdere voorwaarden en kan één of meerdere acties bevatten.</li>
+      <li xml:lang="it">Ogni regola può agire su file che soddisfa una o più condizioni e può eseguire una o più azioni su quei file.</li>
       <li>File actions include: move, copy, rename.</li>
+      <li xml:lang="nl">Bestandsacties: verplaatsen, kopiëren, naam wijzigen.</li>
+      <li xml:lang="it">Le azioni sui file includono: sposta, copia, rinomina.</li>
     </ul>
   </description>
   <provides>
@@ -30,6 +44,8 @@
     </screenshot>-->
   </screenshots>
   <developer_name>Trevor Williams</developer_name>
+  <developer_name xml:lang="nl">Trevor Williams</developer_name>
+  <developer_name xml:lang="it">Trevor Williams</developer_name>
   <url type="homepage">https://github.com/phase1geo/actioneer/</url>
   <url type="bugtracker">https://github.com/phase1geo/actioneer/issues/</url>
   <custom>

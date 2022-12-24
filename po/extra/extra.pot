@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-19 23:15-0600\n"
+"POT-Creation-Date: 2022-12-24 10:52-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,10 +28,6 @@ msgstr ""
 
 #: data/com.github.phase1geo.actioneer.desktop.in:5
 msgid "Automate directory/file actions in your filesystem"
-msgstr ""
-
-#: data/com.github.phase1geo.actioneer.desktop.in:8
-msgid "com.github.phase1geo.actioneer"
 msgstr ""
 
 #: data/com.github.phase1geo.actioneer.desktop.in:13
