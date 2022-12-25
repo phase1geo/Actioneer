@@ -48,7 +48,7 @@ public enum TextMatchType {
   }
 
   /* Returns true if the two strings match exactly */
-  private bool is_matches( string act, string exp ) {
+  private bool is_matches( string? act, string exp ) {
     return( act == exp );
   }
 
@@ -73,7 +73,10 @@ public enum TextMatchType {
   }
 
   /* Returns true if the given expected string matches the actual string according to the type */
-  public bool matches( string act, string exp ) {
+  public bool matches( string? act, string exp ) {
+    if( act == null ) {
+      return false;
+    }
     switch( this ) {
       case IS              :  return( is_matches( act, exp ) );
       case IS_NOT          :  return( !is_matches( act, exp ) );
@@ -103,7 +106,7 @@ public class TextCondition {
   }
 
   /* Returns true if the file string matches the stored type and text */
-  public bool check( string act ) {
+  public bool check( string? act ) {
     if( text == null ) return( false );
     return( match_type.matches( act, text ) );
   }

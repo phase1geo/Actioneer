@@ -49,7 +49,7 @@ public enum TextTokenType {
 
   public string convert( File file, string date_pattern ) {
     switch( this ) {
-      case TEXT       :  return( "" );
+      case TEXT       :  return( date_pattern );
       case FILE_FULL  :  return( Utils.file_fullname( file.get_path() ) );
       case FILE_BASE  :  return( Utils.file_name( file.get_path() ) );
       case FILE_EXT   :  return( Utils.file_extension( file.get_path() ) );

@@ -27,6 +27,7 @@ public enum ActionConditionType {
   MODIFY_DATE,
   MIME,
   CONTENT,
+  URI,
   SIZE,
   NUM;
 
@@ -39,6 +40,7 @@ public enum ActionConditionType {
       case MODIFY_DATE :  return( "modification-date" );
       case MIME        :  return( "mime" );
       case CONTENT     :  return( "content" );
+      case URI         :  return( "uri" );
       case SIZE        :  return( "size" );
       default          :  assert_not_reached();
     }
@@ -53,6 +55,7 @@ public enum ActionConditionType {
       case MODIFY_DATE :  return( _( "Modification Date" ) );
       case MIME        :  return( _( "MIME Type" ) );
       case CONTENT     :  return( _( "Content" ) );
+      case URI         :  return( _( "Download URL" ) );
       case SIZE        :  return( _( "File Size" ) );
       default          :  assert_not_reached();
     }
@@ -67,13 +70,19 @@ public enum ActionConditionType {
       case "modification-date" :  return( MODIFY_DATE );
       case "mime"              :  return( MIME );
       case "content"           :  return( CONTENT );
+      case "uri"               :  return( URI );
       case "size"              :  return( SIZE );
       default                  :  assert_not_reached();
     }
   }
 
   public bool is_text() {
-    return( (this == NAME) || (this == EXTENSION) || (this == FULLNAME) || (this == MIME) || (this == CONTENT) );
+    return( (this == NAME)      ||
+            (this == EXTENSION) ||
+            (this == FULLNAME)  ||
+            (this == MIME)      ||
+            (this == CONTENT)   ||
+            (this == URI) );
   }
 
   public bool is_date() {
@@ -85,13 +94,14 @@ public enum ActionConditionType {
   }
 
   /* Returns the current text value associated with the given filename */
-  public string text_from_pathname( string pathname ) {
+  public string? text_from_pathname( string pathname ) {
     switch( this ) {
       case NAME      :  return( Utils.file_name( pathname ) );
       case EXTENSION :  return( Utils.file_extension( pathname ) );
       case FULLNAME  :  return( Utils.file_fullname( pathname ) );
       case MIME      :  return( Utils.file_mime( pathname ) );
       case CONTENT   :  return( Utils.file_contents( pathname ) );
+      case URI       :  return( Utils.file_download_uri( pathname ) );
       default        :  assert_not_reached();
     }
   }
@@ -169,6 +179,15 @@ public class ActionCondition {
 
   /* Returns true if the given pathname passes this condition check */
   public bool check( string pathname ) {
+    /*
+    var file  = File.new_for_path( pathname );
+    var info  = file.query_info( "*", 0 );
+    var attrs = info.list_attributes( null );
+    stdout.printf( "-----------------\n" );
+    for( int i=0; i<attrs.length; i++) {
+      stdout.printf( " attr: %s, value: %s\n", attrs[i], info.get_attribute_as_string( attrs[i] ) );
+    }
+    */
     return( (_type.is_text() && _text.check( _type.text_from_pathname( pathname ) )) ||
             (_type.is_date() && _date.check( _type.date_from_pathname( pathname ) )) ||
             (_type.is_size() && _size.check( _type.size_from_pathname( pathname ) )) );

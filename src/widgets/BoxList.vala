@@ -44,7 +44,8 @@ public class BoxList : Box {
     });
 
     /* Add test result */
-    var result = new Label( " " );
+    var result = new Image.from_icon_name( "dialog-error", IconSize.LARGE_TOOLBAR );
+    result.opacity = 0;
 
     /* Add close button */
     var close = new Button.from_icon_name( "window-close-symbolic", IconSize.SMALL_TOOLBAR );
@@ -78,12 +79,9 @@ public class BoxList : Box {
   
   public void set_test_result( int index, bool result ) {
     var row  = (Box)_list_box.get_children().nth_data( index );
-    var rslt = (Label)row.get_children().nth_data( 2 );
-    if( result ) {
-      rslt.label = "P";
-    } else {
-      rslt.label = "F";
-    }
+    var rslt = (Image)row.get_children().nth_data( 2 );
+    rslt.icon_name = result ? "emblem-default" : "dialog-error";
+    rslt.opacity = 1;
   }
 
   protected virtual void delete_row( int index ) {

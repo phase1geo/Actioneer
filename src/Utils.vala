@@ -8,7 +8,7 @@ public class Utils {
   /* Returns the basename (minus the extension) of the given filename */
   public static string? file_name( string pathname ) {
     var parts = file_fullname( pathname ).split( "." );
-    return( string.joinv( ".", parts[0:parts.length - 2] ) );
+    return( string.joinv( ".", parts[0:parts.length - 1] ) );
   }
 
   /* Returns the extension of the given filename */
@@ -26,7 +26,7 @@ public class Utils {
   /* Returns the FileInfo associated with the given filename */
   public static FileInfo file_info( string pathname ) {
     var file = File.new_for_path( pathname );
-    return( file.query_info( "time::*,standard::*", 0 ) );
+    return( file.query_info( "time::*,standard::*,metadata::*", 0 ) );
   }
 
   /* Returns the creation date of the given filename */
@@ -59,6 +59,11 @@ public class Utils {
     } catch( FileError e ) {
       return( null );
     }
+  }
+
+  /* Returns the URL that this file was downloaded from (if valid) */
+  public static string? file_download_uri( string pathname ) {
+    return( file_info( pathname ).get_attribute_string( "metadata::download-uri" ) );
   }
 
 }
