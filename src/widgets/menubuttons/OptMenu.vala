@@ -32,6 +32,7 @@ public class OptMenu : MenuButton {
 
     for( int i=0; i<num_items(); i++ ) {
       var lbl   = get_item_label( i );
+      var sep   = get_item_separator( i );
       var item  = new Gtk.MenuItem.with_label( lbl );
       var index = i;
       item.activate.connect(() => {
@@ -39,6 +40,9 @@ public class OptMenu : MenuButton {
         activated( index );
       });
       menu.add( item );
+      if( sep ) {
+        menu.add( new Gtk.SeparatorMenuItem() );
+      }
     }
 
     menu.show_all();
@@ -78,6 +82,10 @@ public class OptMenu : MenuButton {
   protected virtual string get_item_label( int index ) {
     assert( false );
     return( "" );
+  }
+
+  protected virtual bool get_item_separator( int index ) {
+    return( false );
   }
 
 }
