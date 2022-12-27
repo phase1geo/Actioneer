@@ -29,6 +29,8 @@ public enum ActionConditionType {
   CONTENT,
   URI,
   SIZE,
+  OWNER,
+  GROUP,
   NUM;
 
   public string to_string() {
@@ -42,6 +44,8 @@ public enum ActionConditionType {
       case CONTENT     :  return( "content" );
       case URI         :  return( "uri" );
       case SIZE        :  return( "size" );
+      case OWNER       :  return( "owner" );
+      case GROUP       :  return( "group" );
       default          :  assert_not_reached();
     }
   }
@@ -57,6 +61,8 @@ public enum ActionConditionType {
       case CONTENT     :  return( _( "Content" ) );
       case URI         :  return( _( "Download URL" ) );
       case SIZE        :  return( _( "File Size" ) );
+      case OWNER       :  return( _( "Owner" ) );
+      case GROUP       :  return( _( "Group" ) );
       default          :  assert_not_reached();
     }
   }
@@ -72,6 +78,8 @@ public enum ActionConditionType {
       case "content"           :  return( CONTENT );
       case "uri"               :  return( URI );
       case "size"              :  return( SIZE );
+      case "owner"             :  return( OWNER );
+      case "group"             :  return( GROUP );
       default                  :  assert_not_reached();
     }
   }
@@ -82,7 +90,9 @@ public enum ActionConditionType {
             (this == FULLNAME)  ||
             (this == MIME)      ||
             (this == CONTENT)   ||
-            (this == URI) );
+            (this == URI)       ||
+            (this == OWNER)     ||
+            (this == GROUP) );
   }
 
   public bool is_date() {
@@ -102,6 +112,8 @@ public enum ActionConditionType {
       case MIME      :  return( Utils.file_mime( pathname ) );
       case CONTENT   :  return( Utils.file_contents( pathname ) );
       case URI       :  return( Utils.file_download_uri( pathname ) );
+      case OWNER     :  return( Utils.file_owner( pathname ) );
+      case GROUP     :  return( Utils.file_group( pathname ) );
       default        :  assert_not_reached();
     }
   }

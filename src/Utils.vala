@@ -26,7 +26,7 @@ public class Utils {
   /* Returns the FileInfo associated with the given filename */
   public static FileInfo file_info( string pathname ) {
     var file = File.new_for_path( pathname );
-    return( file.query_info( "time::*,standard::*,metadata::*", 0 ) );
+    return( file.query_info( "time::*,standard::*,metadata::*,owner::*", 0 ) );
   }
 
   /* Returns the creation date of the given filename */
@@ -64,6 +64,16 @@ public class Utils {
   /* Returns the URL that this file was downloaded from (if valid) */
   public static string? file_download_uri( string pathname ) {
     return( file_info( pathname ).get_attribute_string( "metadata::download-uri" ) );
+  }
+
+  /* Returns the owner of the given file */
+  public static string? file_owner( string pathname ) {
+    return( file_info( pathname ).get_attribute_string( "owner::user" ) );
+  }
+
+  /* Returns the Linux group of the given file */
+  public static string? file_group( string pathname ) {
+    return( file_info( pathname ).get_attribute_string( "owner::group" ) );
   }
 
 }

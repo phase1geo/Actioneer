@@ -92,13 +92,11 @@ public enum FileActionType {
   private bool do_run_script( string pathname, TokenText token_text ) {
     var ofile  = File.new_for_path( pathname );
     var script = token_text.generate_text( ofile );
-    stdout.printf( "script: %s\n", script );
     return( Process.spawn_command_line_async( script ) );
   }
 
   public bool file_execute( MainWindow win, ref string pathname, File? new_file, TokenText? token_text ) {
 
-    stdout.printf( "Running action %s\n", to_string() );
     switch( this ) {
       case MOVE       :  return( do_move( ref pathname, new_file ) );
       case COPY       :  return( do_copy( pathname, new_file ) );

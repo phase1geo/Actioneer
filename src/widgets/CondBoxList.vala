@@ -43,6 +43,8 @@ public class CondBoxList : BoxList {
       case CONTENT     :  item = new CondTextBox( type );  break;
       case URI         :  item = new CondTextBox( type );  break;
       case SIZE        :  item = new CondSizeBox( type );  break;
+      case OWNER       :  item = new CondTextBox( type );  break;
+      case GROUP       :  item = new CondTextBox( type );  break;
       default          :  assert_not_reached();
     }
     _conditions.nth( index ).data = item;
