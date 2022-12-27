@@ -58,8 +58,12 @@ public class OptMenu : MenuButton {
 
   /* Sets the current item to the given index */
   public void set_current_item( int index ) {
-    var item = (Gtk.MenuItem)popup.get_children().nth_data( index );
-    item.activate();
+    int i = 0;
+    popup.get_children().foreach((item) => {
+      if( ((item as Gtk.SeparatorMenuItem) == null) && (index == i++) ) {
+        item.activate();
+      }
+    });
   }
 
   /* Returns the current item index that is selected */
@@ -67,10 +71,12 @@ public class OptMenu : MenuButton {
     int index = -1;
     int i     = 0;
     popup.get_children().foreach((item) => {
-      if( (item as Gtk.MenuItem).label == label ) {
-        index = i;
+      if( (item as Gtk.SeparatorMenuItem) == null ) {
+        if( (item as Gtk.MenuItem).label == label ) {
+          index = i;
+        }
+        i++;
       }
-      i++;
     });
     return( index );
   }

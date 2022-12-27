@@ -34,12 +34,13 @@ public class ActionBoxList : BoxList {
     ActionBase item;
     var type = (FileActionType)row_type;
     switch( type ) {
-      case MOVE   :  item = new ActionFileBox( type );    break;
-      case COPY   :  item = new ActionFileBox( type );    break;
-      case RENAME :  item = new ActionRenameBox( type );  break;
-      case TRASH  :  item = new ActionEmptyBox( type );   break;
-      case NOTIFY :  item = new ActionRenameBox( type );  break;
-      default     :  assert_not_reached();
+      case MOVE       :  item = new ActionFileBox( type );    break;
+      case COPY       :  item = new ActionFileBox( type );    break;
+      case RENAME     :  item = new ActionRenameBox( type );  break;
+      case TRASH      :  item = new ActionEmptyBox( type );   break;
+      case NOTIFY     :  item = new ActionRenameBox( type );  break;
+      case RUN_SCRIPT :  item = new ActionTextBox( type );    break;
+      default         :  assert_not_reached();
     }
     _actions.nth( index ).data = item;
     box.pack_start( (Box)item, true, true, 0 );
