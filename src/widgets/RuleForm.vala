@@ -167,7 +167,7 @@ public class RuleForm : Box {
                                         _( "Choose" ), _( "Cancel" ) );
 
     if( dialog.run() == ResponseType.ACCEPT ) {
-      Array<bool> results = new Array<bool>();
+      Array<TestResult> results = new Array<TestResult>();
       var rule = create_rule();
       rule.test( dialog.get_filename(), results );
       for( int i=0; i<results.length; i++ ) {

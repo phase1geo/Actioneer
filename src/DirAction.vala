@@ -98,7 +98,7 @@ public class DirAction {
   }
 
   /* Runs the given condition test and returns the result */
-  public void test( string pathname, Array<bool> cond_results ) {
+  public void test( string pathname, Array<TestResult> cond_results ) {
     _conditions.check( pathname, cond_results );
   }
 

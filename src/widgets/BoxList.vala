@@ -77,11 +77,12 @@ public class BoxList : Box {
     return( index );
   }
   
-  public void set_test_result( int index, bool result ) {
+  public void set_test_result( int index, TestResult result ) {
     var row  = (Box)_list_box.get_children().nth_data( index );
     var rslt = (Image)row.get_children().nth_data( 2 );
-    rslt.icon_name = result ? "emblem-default" : "dialog-error";
-    rslt.opacity = 1;
+    rslt.icon_name    = result.pass ? "emblem-default" : "dialog-error";
+    rslt.tooltip_text = result.result;
+    rslt.opacity      = 1;
   }
 
   protected virtual void delete_row( int index ) {

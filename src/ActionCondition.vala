@@ -190,19 +190,21 @@ public class ActionCondition {
   }
 
   /* Returns true if the given pathname passes this condition check */
-  public bool check( string pathname ) {
-    /*
-    var file  = File.new_for_path( pathname );
-    var info  = file.query_info( "*", 0 );
-    var attrs = info.list_attributes( null );
-    stdout.printf( "-----------------\n" );
-    for( int i=0; i<attrs.length; i++) {
-      stdout.printf( " attr: %s, value: %s\n", attrs[i], info.get_attribute_as_string( attrs[i] ) );
+  public bool check( string pathname, ref string? result ) {
+    if( _type.is_text() ) {
+      var val = _type.text_from_pathname( pathname );
+      result = val;
+      return( _text.check( val ) );
+    } else if( _type.is_date() ) {
+      var val = _type.date_from_pathname( pathname );
+      result = val.to_string();
+      return( _date.check( val ) );
+    } else if( _type.is_size() ) {
+      var val = _type.size_from_pathname( pathname );
+      result = "%lld %s".printf( _size.size.get_size( val ), _size.size.label() );
+      return( _size.check( val ) );
     }
-    */
-    return( (_type.is_text() && _text.check( _type.text_from_pathname( pathname ) )) ||
-            (_type.is_date() && _date.check( _type.date_from_pathname( pathname ) )) ||
-            (_type.is_size() && _size.check( _type.size_from_pathname( pathname ) )) );
+    return( false );
   }
 
   /* Saves this condition in XML format */
