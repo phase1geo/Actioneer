@@ -21,11 +21,39 @@
 
 using Gtk;
 
+public enum DragTypes {
+  URI
+}
+
 public class DirectoryList : EnableList {
+
+  public static const Gtk.TargetEntry[] DRAG_TARGETS = {
+    {"text/uri-list", 0, DragTypes.URI},
+  };
 
   /* Create the main window UI */
   public DirectoryList( MainWindow w ) {
+
     base( w );
+
+    /* Set ourselves up to be a drag target */
+    Gtk.drag_dest_set( this, DestDefaults.MOTION | DestDefaults.DROP, DRAG_TARGETS, Gdk.DragAction.COPY );
+    drag_motion.connect( handle_drag_motion );
+    drag_data_received.connect( handle_drag_data_received );
+
+  }
+
+  private bool handle_drag_motion( Gdk.DragContext ctx, int x, int y, uint t ) {
+    return( true );
+  }
+
+  private void handle_drag_data_received( Gdk.DragContext ctx, int x, int y, Gtk.SelectionData data, uint info, uint t ) {
+    if( info == DragTypes.URI ) {
+      foreach (var uri in data.get_uris()) {
+        added( view, model, Filename.from_uri( uri ) );
+      }
+    }
+    Gtk.drag_finish( ctx, true, false, t );
   }
 
   protected override string title() {
