@@ -84,6 +84,7 @@ public class EnableList : Box {
     /* Create list */
     _view = new TreeView.with_model( _model );
     _view.headers_visible = false;
+    _view.reorderable = true;
     _view.get_selection().mode = select_mode();
     _view.get_selection().changed.connect(() => {
       del_btn.set_sensitive( _view.get_selection().get_selected( null, null ) );
