@@ -23,6 +23,13 @@ public class CondBoxList : BoxList {
     _conditions.remove( _conditions.nth_data( index ) );
   }
 
+  protected override void move_row( int from, int to ) {
+    if( from == to ) return;
+    var condition = _conditions.nth_data( from );
+    _conditions.remove( condition );
+    _conditions.insert( condition, to );
+  }
+
   protected override void clear() {
     base.clear();
     _conditions.foreach((cond) => {

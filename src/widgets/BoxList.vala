@@ -1,8 +1,23 @@
 using Gtk;
+using Gdk;
+
+public enum MoveState {
+  NONE,
+  PRESS,
+  MOVE
+}
 
 public class BoxList : Box {
 
-  private Box _list_box;
+  private Overlay     _overlay;
+  private Box         _list_box;
+  private DrawingArea _move_blank;
+  private MoveState   _move_state       = MoveState.NONE;
+  private Box?        _move_box         = null;
+  private int         _move_start_index = -1;
+  private int         _move_last_index  = -1;
+  private Allocation  _move_alloc;
+  private double      _move_offset;
 
   protected OptMenu mb;
 
@@ -11,7 +26,65 @@ public class BoxList : Box {
 
     Object( orientation: Orientation.VERTICAL, spacing: 10 );
 
-    _list_box = new Box( Orientation.VERTICAL, 10 );
+    _list_box   = new Box( Orientation.VERTICAL, 10 );
+    _move_blank = new DrawingArea();
+
+    var ebox = new EventBox();
+
+    ebox.button_press_event.connect((e) => {
+      _move_state = MoveState.PRESS;
+      _move_box   = get_box_for_y( e.y );
+      _move_box.get_allocation( out _move_alloc );
+      _move_offset = e.y - _move_alloc.y;
+      _move_blank.set_size_request( _move_alloc.width, _move_alloc.height );
+      _move_start_index = get_index_for_y( e.y );
+      _move_last_index  = _move_start_index;
+      return( true );
+    });
+
+    ebox.button_release_event.connect((e) => {
+      _move_state = MoveState.NONE;
+      _overlay.remove( _move_box );
+      _move_box.margin_top = 0;
+      _list_box.remove( _move_blank );
+      _list_box.pack_start( _move_box, false, true, 0 );
+      _list_box.reorder_child( _move_box, _move_last_index );
+      _overlay.show_all();
+      move_row( _move_start_index, _move_last_index );
+      return( true );
+    });
+
+    ebox.motion_notify_event.connect((e) => {
+      var index = get_index_for_y( e.y );
+      if( _move_state != MoveState.NONE ) {
+        if( _move_state == MoveState.PRESS ) {
+          _list_box.pack_start( _move_blank, false, true, 0 );
+          _list_box.reorder_child( _move_blank, _move_last_index );
+          _list_box.remove( _move_box );
+          _move_box.margin_top = _move_alloc.y;
+          _move_box.halign     = Align.FILL;
+          _move_box.valign     = Align.START;
+          _overlay.add_overlay( _move_box );
+          _move_state = MoveState.MOVE;
+        } else {
+          var top = (int)(e.y - _move_offset);
+          if( (top >= 0) && ((top + _move_alloc.height) < _list_box.get_allocated_height()) ) {
+            _move_box.margin_top = (int)(e.y - _move_offset);
+          }
+          if( index != _move_last_index ) {
+            _list_box.reorder_child( _move_blank, index );
+          }
+        }
+        _overlay.show_all();
+      }
+      _move_last_index = index;
+      return( true );
+    });
+
+    ebox.add( _list_box );
+
+    _overlay = new Overlay();
+    _overlay.add( ebox );
 
     var add_btn = new Button.with_label( add_label );
     add_btn.get_style_context().add_class( "add-item" );
@@ -22,8 +95,10 @@ public class BoxList : Box {
     var bbox = new Box( Orientation.HORIZONTAL, 0 );
     bbox.pack_start( add_btn, false, false, 0 );
 
-    pack_start( _list_box, false, true, 0 );
-    pack_start( bbox,      false, true, 0 );
+    pack_start( _overlay, false, true, 0 );
+    pack_start( bbox,     false, true, 0 );
+
+    show_all();
 
   }
 
@@ -39,7 +114,7 @@ public class BoxList : Box {
       if( ibox.get_children().length() > 0 ) {
         ibox.remove( ibox.get_children().nth_data( 0 ) );
       }
-      set_row_content( get_index( box ), rt, ibox );
+      set_row_content( get_index_for_box( box ), rt, ibox );
       ibox.show_all();
     });
 
@@ -50,7 +125,7 @@ public class BoxList : Box {
     /* Add close button */
     var close = new Button.from_icon_name( "window-close-symbolic", IconSize.SMALL_TOOLBAR );
     close.clicked.connect(() => {
-      delete_row( get_index( box ) );
+      delete_row( get_index_for_box( box ) );
     });
 
     box.pack_start( mb,     false, false, 0 );
@@ -65,7 +140,7 @@ public class BoxList : Box {
 
   }
 
-  private int get_index( Box box ) {
+  private int get_index_for_box( Box box ) {
     var index = -1;
     var i     = 0;
     _list_box.get_children().foreach((b) => {
@@ -76,7 +151,33 @@ public class BoxList : Box {
     });
     return( index );
   }
+
+  private int get_index_for_y( double y ) {
+    var index = -1;
+    var i     = 0;
+    _list_box.get_children().foreach((b) => {
+      Allocation alloc;
+      b.get_allocation( out alloc );
+      if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
+        index = i;
+      }
+      i++;
+    });
+    return( index );
+  }
   
+  private Box get_box_for_y( double y ) {
+    Box box = null;
+    _list_box.get_children().foreach((b) => {
+      Allocation alloc;
+      b.get_allocation( out alloc );
+      if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
+        box = (Box)b;
+      }
+    });
+    return( box );
+  }
+
   public void set_test_result( int index, TestResult result ) {
     var row  = (Box)_list_box.get_children().nth_data( index );
     var rslt = (Image)row.get_children().nth_data( 2 );
@@ -87,6 +188,10 @@ public class BoxList : Box {
 
   protected virtual void delete_row( int index ) {
     _list_box.remove( _list_box.get_children().nth_data( index ) );
+  }
+
+  protected virtual void move_row( int from, int to ) {
+    assert( false );
   }
 
   /* Removes all elements from this box list in the UI */

@@ -23,6 +23,13 @@ public class ActionBoxList : BoxList {
     _actions.remove( _actions.nth_data( index ) );
   }
 
+  protected override void move_row( int from, int to ) {
+    if( from == to ) return;
+    var action = _actions.nth_data( from );
+    _actions.remove( action );
+    _actions.insert( action, to );
+  }
+
   protected override void clear() {
     base.clear();
     _actions.foreach((action) => {
