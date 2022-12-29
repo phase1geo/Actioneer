@@ -42,6 +42,7 @@ public class EnableList : Box {
   public signal void enable_changed( TreeView view, Gtk.ListStore model, TreePath path );
   public signal void added( TreeView view, Gtk.ListStore model, string pathname );
   public signal void removed( TreeView view, Gtk.ListStore model );
+  public signal void moved( TreeView view, Gtk.ListStore model );
   public signal void selected( TreeView view, Gtk.ListStore model );
 
   /* Create the main window UI */
@@ -53,6 +54,9 @@ public class EnableList : Box {
 
     /* Create the directory model */
     _model = new Gtk.ListStore( 2, typeof(bool), typeof(string) );
+    _model.rows_reordered.connect((path, iter, new_order) => {
+      stdout.printf( "In items_changed, path: %p, iter: %p, new_order: %p\n", path, iter, new_order );
+    });
 
     create_pane();
 
@@ -150,6 +154,10 @@ public class EnableList : Box {
 
   public virtual void action_remove() {
     removed( _view, _model );
+  }
+
+  public virtual void action_move( ) {
+    moved( _view, _model );
   }
 
 }

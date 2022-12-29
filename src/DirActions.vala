@@ -79,6 +79,11 @@ public class DirActions {
     _actions.remove( action );
   }
 
+  public void move_rule( DirAction action, int to ) {
+    _actions.remove( action );
+    _actions.insert( action, to );
+  }
+
   /* Runs the directory actions for this directory */
   public void run( MainWindow win ) {
     if( !enabled ) return;

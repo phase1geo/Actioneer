@@ -134,6 +134,16 @@ public class Controller {
 
   }
 
+  private void directory_moved( TreeView view, Gtk.ListStore model ) {
+
+    TreeIter it;
+    var dir = get_selected_directory( view, model, out it );
+    if( dir == null ) return;
+
+    _data.move_directory( dir, 0 );
+
+  }
+
   private DirActions? get_selected_directory( TreeView view, Gtk.ListStore model, out TreeIter it ) {
 
     /* Get the selected directory row */

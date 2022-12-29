@@ -57,7 +57,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   }
 
   /* Create the main window UI */
-  public MainWindow( Gtk.Application app, GLib.Settings settings ) {
+  public MainWindow( Actioneer app, GLib.Settings settings ) {
 
     Object( application: app );
 
@@ -76,6 +76,10 @@ public class MainWindow : Hdy.ApplicationWindow {
     title = _( "Actioneer" );
     set_default_size( window_w, window_h );
     destroy.connect( Gtk.main_quit );
+    delete_event.connect(() => {
+      app.dirlist.save();
+      return( false );
+    });
 
     /* Set the stage for menu actions */
     var actions = new SimpleActionGroup ();
@@ -148,9 +152,6 @@ public class MainWindow : Hdy.ApplicationWindow {
 
   /* Called when the user uses the Control-q keyboard shortcut */
   private void action_quit() {
-    Actioneer? app = null;
-    @get( "application", ref app );
-    app.dirlist.save();
     destroy();
   }
 

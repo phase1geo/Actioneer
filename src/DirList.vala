@@ -36,6 +36,11 @@ public class DirList {
     _dir_actions.remove( dir );
   }
 
+  public void move_directory( DirActions dir, int to ) {
+    _dir_actions.remove( dir );
+    _dir_actions.insert( dir, to );
+  }
+
   /* Run the actions for each listed directory */
   public void run( MainWindow win ) {
     _dir_actions.foreach((action) => {
