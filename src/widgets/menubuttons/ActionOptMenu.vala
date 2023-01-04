@@ -39,7 +39,7 @@ public class ActionOptMenu : OptMenu {
 
   protected override bool get_item_separator( int index ) {
     var type = (FileActionType)index;
-    return( (type == FileActionType.RENAME) || (type == FileActionType.TRASH) );
+    return( (type == FileActionType.ALIAS) || (type == FileActionType.TRASH) );
   }
 
 }

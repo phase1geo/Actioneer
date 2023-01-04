@@ -44,6 +44,7 @@ public class ActionBoxList : BoxList {
       case MOVE       :  item = new ActionFileBox( type );    break;
       case COPY       :  item = new ActionFileBox( type );    break;
       case RENAME     :  item = new ActionRenameBox( type );  break;
+      case ALIAS      :  item = new ActionFileBox( type );    break;
       case TRASH      :  item = new ActionEmptyBox( type );   break;
       case NOTIFY     :  item = new ActionRenameBox( type );  break;
       case RUN_SCRIPT :  item = new ActionTextBox( type );    break;

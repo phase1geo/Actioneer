@@ -2,6 +2,7 @@ public enum FileActionType {
   MOVE,
   COPY,
   RENAME,
+  ALIAS,
   TRASH,
   NOTIFY,
   RUN_SCRIPT,
@@ -12,6 +13,7 @@ public enum FileActionType {
       case MOVE       :  return( "move" );
       case COPY       :  return( "copy" );
       case RENAME     :  return( "rename" );
+      case ALIAS      :  return( "alias" );
       case TRASH      :  return( "trash" );
       case NOTIFY     :  return( "notify" );
       case RUN_SCRIPT :  return( "run-script" );
@@ -24,6 +26,7 @@ public enum FileActionType {
       case MOVE       :  return( _( "Move" ) );
       case COPY       :  return( _( "Copy" ) );
       case RENAME     :  return( _( "Rename" ) );
+      case ALIAS      :  return( _( "Alias" ) );
       case TRASH      :  return( _( "Trash" ) );
       case NOTIFY     :  return( _( "Notify" ) );
       case RUN_SCRIPT :  return( _( "Run Script" ) );
@@ -36,6 +39,7 @@ public enum FileActionType {
       case MOVE       :  return( _( "to folder" ) );
       case COPY       :  return( _( "to folder" ) );
       case RENAME     :  return( _( "file as" ) );
+      case ALIAS      :  return( _( "from folder" ) );
       case TRASH      :  return( _( "file" ) );
       case NOTIFY     :  return( _( "with message" ) );
       case RUN_SCRIPT :  return( "" );
@@ -48,6 +52,7 @@ public enum FileActionType {
       case "move"       :  return( MOVE );
       case "copy"       :  return( COPY );
       case "rename"     :  return( RENAME );
+      case "alias"      :  return( ALIAS );
       case "trash"      :  return( TRASH );
       case "notify"     :  return( NOTIFY );
       case "run-script" :  return( RUN_SCRIPT );
@@ -76,6 +81,12 @@ public enum FileActionType {
     return( retval );
   }
 
+  private bool do_alias( string pathname, File new_file ) {
+    var ofile = File.new_for_path( pathname );
+    var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
+    return( nfile.make_symbolic_link( ofile.get_path() ) );
+  }
+
   private bool do_trash( string pathname ) {
     var ofile = File.new_for_path( pathname );
     return( ofile.trash() );
@@ -101,6 +112,7 @@ public enum FileActionType {
       case MOVE       :  return( do_move( ref pathname, new_file ) );
       case COPY       :  return( do_copy( pathname, new_file ) );
       case RENAME     :  return( do_rename( ref pathname, token_text ) );
+      case ALIAS      :  return( do_alias( pathname, new_file ) );
       case TRASH      :  return( do_trash( pathname ) );
       case NOTIFY     :  return( do_notify( win, pathname, token_text ) );
       case RUN_SCRIPT :  return( do_run_script( pathname, token_text ) );
@@ -113,6 +125,7 @@ public enum FileActionType {
       case MOVE       :
       case COPY       :
       case RENAME     :
+      case ALIAS      :
       case TRASH      :
       case NOTIFY     :
       case RUN_SCRIPT :  return( true );
