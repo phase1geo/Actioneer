@@ -23,8 +23,7 @@ using Gtk;
 
 public class EnableList : Box {
 
-  private TreeView      _view;
-  private Gtk.ListStore _model;
+  private Button      _del_btn;
   private Overlay     _overlay;
   private Box         _list_box;
   private DrawingArea _move_blank;
@@ -38,19 +37,6 @@ public class EnableList : Box {
 
   protected MainWindow  win;
 
-  /*
-  public TreeView view {
-    get {
-      return( _view );
-    }
-  }
-  public Gtk.ListStore model {
-    get {
-      return( _model );
-    }
-  }
-  */
-
   public signal void enable_changed( int index );
   public signal bool added( string pathname );
   public signal void removed( int index );
@@ -63,12 +49,6 @@ public class EnableList : Box {
     Object( orientation: Orientation.VERTICAL, spacing: 0 );
 
     win = w;
-
-    /* Create the directory model */
-    _model = new Gtk.ListStore( 2, typeof(bool), typeof(string) );
-    _model.rows_reordered.connect((path, iter, new_order) => {
-      stdout.printf( "In items_changed, path: %p, new_order: %p\n", path, new_order );
-    });
 
     create_pane();
 
@@ -87,15 +67,15 @@ public class EnableList : Box {
     add_btn.set_tooltip_text( add_tooltip() );
     add_btn.clicked.connect( action_add );
 
-    var del_btn = new Button.from_icon_name( "list-remove-symbolic", IconSize.SMALL_TOOLBAR );
-    del_btn.set_tooltip_text( remove_tooltip() );
-    del_btn.set_sensitive( false );
-    del_btn.clicked.connect( action_remove );
+    _del_btn = new Button.from_icon_name( "list-remove-symbolic", IconSize.SMALL_TOOLBAR );
+    _del_btn.set_tooltip_text( remove_tooltip() );
+    _del_btn.set_sensitive( false );
+    _del_btn.clicked.connect( action_remove );
 
     var bbox = new Box( Orientation.HORIZONTAL, 5 );
     bbox.margin = 5;
-    bbox.pack_start( add_btn, false, false, 0 );
-    bbox.pack_start( del_btn, false, false, 0 );
+    bbox.pack_start( add_btn,  false, false, 0 );
+    bbox.pack_start( _del_btn, false, false, 0 );
 
     /* Create list */
     _list_box   = new Box( Orientation.VERTICAL, 0 );
@@ -263,6 +243,7 @@ public class EnableList : Box {
       box.get_style_context().add_class( "enablelist-selected" );
     }
 
+    _del_btn.set_sensitive( index != -1 );
     _select_index = index;
 
   }
