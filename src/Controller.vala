@@ -153,8 +153,6 @@ public class Controller {
 
     var rule = new DirAction.with_name( name );
 
-    stdout.printf( "Adding rule with name: %s, rule: %p\n", name, rule );
-
     return( _current_dir.add_rule( rule ) );
 
   }
@@ -229,12 +227,10 @@ public class Controller {
 
   private void form_cancelled() {
 
-    /*
-    TreeIter it;
-    _win.rule_list.view.get_selection().get_selected( null, out it );
-    _win.rule_list.view.get_selection().unselect_iter( it );
-    */
+    /* Clear the rule selection */
+    _win.rule_list.select_row( -1 );
 
+    /* Change the panel to display welcome2 UI */
     _win.rule_stack.visible_child_name = "welcome2";
 
   }

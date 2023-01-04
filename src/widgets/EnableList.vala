@@ -59,7 +59,8 @@ public class EnableList : Box {
 
   private void create_pane() {
 
-    var lbl = new Label( title() );
+    var lbl = new Label( "<b>" + title() + "</b>" );
+    lbl.use_markup = true;
     lbl.margin = 10;
 
     /* Create button bar at the bottom of the pane */
@@ -215,7 +216,7 @@ public class EnableList : Box {
       _list_box.remove( c );
     });
 
-    _select_index = -1;
+    select_row( -1 );
 
   }
 
@@ -231,8 +232,6 @@ public class EnableList : Box {
   /* Causes the given row to be selected */
   public void select_row( int index ) {
 
-    var box = _list_box.get_children().nth_data( index );
-
     /* Deselect the previous index */
     if( _select_index != -1 ) {
       var last_box = _list_box.get_children().nth_data( _select_index );
@@ -240,6 +239,7 @@ public class EnableList : Box {
     }
 
     if( index != -1 ) {
+      var box = _list_box.get_children().nth_data( index );
       box.get_style_context().add_class( "enablelist-selected" );
     }
 
@@ -280,16 +280,20 @@ public class EnableList : Box {
     var label = get_label();
     if( label != null ) {
       if( added( label ) ) {
-        select_row( (int)_list_box.get_children().length );
+        var row = (int)_list_box.get_children().length();
         add_row( true, label );
+        select_row( row );
+        selected( row );
       }
     }
   }
 
   public void action_remove() {
-    _list_box.remove( _list_box.get_children().nth_data( _select_index ) );
-    removed( _select_index );
-    _select_index = -1;
+    var index = _select_index;
+    select_row( -1 );
+    _list_box.remove( _list_box.get_children().nth_data( index ) );
+    removed( index );
+    selected( -1 );
   }
 
   protected virtual void move_row( int from, int to ) {
