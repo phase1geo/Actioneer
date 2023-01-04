@@ -50,7 +50,10 @@ public class DirectoryList : EnableList {
   private void handle_drag_data_received( Gdk.DragContext ctx, int x, int y, Gtk.SelectionData data, uint info, uint t ) {
     if( info == DragTypes.URI ) {
       foreach (var uri in data.get_uris()) {
-        added( view, model, Filename.from_uri( uri ) );
+        var fname = Filename.from_uri( uri );
+        if( added( fname ) ) {
+          add_row( true, fname );
+        }
       }
     }
     Gtk.drag_finish( ctx, true, false, t );
@@ -68,11 +71,12 @@ public class DirectoryList : EnableList {
     return( _( "Remove Selected Directory" ) );
   }
 
-  public override void action_add() {
+  public override string? get_label() {
     var dialog = new FileChooserNative( _( "Choose Directory" ), win, FileChooserAction.SELECT_FOLDER, _( "Choose" ), _( "Cancel" ) );
     if( dialog.run() == ResponseType.ACCEPT ) {
-      added( view, model, dialog.get_filename() );
+      return( dialog.get_filename() );
     }
+    return( null );
   }
 
 }

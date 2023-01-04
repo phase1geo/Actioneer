@@ -43,14 +43,16 @@ public class BoxList : Box {
     });
 
     ebox.button_release_event.connect((e) => {
+      if( _move_state == MoveState.MOVE ) {
+        _overlay.remove( _move_box );
+        _move_box.margin_top = 0;
+        _list_box.remove( _move_blank );
+        _list_box.pack_start( _move_box, false, true, 0 );
+        _list_box.reorder_child( _move_box, _move_last_index );
+        _overlay.show_all();
+        move_row( _move_start_index, _move_last_index );
+      }
       _move_state = MoveState.NONE;
-      _overlay.remove( _move_box );
-      _move_box.margin_top = 0;
-      _list_box.remove( _move_blank );
-      _list_box.pack_start( _move_box, false, true, 0 );
-      _list_box.reorder_child( _move_box, _move_last_index );
-      _overlay.show_all();
-      move_row( _move_start_index, _move_last_index );
       return( true );
     });
 

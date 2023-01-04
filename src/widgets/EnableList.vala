@@ -25,9 +25,20 @@ public class EnableList : Box {
 
   private TreeView      _view;
   private Gtk.ListStore _model;
+  private Overlay     _overlay;
+  private Box         _list_box;
+  private DrawingArea _move_blank;
+  private MoveState   _move_state       = MoveState.NONE;
+  private Box?        _move_box         = null;
+  private int         _move_start_index = -1;
+  private int         _move_last_index  = -1;
+  private Allocation  _move_alloc;
+  private double      _move_offset;
+  private int         _select_index     = -1;
 
   protected MainWindow  win;
 
+  /*
   public TreeView view {
     get {
       return( _view );
@@ -38,12 +49,13 @@ public class EnableList : Box {
       return( _model );
     }
   }
+  */
 
-  public signal void enable_changed( TreeView view, Gtk.ListStore model, TreePath path );
-  public signal void added( TreeView view, Gtk.ListStore model, string pathname );
-  public signal void removed( TreeView view, Gtk.ListStore model );
-  public signal void moved( TreeView view, Gtk.ListStore model );
-  public signal void selected( TreeView view, Gtk.ListStore model );
+  public signal void enable_changed( int index );
+  public signal bool added( string pathname );
+  public signal void removed( int index );
+  public signal void moved( int from, int to );
+  public signal void selected( int index );
 
   /* Create the main window UI */
   public EnableList( MainWindow w ) {
@@ -55,7 +67,7 @@ public class EnableList : Box {
     /* Create the directory model */
     _model = new Gtk.ListStore( 2, typeof(bool), typeof(string) );
     _model.rows_reordered.connect((path, iter, new_order) => {
-      stdout.printf( "In items_changed, path: %p, iter: %p, new_order: %p\n", path, iter, new_order );
+      stdout.printf( "In items_changed, path: %p, new_order: %p\n", path, new_order );
     });
 
     create_pane();
@@ -86,19 +98,79 @@ public class EnableList : Box {
     bbox.pack_start( del_btn, false, false, 0 );
 
     /* Create list */
-    _view = new TreeView.with_model( _model );
-    _view.headers_visible = false;
-    _view.reorderable = true;
-    _view.get_selection().mode = select_mode();
-    _view.get_selection().changed.connect(() => {
-      del_btn.set_sensitive( _view.get_selection().get_selected( null, null ) );
-      selected( _view, _model );
+    _list_box   = new Box( Orientation.VERTICAL, 0 );
+    _move_blank = new DrawingArea();
+
+    var ebox = new EventBox();
+
+    ebox.button_press_event.connect((e) => {
+      _move_box = get_box_for_y( e.y );
+      if( _move_box == null ) {
+        select_row( -1 );
+        selected( _select_index );
+      } else {
+        _move_state = MoveState.PRESS;
+        _move_box.get_allocation( out _move_alloc );
+        _move_offset = e.y - _move_alloc.y;
+        _move_blank.set_size_request( _move_alloc.width, _move_alloc.height );
+        _move_start_index = get_index_for_y( e.y );
+        _move_last_index  = _move_start_index;
+      }
+      return( true );
     });
-    setup_list();
+
+    ebox.button_release_event.connect((e) => {
+      if( _move_state == MoveState.PRESS ) {
+        select_row( _move_start_index );
+        selected( _select_index );
+      } else if( _move_state == MoveState.MOVE ) {
+        _overlay.remove( _move_box );
+        _move_box.margin_top = 0;
+        _list_box.remove( _move_blank );
+        _list_box.pack_start( _move_box, false, true, 0 );
+        _list_box.reorder_child( _move_box, _move_last_index );
+        _overlay.show_all();
+        move_row( _move_start_index, _move_last_index );
+      }
+      _move_state = MoveState.NONE;
+      return( true );
+    });
+
+    ebox.motion_notify_event.connect((e) => {
+      var index = get_index_for_y( e.y );
+      if( _move_state != MoveState.NONE ) {
+        if( _move_state == MoveState.PRESS ) {
+          _list_box.pack_start( _move_blank, false, true, 0 );
+          _list_box.reorder_child( _move_blank, _move_last_index );
+          _list_box.remove( _move_box );
+          _move_box.margin_top = _move_alloc.y;
+          _move_box.halign     = Align.FILL;
+          _move_box.valign     = Align.START;
+          _overlay.add_overlay( _move_box );
+          _move_state = MoveState.MOVE;
+        } else {
+          var top = (int)(e.y - _move_offset);
+          if( (top >= 0) && ((top + _move_alloc.height) < _list_box.get_allocated_height()) ) {
+            _move_box.margin_top = (int)(e.y - _move_offset);
+          }
+          if( index != _move_last_index ) {
+            _list_box.reorder_child( _move_blank, index );
+          }
+        }
+        _overlay.show_all();
+      }
+      _move_last_index = index;
+      return( true );
+    });
+
+    ebox.add( _list_box );
+
+    _overlay = new Overlay();
+    _overlay.add( ebox );
 
     var list_sw = new ScrolledWindow( null, null );
     list_sw.set_policy( PolicyType.NEVER, PolicyType.AUTOMATIC );
-    list_sw.add( _view );
+    list_sw.add( _overlay );
 
     /* Pack everything in the pane */
     pack_start( lbl,     false, true, 0 );
@@ -107,30 +179,30 @@ public class EnableList : Box {
 
   }
 
-  private void setup_list() {
-
-    /* Add checkbox column */
-    var toggle = new CellRendererToggle();
-    toggle.toggled.connect((path) => {
-      var tpath = new TreePath.from_string( path );
-      enable_changed( _view, _model, tpath );
+  private int get_index_for_y( double y ) {
+    var index = -1;
+    var i     = 0;
+    _list_box.get_children().foreach((b) => {
+      Allocation alloc;
+      b.get_allocation( out alloc );
+      if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
+        index = i;
+      }
+      i++;
     });
-    var enable = new TreeViewColumn.with_attributes( null, toggle, "active", 0, null );
-    enable.set_sizing( TreeViewColumnSizing.FIXED );
-    enable.set_fixed_width( 50 );
-    _view.append_column( enable );
-
-    /* Add directory name column */
-    var text = new CellRendererText();
-    var name = new TreeViewColumn.with_attributes( null, text, "text", 1, null );
-    name.set_sizing( TreeViewColumnSizing.FIXED );
-    name.set_fixed_width( 150 );
-    _view.append_column( name );
-
+    return( index );
   }
 
-  protected virtual SelectionMode select_mode() {
-    return( SelectionMode.BROWSE );
+  private Box? get_box_for_y( double y ) {
+    Box box = null;
+    _list_box.get_children().foreach((b) => {
+      Allocation alloc;
+      b.get_allocation( out alloc );
+      if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
+        box = (Box)b;
+      }
+    });
+    return( box );
   }
 
   protected virtual string title() {
@@ -148,16 +220,99 @@ public class EnableList : Box {
     return( "" );
   }
 
-  public virtual void action_add() {
-    assert( false );
+  /*
+   Returns the string to display in the row.  If null is returned,
+   we will avoid adding the new row.
+  */
+  protected virtual string? get_label() {
+    return( null );
   }
 
-  public virtual void action_remove() {
-    removed( _view, _model );
+  /* Clears all of the items from this box */
+  public void clear() {
+
+    _list_box.get_children().foreach((c) => {
+      _list_box.remove( c );
+    });
+
+    _select_index = -1;
+
   }
 
-  public virtual void action_move( ) {
-    moved( _view, _model );
+  /* Sets the label of the currently selected item to the given value */
+  public void set_label( string label ) {
+
+    var box = (Box)_list_box.get_children().nth_data( _select_index );
+    var lbl = (Label)box.get_children().nth_data( 1 );
+    lbl.label = label;
+
+  }
+
+  /* Causes the given row to be selected */
+  public void select_row( int index ) {
+
+    var box = _list_box.get_children().nth_data( index );
+
+    /* Deselect the previous index */
+    if( _select_index != -1 ) {
+      var last_box = _list_box.get_children().nth_data( _select_index );
+      last_box.get_style_context().remove_class( "enablelist-selected" );
+    }
+
+    if( index != -1 ) {
+      box.get_style_context().add_class( "enablelist-selected" );
+    }
+
+    _select_index = index;
+
+  }
+
+  /*
+   Make sure that if this method is overridden that th extended class
+   calls this method.
+  */
+  public void add_row( bool enable, string label ) {
+    
+    var box = new Box( Orientation.HORIZONTAL, 10 );
+    box.margin_start = 5;
+    box.margin_end   = 5;
+    box.get_style_context().add_class( "enablelist-padding" );
+
+    var cb = new CheckButton();
+    cb.active = enable;
+    cb.toggled.connect(() => {
+      enable_changed( _list_box.get_children().index( box ) );
+    });
+
+    var lbl = new Label( label );
+    // lbl.ypad = 5;
+
+    box.pack_start( cb,  false, false, 0 );
+    box.pack_start( lbl, false, true,  0 );
+
+    _list_box.pack_start( box, false, false, 0 );
+    _list_box.show_all();
+
+  }
+
+  public void action_add() {
+    var label = get_label();
+    if( label != null ) {
+      if( added( label ) ) {
+        select_row( (int)_list_box.get_children().length );
+        add_row( true, label );
+      }
+    }
+  }
+
+  public void action_remove() {
+    _list_box.remove( _list_box.get_children().nth_data( _select_index ) );
+    removed( _select_index );
+    _select_index = -1;
+  }
+
+  protected virtual void move_row( int from, int to ) {
+    moved( from, to );
   }
 
 }

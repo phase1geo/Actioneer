@@ -44,8 +44,8 @@ public class RuleList : EnableList {
     return( _( "Remove Selected Rule" ) );
   }
 
-  public override void action_add() {
-    added( view, model, _( "New Rule" ) );
+  public override string? get_label() {
+    return( _( "New Rule" ) );
   }
 
 }

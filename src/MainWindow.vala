@@ -116,6 +116,28 @@ public class MainWindow : Hdy.ApplicationWindow {
     add( top_box );
     show_all();
 
+    /* Create UI styles */
+    CssProvider provider = new CssProvider();
+    try {
+      // var css_data = ".enablelist-selected { background: #087DFF; }";
+      var css_data = ".enablelist-selected { background: #C0E0FF; } " +
+                     ".enablelist-padding { " +
+                     "  padding-top: 5px; " + 
+                     "  padding-bottom: 5px; " +
+                     "  padding-left: 10px; " +
+                     "  padding-right: 10px; " +
+                     "}";
+      provider.load_from_data( css_data );
+    } catch( GLib.Error e ) {
+      stdout.printf( _( "Unable to load background color: %s" ), e.message );
+    }
+
+    StyleContext.add_provider_for_screen(
+      Screen.get_default(),
+      provider,
+      STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
+
   }
 
   static construct {
