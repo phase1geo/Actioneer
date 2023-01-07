@@ -103,7 +103,7 @@ public class DirAction {
   }
 
   /* Runs the current action on the given directory */
-  public void run( MainWindow win, string dirname ) {
+  public void run( GLib.Application app, string dirname ) {
 
     stdout.printf( "Running rules for %s, enabled: %s\n", dirname, enabled.to_string() );
 
@@ -118,7 +118,7 @@ public class DirAction {
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
         if( _conditions.check( path ) ) {
-          _actions.execute( win, path );
+          _actions.execute( app, path );
         }
       }
 

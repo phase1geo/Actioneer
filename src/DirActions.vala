@@ -85,11 +85,11 @@ public class DirActions {
   }
 
   /* Runs the directory actions for this directory */
-  public void run( MainWindow win ) {
+  public void run( GLib.Application app ) {
     if( !enabled ) return;
     stdout.printf( "Running rules on directory %s\n", _dirname );
     _actions.foreach((action) => {
-      action.run( win, _dirname );
+      action.run( app, _dirname );
     });
   }
 

@@ -169,7 +169,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   private void action_run() {
     Actioneer? app = null;
     @get( "application", ref app );
-    app.dirlist.run( this );
+    app.dirlist.run( app );
   }
 
   /* Called when the user uses the Control-q keyboard shortcut */
@@ -207,7 +207,7 @@ public class MainWindow : Hdy.ApplicationWindow {
       var notification = new Notification( title );
       notification.set_body( msg );
       notification.set_priority( priority );
-      app.send_notification( "com.github.phase1geo.minder", notification );
+      app.send_notification( "com.github.phase1geo.actioneer", notification );
     }
   }
 

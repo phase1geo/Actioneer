@@ -36,11 +36,11 @@ public class FileActions {
   }
 
   /* Executes all of the actions in serial order */
-  public bool execute( MainWindow win, string pathname ) {
+  public bool execute( GLib.Application app, string pathname ) {
     var path   = pathname;
     var retval = true;
     _actions.foreach((action) => {
-      retval &= action.execute( win, ref path );
+      retval &= action.execute( app, ref path );
     });
     return( retval );
   }

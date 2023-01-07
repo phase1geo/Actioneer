@@ -95,10 +95,12 @@ public enum FileActionType {
     return( ofile.trash() );
   }
 
-  private bool do_notify( MainWindow win, string pathname, TokenText token_text ) {
+  private bool do_notify( GLib.Application app, string pathname, TokenText token_text ) {
     var ofile = File.new_for_path( pathname );
     var msg   = token_text.generate_text( ofile );
-    win.notification( _( "Actioneer" ), msg );
+    var notification = new Notification( _( "Actioneer" ) );
+    notification.set_body( msg );
+    app.send_notification( "com.github.phase1geo.actioneer", notification );
     return( true );
   }
 
@@ -109,7 +111,7 @@ public enum FileActionType {
     return( Process.spawn_command_line_async( script ) );
   }
 
-  public bool file_execute( MainWindow win, ref string pathname, File? new_file, TokenText? token_text ) {
+  public bool file_execute( GLib.Application app, ref string pathname, File? new_file, TokenText? token_text ) {
 
     switch( this ) {
       case MOVE       :  return( do_move( ref pathname, new_file ) );
@@ -117,7 +119,7 @@ public enum FileActionType {
       case RENAME     :  return( do_rename( ref pathname, token_text ) );
       case ALIAS      :  return( do_alias( pathname, new_file ) );
       case TRASH      :  return( do_trash( pathname ) );
-      case NOTIFY     :  return( do_notify( win, pathname, token_text ) );
+      case NOTIFY     :  return( do_notify( app, pathname, token_text ) );
       case RUN_SCRIPT :  return( do_run_script( pathname, token_text ) );
       default         :  assert_not_reached();
     }
@@ -203,11 +205,11 @@ public class FileAction {
    the err and errmsg value will be updated with the error information.  If the
    pathname is changed by the action, updates the pathname value.
   */
-  public bool execute( MainWindow win, ref string pathname ) {
+  public bool execute( GLib.Application app, ref string pathname ) {
 
     if( _type.is_file_type() ) {
       try {
-        return( _type.file_execute( win, ref pathname, _file, _token_text ) );
+        return( _type.file_execute( app, ref pathname, _file, _token_text ) );
       } catch( SpawnError e ) {
         err    = true;
         errmsg = e.message;

@@ -42,9 +42,9 @@ public class DirList {
   }
 
   /* Run the actions for each listed directory */
-  public void run( MainWindow win ) {
+  public void run( GLib.Application app ) {
     _dir_actions.foreach((action) => {
-      action.run( win );
+      action.run( app );
     });
   }
 
