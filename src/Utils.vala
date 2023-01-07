@@ -8,13 +8,21 @@ public class Utils {
   /* Returns the basename (minus the extension) of the given filename */
   public static string? file_name( string pathname ) {
     var parts = file_fullname( pathname ).split( "." );
-    return( string.joinv( ".", parts[0:parts.length - 1] ) );
+    if( parts.length == 1 ) {
+      return( parts[0] );
+    } else {
+      return( string.joinv( ".", parts[0:parts.length - 1] ) );
+    }
   }
 
   /* Returns the extension of the given filename */
   public static string? file_extension( string pathname ) {
     var parts = file_fullname( pathname ).split( "." );
-    return( parts[parts.length - 1] );
+    if( parts.length == 1 ) {
+      return( "" );
+    } else {
+      return( parts[parts.length - 1] );
+    }
   }
 
   /* Returns the size (in bytes) of the given filename */
