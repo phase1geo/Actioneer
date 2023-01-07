@@ -70,7 +70,9 @@ public enum FileActionType {
 
   private bool do_copy( string pathname, File new_file ) {
     var ofile = File.new_for_path( pathname );
-    return( ofile.copy( new_file, NONE ) );
+    var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
+    return( !FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
+            ofile.copy( new_file, NONE ) );
   }
 
   private bool do_rename( ref string pathname, TokenText token_text ) {
@@ -84,7 +86,8 @@ public enum FileActionType {
   private bool do_alias( string pathname, File new_file ) {
     var ofile = File.new_for_path( pathname );
     var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
-    return( nfile.make_symbolic_link( ofile.get_path() ) );
+    return( !FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
+            nfile.make_symbolic_link( ofile.get_path() ) );
   }
 
   private bool do_trash( string pathname ) {
