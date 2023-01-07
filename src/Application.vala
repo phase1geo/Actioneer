@@ -113,6 +113,7 @@ public class Actioneer : Granite.Application {
     /* If we need to run rules, do it now */
     if( run_rules ) {
       dirlist.run( appwin );
+      Process.exit( 0 );
     }
 
     /* Create the data controller */
