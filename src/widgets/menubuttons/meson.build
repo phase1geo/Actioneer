@@ -6,6 +6,8 @@ sources += files(
     'MatchOptMenu.vala',
     'OptMenu.vala',
     'SizeOptMenu.vala',
+    'StarOptMenu.vala',
+    'TagsOptMenu.vala',
     'TextOptMenu.vala',
     'TimeOptMenu.vala'
 )

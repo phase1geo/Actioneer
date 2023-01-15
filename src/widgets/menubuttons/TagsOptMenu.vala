@@ -21,25 +21,20 @@
 
 using Gtk;
 
-public class ActionOptMenu : OptMenu {
+public class TagsOptMenu : OptMenu {
 
   /* Default constructor */
-  public ActionOptMenu() {
+  public TagsOptMenu() {
     base();
   }
 
   protected override int num_items() {
-    return( FileActionType.NUM );
+    return( TagsMatchType.NUM );
   }
 
   protected override string get_item_label( int index ) {
-    var type = (FileActionType)index;
+    var type = (TagsMatchType)index;
     return( type.label() );
-  }
-
-  protected override bool get_item_separator( int index ) {
-    var type = (FileActionType)index;
-    return( type.add_separator_after() );
   }
 
 }

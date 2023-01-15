@@ -41,18 +41,21 @@ public class CondBoxList : BoxList {
     CondBase item;
     var type = (ActionConditionType)row_type;
     switch( type ) {
-      case NAME        :  item = new CondTextBox( type );  break;
-      case EXTENSION   :  item = new CondTextBox( type );  break;
-      case FULLNAME    :  item = new CondTextBox( type );  break;
-      case CREATE_DATE :  item = new CondDateBox( type );  break;
-      case MODIFY_DATE :  item = new CondDateBox( type );  break;
-      case MIME        :  item = new CondMimeBox( type );  break;
-      case CONTENT     :  item = new CondTextBox( type );  break;
-      case URI         :  item = new CondTextBox( type );  break;
-      case SIZE        :  item = new CondSizeBox( type );  break;
-      case OWNER       :  item = new CondTextBox( type );  break;
-      case GROUP       :  item = new CondTextBox( type );  break;
-      default          :  assert_not_reached();
+      case ActionConditionType.NAME        :  item = new CondTextBox( type );  break;
+      case ActionConditionType.EXTENSION   :  item = new CondTextBox( type );  break;
+      case ActionConditionType.FULLNAME    :  item = new CondTextBox( type );  break;
+      case ActionConditionType.CREATE_DATE :  item = new CondDateBox( type );  break;
+      case ActionConditionType.MODIFY_DATE :  item = new CondDateBox( type );  break;
+      case ActionConditionType.MIME        :  item = new CondMimeBox( type );  break;
+      case ActionConditionType.CONTENT     :  item = new CondTextBox( type );  break;
+      case ActionConditionType.URI         :  item = new CondTextBox( type );  break;
+      case ActionConditionType.SIZE        :  item = new CondSizeBox( type );  break;
+      case ActionConditionType.OWNER       :  item = new CondTextBox( type );  break;
+      case ActionConditionType.GROUP       :  item = new CondTextBox( type );  break;
+      case ActionConditionType.TAG         :  item = new CondTagsBox( type );  break;
+      case ActionConditionType.STARS       :  item = new CondStarBox( type );  break;
+      case ActionConditionType.COMMENT     :  item = new CondTextBox( type );  break;
+      default                              :  assert_not_reached();
     }
     _conditions.nth( index ).data = item;
     box.pack_start( (Box)item, false, true, 0 );

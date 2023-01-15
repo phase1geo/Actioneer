@@ -3,5 +3,7 @@ sources += files(
     'CondDateBox.vala',
     'CondMimeBox.vala',
     'CondSizeBox.vala',
+    'CondStarBox.vala',
+    'CondTagsBox.vala',
     'CondTextBox.vala'
 )

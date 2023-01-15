@@ -4,6 +4,11 @@ public enum FileActionType {
   RENAME,
   ALIAS,
   TRASH,
+  ADD_TAG,
+  REMOVE_TAG,
+  CLEAR_TAGS,
+  STARS,
+  COMMENT,
   NOTIFY,
   RUN_SCRIPT,
   NUM;
@@ -15,6 +20,11 @@ public enum FileActionType {
       case RENAME     :  return( "rename" );
       case ALIAS      :  return( "alias" );
       case TRASH      :  return( "trash" );
+      case ADD_TAG    :  return( "tag-add" );
+      case REMOVE_TAG :  return( "tag-remove" );
+      case CLEAR_TAGS :  return( "tag-clear" );
+      case STARS      :  return( "stars" );
+      case COMMENT    :  return( "comment" );
       case NOTIFY     :  return( "notify" );
       case RUN_SCRIPT :  return( "run-script" );
       default         :  assert_not_reached();
@@ -28,6 +38,11 @@ public enum FileActionType {
       case RENAME     :  return( _( "Rename" ) );
       case ALIAS      :  return( _( "Alias" ) );
       case TRASH      :  return( _( "Trash" ) );
+      case ADD_TAG    :  return( _( "Add Tag" ) );
+      case REMOVE_TAG :  return( _( "Remove Tag" ) );
+      case CLEAR_TAGS :  return( _( "Clear Tags" ) );
+      case STARS      :  return( _( "Rating" ) );
+      case COMMENT    :  return( _( "Comment" ) );
       case NOTIFY     :  return( _( "Notify" ) );
       case RUN_SCRIPT :  return( _( "Run Script" ) );
       default         :  assert_not_reached();
@@ -41,6 +56,11 @@ public enum FileActionType {
       case RENAME     :  return( _( "file as" ) );
       case ALIAS      :  return( _( "from folder" ) );
       case TRASH      :  return( _( "file" ) );
+      case ADD_TAG    :  return( _( "to file" ) );
+      case REMOVE_TAG :  return( _( "from file" ) );
+      case CLEAR_TAGS :  return( _( "from file" ) );
+      case STARS      :  return( _( "for file" ) );
+      case COMMENT    :  return( _( "for file" ) );
       case NOTIFY     :  return( _( "with message" ) );
       case RUN_SCRIPT :  return( "" );
       default         :  assert_not_reached();
@@ -54,10 +74,19 @@ public enum FileActionType {
       case "rename"     :  return( RENAME );
       case "alias"      :  return( ALIAS );
       case "trash"      :  return( TRASH );
+      case "tag-add"    :  return( ADD_TAG );
+      case "tag-remove" :  return( REMOVE_TAG );
+      case "tag-clear"  :  return( CLEAR_TAGS );
+      case "stars"      :  return( STARS );
+      case "comment"    :  return( COMMENT );
       case "notify"     :  return( NOTIFY );
       case "run-script" :  return( RUN_SCRIPT );
       default           :  assert_not_reached();
     }
+  }
+
+  public bool add_separator_after() {
+    return( (this == ALIAS) || (this == TRASH) || (this == COMMENT) );
   }
 
   private bool do_move( ref string pathname, File new_file ) {
@@ -95,12 +124,48 @@ public enum FileActionType {
     return( ofile.trash() );
   }
 
+  private bool do_add_tag( string pathname, TokenText token_text ) {
+    var ofile = File.new_for_path( pathname );
+    var tag   = token_text.generate_text( ofile );
+    return( Utils.file_add_tag( pathname, tag ) );
+  }
+
+  private bool do_remove_tag( string pathname, TokenText token_text ) {
+    var ofile = File.new_for_path( pathname );
+    var tag   = token_text.generate_text( ofile );
+    return( Utils.file_remove_tag( pathname, tag ) );
+  }
+
+  private bool do_clear_tags( string pathname ) {
+    return( Utils.file_clear_tags( pathname ) );
+  }
+
+  private bool do_rating( string pathname, TokenText token_text ) {
+    stdout.printf( "Running action do_rating\n" );
+    if( token_text.num_tokens() > 0 ) {
+      var token = token_text.get_token( 0 );
+      if( token.token_type == TextTokenType.TEXT ) {
+        var val = int.parse( token.text );
+        return( Utils.set_file_stars( pathname, val ) );
+      }
+    }
+    return( false );
+  }
+
+  private bool do_comment( string pathname, TokenText token_text ) {
+    stdout.printf( "Running action do_comment\n" );
+    var ofile   = File.new_for_path( pathname );
+    var comment = token_text.generate_text( ofile );
+    return( Utils.set_file_comment( pathname, comment ) );
+  }
+
   private bool do_notify( GLib.Application app, string pathname, TokenText token_text ) {
     var ofile = File.new_for_path( pathname );
     var msg   = token_text.generate_text( ofile );
     var notification = new Notification( _( "Actioneer" ) );
     notification.set_body( msg );
     app.send_notification( "com.github.phase1geo.actioneer", notification );
+    Utils.show_file_info( pathname );
     return( true );
   }
 
@@ -119,6 +184,11 @@ public enum FileActionType {
       case RENAME     :  return( do_rename( ref pathname, token_text ) );
       case ALIAS      :  return( do_alias( pathname, new_file ) );
       case TRASH      :  return( do_trash( pathname ) );
+      case ADD_TAG    :  return( do_add_tag( pathname, token_text ) );
+      case REMOVE_TAG :  return( do_remove_tag( pathname, token_text ) );
+      case CLEAR_TAGS :  return( do_clear_tags( pathname ) );
+      case STARS      :  return( do_rating( pathname, token_text ) );
+      case COMMENT    :  return( do_comment( pathname, token_text ) );
       case NOTIFY     :  return( do_notify( app, pathname, token_text ) );
       case RUN_SCRIPT :  return( do_run_script( pathname, token_text ) );
       default         :  assert_not_reached();
@@ -129,17 +199,22 @@ public enum FileActionType {
     switch( this ) {
       case MOVE       :
       case COPY       :
-      case RENAME     :
-      case ALIAS      :
-      case TRASH      :
-      case NOTIFY     :
-      case RUN_SCRIPT :  return( true );
+      case ALIAS      :  return( true );
       default         :  return( false );
     }
   }
 
   public bool is_tokenized() {
-    return( (this == RENAME) || (this == NOTIFY) || (this == RUN_SCRIPT) );
+    switch( this ) {
+      case RENAME     :
+      case NOTIFY     :
+      case ADD_TAG    :
+      case REMOVE_TAG :
+      case STARS      :
+      case COMMENT    :
+      case RUN_SCRIPT :  return( true );
+      default         :  return( false );
+    }
   }
 
 }
@@ -207,16 +282,14 @@ public class FileAction {
   */
   public bool execute( GLib.Application app, ref string pathname ) {
 
-    if( _type.is_file_type() ) {
-      try {
-        return( _type.file_execute( app, ref pathname, _file, _token_text ) );
-      } catch( SpawnError e ) {
-        err    = true;
-        errmsg = e.message;
-      } catch( Error e ) {
-        err    = true;
-        errmsg = e.message;
-      }
+    try {
+      return( _type.file_execute( app, ref pathname, _file, _token_text ) );
+    } catch( SpawnError e ) {
+      err    = true;
+      errmsg = e.message;
+    } catch( Error e ) {
+      err    = true;
+      errmsg = e.message;
     }
 
     return( false );
