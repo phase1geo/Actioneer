@@ -13,9 +13,9 @@ public class ActionBoxList : BoxList {
     return( new ActionOptMenu() );
   }
 
-  protected override void add_row( int row_type ) {
+  protected override void add_row( int row_type, bool show_opt_menu ) {
     _actions.append( new ActionBase( (FileActionType)0 ) );
-    base.add_row( row_type );
+    base.add_row( row_type, show_opt_menu );
   }
 
   protected override void delete_row( int index ) {
@@ -68,7 +68,7 @@ public class ActionBoxList : BoxList {
   public override void set_data( DirAction action ) {
     for( int i=0; i<action.num_actions(); i++ ) {
       var act = action.get_action( i );
-      add_row( (int)act.action_type );
+      add_row( (int)act.action_type, false );
       _actions.nth_data( _actions.length() - 1 ).set_data( act );
     }
   }

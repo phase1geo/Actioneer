@@ -91,7 +91,7 @@ public class BoxList : Box {
     var add_btn = new Button.with_label( add_label );
     add_btn.get_style_context().add_class( "add-item" );
     add_btn.clicked.connect(() => {
-      add_row( 0 );
+      add_row( 0, true );
     });
 
     var bbox = new Box( Orientation.HORIZONTAL, 0 );
@@ -104,7 +104,7 @@ public class BoxList : Box {
 
   }
 
-  protected virtual void add_row( int row_type ) {
+  protected virtual void add_row( int row_type, bool show_opt_menu ) {
 
     var box = new Box( Orientation.HORIZONTAL, 10 );
     box.margin_left = 10;
@@ -139,6 +139,13 @@ public class BoxList : Box {
     _list_box.show_all();
 
     mb.set_current_item( row_type );
+
+    if( show_opt_menu ) {
+      Idle.add(() => {
+        mb.clicked();
+        return( false );
+      });
+    }
 
   }
 

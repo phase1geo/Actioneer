@@ -13,9 +13,9 @@ public class CondBoxList : BoxList {
     return( new CondOptMenu() );
   }
 
-  protected override void add_row( int row_type ) {
+  protected override void add_row( int row_type, bool show_opt_menu ) {
     _conditions.append( new CondBase( (ActionConditionType)0 ) );
-    base.add_row( row_type );
+    base.add_row( row_type, show_opt_menu );
   }
 
   protected override void delete_row( int index ) {
@@ -70,7 +70,7 @@ public class CondBoxList : BoxList {
   public override void set_data( DirAction action ) {
     for( int i=0; i<action.num_conditions(); i++ ) {
       var cond = action.get_condition( i );
-      add_row( (int)cond.cond_type );
+      add_row( (int)cond.cond_type, false );
       _conditions.nth_data( _conditions.length() - 1 ).set_data( cond );
     }
   }
