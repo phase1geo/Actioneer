@@ -6,6 +6,9 @@ public enum TextTokenType {
   FILE_CDATE,
   FILE_MDATE,
   TODAY,
+  FILE_OWNER,
+  FILE_GROUP,
+  UNIQUE_ID,
   NUM;
 
   public string to_string() {
@@ -17,6 +20,9 @@ public enum TextTokenType {
       case FILE_CDATE :  return( "file-cdate" );
       case FILE_MDATE :  return( "file-mdate" );
       case TODAY      :  return( "today" );
+      case FILE_OWNER :  return( "file-owner" );
+      case FILE_GROUP :  return( "file-group" );
+      case UNIQUE_ID  :  return( "unique-id" );
       default         :  assert_not_reached();
     }
   }
@@ -30,6 +36,9 @@ public enum TextTokenType {
       case "file-cdate" :  return( FILE_CDATE );
       case "file-mdate" :  return( FILE_MDATE );
       case "today"      :  return( TODAY );
+      case "file-owner" :  return( FILE_OWNER );
+      case "file-group" :  return( FILE_GROUP );
+      case "unique-id"  :  return( UNIQUE_ID );
       default           :  assert_not_reached();
     }
   }
@@ -43,6 +52,9 @@ public enum TextTokenType {
       case FILE_CDATE :  return( _( "Creation Date" ) );
       case FILE_MDATE :  return( _( "Modification Date" ) );
       case TODAY      :  return( _( "Today" ) );
+      case FILE_OWNER :  return( _( "File Owner" ) );
+      case FILE_GROUP :  return( _( "File Group" ) );
+      case UNIQUE_ID  :  return( _( "Unique ID" ) );
       default         :  assert_not_reached();
     }
   }
@@ -56,6 +68,9 @@ public enum TextTokenType {
       case FILE_CDATE :  return( Utils.date_to_string( Utils.file_create_date( file.get_path() ), date_pattern ) );
       case FILE_MDATE :  return( Utils.date_to_string( Utils.file_modify_date( file.get_path() ), date_pattern ) );
       case TODAY      :  return( Utils.date_to_string( new DateTime.now(), date_pattern ) );
+      case FILE_OWNER :  return( Utils.file_owner( file.get_path() ) );
+      case FILE_GROUP :  return( Utils.file_group( file.get_path() ) );
+      case UNIQUE_ID  :  return( "XXXXXX" );
       default         :  assert_not_reached();
     }
   }
@@ -65,7 +80,15 @@ public enum TextTokenType {
   }
 
   public bool is_file_part() {
-    return( (this == FILE_FULL) || (this == FILE_BASE) || (this == FILE_EXT) );
+    switch( this ) {
+      case FILE_FULL  :
+      case FILE_BASE  :
+      case FILE_EXT   :
+      case FILE_OWNER :
+      case FILE_GROUP :
+      case UNIQUE_ID  :  return( true );
+      default         :  return( false );
+    }
   }
 
   public bool is_date() {
@@ -124,6 +147,65 @@ public enum TextTokenModifier {
 
 }
 
+public enum TextTokenFormat {
+  NO_ZERO,
+  ONE_ZERO,
+  TWO_ZERO,
+  THREE_ZERO,
+  FOUR_ZERO,
+  FIVE_ZERO,
+  NUM;
+
+  public string to_string() {
+    switch( this ) {
+      case NO_ZERO    :  return( "0" );
+      case ONE_ZERO   :  return( "1" );
+      case TWO_ZERO   :  return( "2" );
+      case THREE_ZERO :  return( "3" );
+      case FOUR_ZERO  :  return( "4" );
+      case FIVE_ZERO  :  return( "5" );
+      default         :  assert_not_reached();
+    }
+  }
+
+  public string label() {
+    switch( this ) {
+      case NO_ZERO    :  return( "1" );
+      case ONE_ZERO   :  return( "01" );
+      case TWO_ZERO   :  return( "001" );
+      case THREE_ZERO :  return( "0001" );
+      case FOUR_ZERO  :  return( "00001" );
+      case FIVE_ZERO  :  return( "000001" );
+      default         :  assert_not_reached();
+    }
+  }
+
+  public string format() {
+    switch( this ) {
+      case NO_ZERO    :  return( "%d" );
+      case ONE_ZERO   :  return( "%02d" );
+      case TWO_ZERO   :  return( "%03d" );
+      case THREE_ZERO :  return( "%04d" );
+      case FOUR_ZERO  :  return( "%05d" );
+      case FIVE_ZERO  :  return( "%06d" );
+      default         :  assert_not_reached();
+    }
+  }
+
+  public static TextTokenFormat parse( string val ) {
+    switch( val ) {
+      case "0" :  return( NO_ZERO );
+      case "1" :  return( ONE_ZERO );
+      case "2" :  return( TWO_ZERO );
+      case "3" :  return( THREE_ZERO );
+      case "4" :  return( FOUR_ZERO );
+      case "5" :  return( FIVE_ZERO );
+      default  :  assert_not_reached();
+    }
+  }
+
+}
+
 public class TextToken {
 
   public static const string xml_node = "text-token";
@@ -131,6 +213,7 @@ public class TextToken {
   public TextTokenType     token_type { get; private set; default = TextTokenType.TEXT; }
   public string            text       { get; set; default = ""; }
   public TextTokenModifier modifier   { get; set; default = TextTokenModifier.NONE; }
+  public TextTokenFormat   id_format  { get; set; default = TextTokenFormat.NO_ZERO; }
 
   /* Default constructor */
   public TextToken() {}
@@ -158,11 +241,16 @@ public class TextToken {
     token_type = other.token_type;
     text       = other.text;
     modifier   = other.modifier;
+    id_format  = other.id_format;
   }
 
   /* Generates the text associated with this token */
   public string generate_text( File file ) {
-    return( modifier.format( token_type.convert( file, text ) ) );
+    if( token_type == TextTokenType.UNIQUE_ID ) {
+      return( id_format.format() );
+    } else {
+      return( modifier.format( token_type.convert( file, text ) ) );
+    }
   }
 
   /* Saves this instance in XML format */
@@ -171,6 +259,7 @@ public class TextToken {
     node->set_prop( "type", token_type.to_string() );
     node->set_prop( "text", text );
     node->set_prop( "modifier", modifier.to_string() );
+    node->set_prop( "id-format", id_format.to_string() );
     return( node );
   }
 
@@ -187,6 +276,10 @@ public class TextToken {
     var mod = node->get_prop( "modifier" );
     if( mod != null ) {
       modifier = TextTokenModifier.parse( mod );
+    }
+    var fmt = node->get_prop( "id-format" );
+    if( fmt != null ) {
+      id_format = TextTokenFormat.parse( fmt );
     }
   }
 
@@ -226,13 +319,31 @@ public class TokenText {
     _tokens.append( token );
   }
 
+  /*
+   Substitutes any unique ID strings in the embedded string such that it will be a unique filename within the file's
+   directory.
+  */
+  private string insert_unique_ids( File file, string str ) {
+    var parts = str.split( "%" );
+    if( parts.length == 1 ) {
+      return( str );
+    }
+    var dir   = file.get_parent().get_path();
+    var num   = 1;
+    var fname = "";
+    do {
+      fname = str.printf( num++ );
+    } while( FileUtils.test( Path.build_filename( dir, fname ), FileTest.EXISTS ) );
+    return( fname );
+  }
+
   /* Generates the text string based on the tokens */
   public string generate_text( File file ) {
     var str = "";
     _tokens.foreach((token) => {
       str += token.generate_text( file );
     });
-    return( str );
+    return( insert_unique_ids( file, str ) );
   }
 
   /* Saves this instance in XML format */

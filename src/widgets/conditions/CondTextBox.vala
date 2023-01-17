@@ -2,8 +2,9 @@ using Gtk;
 
 public class CondTextBox : CondBase {
 
-  private TextOptMenu         _menu;
-  private Entry               _entry;
+  private TextOptMenu _menu;
+  private Entry       _entry;
+  private Revealer    _reveal;
 
   /* Default constructor */
   public CondTextBox( ActionConditionType type ) {
@@ -14,12 +15,15 @@ public class CondTextBox : CondBase {
     _menu.activated.connect( menu_activated );
 
     _entry = new Entry();
-
     _entry.hexpand     = true;
     _entry.hexpand_set = true;
 
-    pack_start( _menu,  false, false, 0 );
-    pack_start( _entry, false, true,  0 );
+    _reveal = new Revealer();
+    _reveal.transition_duration = 0;
+    _reveal.add( _entry );
+
+    pack_start( _menu,   false, false, 0 );
+    pack_start( _reveal, false, true,  0 );
     show_all();
 
     _menu.activated( 0 );
@@ -27,6 +31,8 @@ public class CondTextBox : CondBase {
   }
 
   private void menu_activated( int index ) {
+    var type = (TextMatchType)index;
+    _reveal.reveal_child = type.requires_expected();
     _entry.grab_focus();
   }
 

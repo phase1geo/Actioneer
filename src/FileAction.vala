@@ -106,7 +106,7 @@ public enum FileActionType {
 
   private bool do_rename( ref string pathname, TokenText token_text ) {
     var ofile  = File.new_for_path( pathname );
-    var nfile  = File.new_for_path( Path.build_filename( ofile.get_path(), token_text.generate_text( ofile ) ) );
+    var nfile  = File.new_for_path( Path.build_filename( ofile.get_parent().get_path(), token_text.generate_text( ofile ) ) );
     var retval = ofile.move( nfile, NONE );
     pathname   = nfile.get_path();
     return( retval );
@@ -141,7 +141,6 @@ public enum FileActionType {
   }
 
   private bool do_rating( string pathname, TokenText token_text ) {
-    stdout.printf( "Running action do_rating\n" );
     if( token_text.num_tokens() > 0 ) {
       var token = token_text.get_token( 0 );
       if( token.token_type == TextTokenType.TEXT ) {
@@ -153,7 +152,6 @@ public enum FileActionType {
   }
 
   private bool do_comment( string pathname, TokenText token_text ) {
-    stdout.printf( "Running action do_comment\n" );
     var ofile   = File.new_for_path( pathname );
     var comment = token_text.generate_text( ofile );
     return( Utils.set_file_comment( pathname, comment ) );
@@ -165,7 +163,7 @@ public enum FileActionType {
     var notification = new Notification( _( "Actioneer" ) );
     notification.set_body( msg );
     app.send_notification( "com.github.phase1geo.actioneer", notification );
-    Utils.show_file_info( pathname );
+    // Utils.show_file_info( pathname );
     return( true );
   }
 

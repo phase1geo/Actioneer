@@ -48,9 +48,9 @@ public class ActionRenameBox : ActionBase {
     pack_start( sw, true, true, 0 );
 
     /* Create default tokens */
-    insert_token( 0, TextTokenType.FILE_BASE, null, TextTokenModifier.NONE );
-    insert_token( 1, TextTokenType.TEXT, ".", TextTokenModifier.NONE );
-    insert_token( 2, TextTokenType.FILE_EXT, null, TextTokenModifier.NONE );
+    insert_token( 0, TextTokenType.FILE_BASE, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
+    insert_token( 1, TextTokenType.TEXT,      ".",  TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
+    insert_token( 2, TextTokenType.FILE_EXT,  null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
 
   }
 
@@ -70,9 +70,9 @@ public class ActionRenameBox : ActionBase {
   }
 
   /* Inserts the given token */
-  private void insert_token( int index, TextTokenType type, string? text, TextTokenModifier modifier ) {
+  private void insert_token( int index, TextTokenType type, string? text, TextTokenModifier modifier, TextTokenFormat format ) {
     _add_reveal.reveal_child = false;
-    var w = (type == TextTokenType.TEXT) ? insert_text( text ) : insert_button( type );
+    var w = (type == TextTokenType.TEXT) ? insert_text( text ) : insert_button( type, modifier, format );
     _tbox.pack_start( w, false, false, 0 );
     if( (index + 1) < _tbox.get_children().length() ) {
       _tbox.reorder_child( w, index );
@@ -89,14 +89,14 @@ public class ActionRenameBox : ActionBase {
         var index = get_index( w );
         switch( mtype ) {
           case TokenModifyType.BEFORE  :
-            insert_token( index, token_type, null, TextTokenModifier.NONE );
+            insert_token( index, token_type, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
             break;
           case TokenModifyType.AFTER   :
-            insert_token( (index + 1), token_type, null, TextTokenModifier.NONE );
+            insert_token( (index + 1), token_type, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
             break;
           case TokenModifyType.REPLACE :
             _tbox.remove( w );
-            insert_token( index, token_type, null, TextTokenModifier.NONE );
+            insert_token( index, token_type, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
             break;
         }
         show_all();
@@ -136,6 +136,18 @@ public class ActionRenameBox : ActionBase {
     menu.add( replace );
     menu.add( remove );
 
+  }
+
+  private void add_id_format( Gtk.Menu menu, Widget w ) {
+    for( int i=0; i<TextTokenFormat.NUM; i++ ) {
+      var fmt  = (TextTokenFormat)i;
+      var item = new Gtk.MenuItem.with_label( fmt.label() );
+      item.activate.connect(() => {
+        var btn = (Button)w;
+        btn.label = fmt.label();
+      });
+      menu.add( item );
+    }
   }
 
   private void add_modifiers( Gtk.Menu menu, Widget w ) {
@@ -209,15 +221,20 @@ public class ActionRenameBox : ActionBase {
   }
 
   /* Inserts a conversion button */
-  private Widget insert_button( TextTokenType type ) {
-    var btn = new Button.with_label( type.label() );
+  private Widget insert_button( TextTokenType type, TextTokenModifier mod, TextTokenFormat fmt ) {
+    var is_id = (type == TextTokenType.UNIQUE_ID);
+    var btn   = new Button.with_label( is_id ? fmt.label() : mod.format( type.label() ) );
     btn.get_style_context().add_class( "circular" );
     btn.get_style_context().add_class( "token" );
     btn.button_press_event.connect((e) => {
       if( e.button == Gdk.BUTTON_PRIMARY ) {
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
         var menu = new Gtk.Menu();
-        add_modifiers( menu, btn );
+        if( is_id ) {
+          add_id_format( menu, btn );
+        } else {
+          add_modifiers( menu, btn );
+        }
         menu.add( new SeparatorMenuItem() );
         add_change_remove( menu, btn );
         menu.show_all();
@@ -243,14 +260,27 @@ public class ActionRenameBox : ActionBase {
         var i     = 0;
         while( (i < TextTokenType.NUM) && !found ) {
           var type = (TextTokenType)i;
-          for( int j=0; j<TextTokenModifier.NUM; j++ ) {
-            var mod = (TextTokenModifier)j;
-            if( btn.label == mod.format( type.label() ) ) {
-              var token = new TextToken.with_type( type );
-              token.modifier = mod;
-              data.token_text.add_token( token );
-              found = true;
-              break;
+          if( type == TextTokenType.UNIQUE_ID ) {
+            for( int j=0; j<TextTokenFormat.NUM; j++ ) {
+              var fmt = (TextTokenFormat)j;
+              if( btn.label == fmt.label() ) {
+                var token = new TextToken.with_type( type );
+                token.id_format = fmt;
+                data.token_text.add_token( token );
+                found = true;
+                break;
+              }
+            }
+          } else {
+            for( int j=0; j<TextTokenModifier.NUM; j++ ) {
+              var mod = (TextTokenModifier)j;
+              if( btn.label == mod.format( type.label() ) ) {
+                var token = new TextToken.with_type( type );
+                token.modifier = mod;
+                data.token_text.add_token( token );
+                found = true;
+                break;
+              }
             }
           }
           i++;
@@ -270,7 +300,7 @@ public class ActionRenameBox : ActionBase {
     } else {
       for( int i=0; i<token_text.num_tokens(); i++ ) {
         var token = token_text.get_token( i );
-        insert_token( i, token.token_type, token.text, token.modifier );
+        insert_token( i, token.token_type, token.text, token.modifier, token.id_format );
       }
       _tbox.show_all();
     }

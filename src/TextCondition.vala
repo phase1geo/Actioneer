@@ -6,6 +6,8 @@ public enum TextMatchType {
   STARTS_WITH,
   ENDS_WITH,
   MATCHES_PATTERN,
+  EXISTS,
+  EXISTS_NOT,
   NUM;
 
   public string to_string() {
@@ -17,6 +19,8 @@ public enum TextMatchType {
       case STARTS_WITH     :  return( "starts-with" );
       case ENDS_WITH       :  return( "ends-with" );
       case MATCHES_PATTERN :  return( "matches-pattern" );
+      case EXISTS          :  return( "exists" );
+      case EXISTS_NOT      :  return( "exists-not" );
       default              :  assert_not_reached();
     }
   }
@@ -30,6 +34,8 @@ public enum TextMatchType {
       case STARTS_WITH     :  return( "starts with" );
       case ENDS_WITH       :  return( "ends with" );
       case MATCHES_PATTERN :  return( "matches regex pattern" );
+      case EXISTS          :  return( "exists" );
+      case EXISTS_NOT      :  return( "does not exist" );
       default              :  assert_not_reached();
     }
   }
@@ -43,6 +49,8 @@ public enum TextMatchType {
       case "starts-with"     :  return( STARTS_WITH );
       case "ends-with"       :  return( ENDS_WITH );
       case "matches-pattern" :  return( MATCHES_PATTERN );
+      case "exists"          :  return( EXISTS );
+      case "exists-not"      :  return( EXISTS_NOT );
       default                :  assert_not_reached();
     }
   }
@@ -72,6 +80,11 @@ public enum TextMatchType {
     return( Regex.match_simple( pattern, act ) );
   }
 
+  /* Returns true if the actual string contains any non-empty string value */
+  private bool exists( string act ) {
+    return( act != "" );
+  }
+
   /* Returns true if the given expected string matches the actual string according to the type */
   public bool matches( string? act, string exp ) {
     if( act == null ) {
@@ -85,6 +98,22 @@ public enum TextMatchType {
       case STARTS_WITH     :  return( starts_with( act, exp ) );
       case ENDS_WITH       :  return( ends_with( act, exp ) );
       case MATCHES_PATTERN :  return( matches_pattern( act, exp ) );
+      case EXISTS          :  return( exists( act ) );
+      case EXISTS_NOT      :  return( !exists( act ) );
+      default              :  return( false );
+    }
+  }
+
+  /* Returns true if this match requires an expected value */
+  public bool requires_expected() {
+    switch( this ) {
+      case IS              :
+      case IS_NOT          :
+      case CONTAINS        :
+      case CONTAINS_NOT    :
+      case STARTS_WITH     :
+      case ENDS_WITH       :
+      case MATCHES_PATTERN :  return( true );
       default              :  return( false );
     }
   }
