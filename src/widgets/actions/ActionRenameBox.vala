@@ -11,6 +11,7 @@ public class ActionRenameBox : ActionBase {
 
   private Box      _tbox;
   private Revealer _add_reveal;
+  private bool     _id_used = false;
 
   /* Default constructor */
   public ActionRenameBox( FileActionType type ) {
@@ -83,6 +84,7 @@ public class ActionRenameBox : ActionBase {
     menu = new Gtk.Menu();
     for( int i=0; i<TextTokenType.NUM; i++ ) {
       var token_type = (TextTokenType)i;
+      if( (token_type == TextTokenType.UNIQUE_ID) && _id_used ) continue;
       var item       = new Gtk.MenuItem.with_label( token_type.label() );
       var mtype      = type;
       item.activate.connect(() => {
@@ -106,7 +108,7 @@ public class ActionRenameBox : ActionBase {
     menu.show_all();
   }
 
-  private void add_change_remove( Gtk.Menu menu, Widget w ) {
+  private void add_change_remove( Gtk.Menu menu, Widget w, TextTokenType type ) {
 
     Gtk.Menu submenu;
 
@@ -127,6 +129,9 @@ public class ActionRenameBox : ActionBase {
       _tbox.remove( w ); 
       if( _tbox.get_children().length() == 0 ) {
         _add_reveal.reveal_child = true;
+      }
+      if( type == TextTokenType.UNIQUE_ID ) {
+        _id_used = false;
       }
       show_all();
     });
@@ -205,7 +210,7 @@ public class ActionRenameBox : ActionBase {
         });
         menu.add( edit );
         menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, ebox );
+        add_change_remove( menu, ebox, TextTokenType.TEXT );
         menu.show_all();
         menu.popup_at_widget( frame, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
       }
@@ -236,12 +241,15 @@ public class ActionRenameBox : ActionBase {
           add_modifiers( menu, btn );
         }
         menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, btn );
+        add_change_remove( menu, btn, type );
         menu.show_all();
         menu.popup_at_widget( btn, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
       }
       return( true );
     });
+    if( is_id ) {
+      _id_used = true;
+    }
     return( btn );
   }
 
