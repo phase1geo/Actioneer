@@ -59,6 +59,10 @@ public class DirectoryList : EnableList {
     Gtk.drag_finish( ctx, true, false, t );
   }
 
+  protected override Pango.EllipsizeMode ellipsize_mode() {
+    return( Pango.EllipsizeMode.START );
+  }
+
   protected override string title() {
     return( _( "Directories" ) );
   }

@@ -186,6 +186,10 @@ public class EnableList : Box {
     return( box );
   }
 
+  protected virtual Pango.EllipsizeMode ellipsize_mode() {
+    return( Pango.EllipsizeMode.END );
+  }
+
   protected virtual string title() {
     assert( false );
     return( "" );
@@ -266,6 +270,7 @@ public class EnableList : Box {
     });
 
     var lbl = new Label( label );
+    lbl.ellipsize = ellipsize_mode();
     // lbl.ypad = 5;
 
     box.pack_start( cb,  false, false, 0 );
