@@ -11,7 +11,7 @@ public class BoxList : Box {
 
   private Overlay     _overlay;
   private Box         _list_box;
-  private DrawingArea _move_blank;
+  private Box         _move_blank;
   private MoveState   _move_state       = MoveState.NONE;
   private Box?        _move_box         = null;
   private int         _move_start_index = -1;
@@ -27,7 +27,12 @@ public class BoxList : Box {
     Object( orientation: Orientation.VERTICAL, spacing: 10 );
 
     _list_box   = new Box( Orientation.VERTICAL, 10 );
-    _move_blank = new DrawingArea();
+    _move_blank = new Box( Orientation.HORIZONTAL, 10 );
+    _move_blank.margin_left = 10;
+
+    var mb = get_option_menu();
+    mb.opacity = 0.0;
+    _move_blank.pack_start( mb, false, false, 0 );
 
     var ebox = new EventBox();
 
@@ -36,7 +41,6 @@ public class BoxList : Box {
       _move_box   = get_box_for_y( e.y );
       _move_box.get_allocation( out _move_alloc );
       _move_offset = e.y - _move_alloc.y;
-      _move_blank.set_size_request( _move_alloc.width, _move_alloc.height );
       _move_start_index = get_index_for_y( e.y );
       _move_last_index  = _move_start_index;
       return( true );
