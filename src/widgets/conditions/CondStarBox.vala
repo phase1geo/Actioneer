@@ -3,15 +3,15 @@ using Gdk;
 
 public class CondStarBox : CondBase {
 
-  private StarOptMenu _menu;
-  private Button      _stars[5];
+  private IntOptMenu _menu;
+  private Button     _stars[5];
 
   /* Default constructor */
   public CondStarBox( ActionConditionType type ) {
 
     base( type );
 
-    _menu  = new StarOptMenu();
+    _menu  = new IntOptMenu();
     _menu.activated.connect( menu_activated );
 
     var sbox = new Box( Orientation.HORIZONTAL, 0 );
@@ -66,15 +66,15 @@ public class CondStarBox : CondBase {
       var img = (Image)_stars[i].image;
       stars += (img.icon_name == "starred") ? 2 : 0;
     }
-    data.star.match_type = (StarMatchType)_menu.get_current_item();
-    data.star.num        = stars;
+    data.num.match_type = (IntMatchType)_menu.get_current_item();
+    data.num.num        = stars;
     return( data );
   }
 
   /* Sets the stars based on the given FileAction value */
   public override void set_data( ActionCondition data ) {
-    _menu.set_current_item( (int)data.star.match_type );
-    set_stars( data.star.num / 2 );
+    _menu.set_current_item( (int)data.num.match_type );
+    set_stars( data.num.num / 2 );
   }
 
 }

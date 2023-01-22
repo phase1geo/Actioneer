@@ -191,7 +191,7 @@ public enum FileActionType {
     var notification = new Notification( _( "Actioneer" ) );
     notification.set_body( msg );
     app.send_notification( "com.github.phase1geo.actioneer", notification );
-    // Utils.show_file_info( pathname );
+    Utils.show_file_info( pathname );
     return( true );
   }
 

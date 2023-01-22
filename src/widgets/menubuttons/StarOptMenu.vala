@@ -29,11 +29,11 @@ public class StarOptMenu : OptMenu {
   }
 
   protected override int num_items() {
-    return( StarMatchType.NUM );
+    return( IntMatchType.NUM );
   }
 
   protected override string get_item_label( int index ) {
-    var type = (StarMatchType)index;
+    var type = (IntMatchType)index;
     return( type.label() );
   }
 

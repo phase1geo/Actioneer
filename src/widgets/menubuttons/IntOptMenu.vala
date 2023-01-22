@@ -29,11 +29,11 @@ public class IntOptMenu : OptMenu {
   }
 
   protected override int num_items() {
-    return( SizeMatchType.NUM );
+    return( IntMatchType.NUM );
   }
 
   protected override string get_item_label( int index ) {
-    var type = (SizeMatchType)index;
+    var type = (IntMatchType)index;
     return( type.label() );
   }
 

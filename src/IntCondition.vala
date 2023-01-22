@@ -1,4 +1,4 @@
-public enum StarMatchType {
+public enum IntMatchType {
   EQ,
   NE,
   LT,
@@ -31,7 +31,7 @@ public enum StarMatchType {
     }
   }
 
-  public static StarMatchType parse( string val ) {
+  public static IntMatchType parse( string val ) {
     switch( val ) {
       case "eq"  :  return( EQ );
       case "ne"  :  return( NE );
@@ -68,16 +68,16 @@ public enum StarMatchType {
 
 }
 
-public class StarCondition {
+public class IntCondition {
 
-  public StarMatchType match_type { get; set; default = StarMatchType.EQ; }
-  public int           num        { get; set; default = 0; }
+  public IntMatchType match_type { get; set; default = IntMatchType.EQ; }
+  public int          num        { get; set; default = 0; }
 
   /* Default constructor */
-  public StarCondition() {}
+  public IntCondition() {}
 
   /* Copy constructor */
-  public StarCondition.copy( StarCondition other ) {
+  public IntCondition.copy( IntCondition other ) {
     match_type = other.match_type;
     num        = other.num;
   }
@@ -96,7 +96,7 @@ public class StarCondition {
 
     var typ = node->get_prop( "match_type" );
     if( typ != null ) {
-      match_type = StarMatchType.parse( typ );
+      match_type = IntMatchType.parse( typ );
     }
 
     var n = node->get_prop( "num" );

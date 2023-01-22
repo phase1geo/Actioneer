@@ -1,3 +1,5 @@
+using Gdk;
+
 public class Utils {
 
   /* Returns the full filename (without the leading directory path) of the given filename */
@@ -172,6 +174,18 @@ public class Utils {
   public static bool set_file_comment( string pathname, string comment ) {
     stdout.printf( "In set_file_comment, pathname: %s, comment: %s\n", pathname, comment );
     return( set_file_attribute( pathname, "xattr::xdg.comment", comment ) );
+  }
+
+  public static int image_width( string pathname ) {
+    int width, height;
+    Pixbuf.get_file_info( pathname, out width, out height );
+    return( width );
+  }
+
+  public static int image_height( string pathname ) {
+    int width, height;
+    Pixbuf.get_file_info( pathname, out width, out height );
+    return( height );
   }
 
 }

@@ -34,6 +34,8 @@ public enum ActionConditionType {
   TAG,
   STARS,
   COMMENT,
+  IMG_WIDTH,
+  IMG_HEIGHT,
   NUM;
 
   public string to_string() {
@@ -52,6 +54,8 @@ public enum ActionConditionType {
       case TAG         :  return( "tag" );
       case STARS       :  return( "stars" );
       case COMMENT     :  return( "comment" );
+      case IMG_WIDTH   :  return( "img-width" );
+      case IMG_HEIGHT  :  return( "img-height" );
       default          :  assert_not_reached();
     }
   }
@@ -72,6 +76,8 @@ public enum ActionConditionType {
       case TAG         :  return( _( "Tags" ) );
       case STARS       :  return( _( "Rating" ) );
       case COMMENT     :  return( _( "Comment" ) );
+      case IMG_WIDTH   :  return( _( "Image Width" ) );
+      case IMG_HEIGHT  :  return( _( "Image Height" ) );
       default          :  assert_not_reached();
     }
   }
@@ -92,6 +98,8 @@ public enum ActionConditionType {
       case "tag"               :  return( TAG );
       case "stars"             :  return( STARS );
       case "comment"           :  return( COMMENT );
+      case "img-width"         :  return( IMG_WIDTH );
+      case "img-height"        :  return( IMG_HEIGHT );
       default                  :  assert_not_reached();
     }
   }
@@ -122,6 +130,10 @@ public enum ActionConditionType {
 
   public bool is_tags() {
     return( this == TAG );
+  }
+
+  public bool is_int() {
+    return( (this == STARS) || (this == IMG_WIDTH) || (this == IMG_HEIGHT) );
   }
 
   /* Returns the current text value associated with the given filename */
@@ -159,9 +171,14 @@ public enum ActionConditionType {
     return( Utils.file_tags( pathname ) );
   }
 
-  /* Returns the number of stars associated with the given filename */
-  public int stars_from_pathname( string pathname ) {
-    return( Utils.file_stars( pathname ) );
+  /* Returns an integer value from the given pathname */
+  public int int_from_pathname( string pathname ) {
+    switch( this ) {
+      case STARS      :  return( Utils.file_stars( pathname ) );
+      case IMG_WIDTH  :  return( Utils.image_width( pathname ) );
+      case IMG_HEIGHT :  return( Utils.image_height( pathname ) );
+      default         :  assert_not_reached();
+    }
   }
 
 }
@@ -174,8 +191,8 @@ public class ActionCondition {
   private TextCondition?      _text = null;
   private DateCondition?      _date = null;
   private SizeCondition?      _size = null;
-  private StarCondition?      _star = null;
   private TagsCondition?      _tags = null;
+  private IntCondition?       _num  = null;
 
   public ActionConditionType cond_type {
     get {
@@ -197,14 +214,14 @@ public class ActionCondition {
       return( _size );
     }
   }
-  public StarCondition? star {
-    get {
-      return( _star );
-    }
-  }
   public TagsCondition? tags {
     get {
       return( _tags );
+    }
+  }
+  public IntCondition? num {
+    get {
+      return( _num );
     }
   }
 
@@ -217,7 +234,7 @@ public class ActionCondition {
     _text = type.is_text() ? new TextCondition() : null;
     _date = type.is_date() ? new DateCondition() : null;
     _size = type.is_size() ? new SizeCondition() : null;
-    _star = type.is_star() ? new StarCondition() : null;
+    _num  = type.is_int()  ? new IntCondition()  : null;
     _tags = type.is_tags() ? new TagsCondition() : null;
   }
 
@@ -233,8 +250,8 @@ public class ActionCondition {
     if( other._size != null ) {
       _size = new SizeCondition.copy( other._size );
     }
-    if( other._star != null ) {
-      _star = new StarCondition.copy( other._star );
+    if( other._num != null ) {
+      _num = new IntCondition.copy( other._num );
     }
     if( other._tags != null ) {
       _tags = new TagsCondition.copy( other._tags );
@@ -255,10 +272,10 @@ public class ActionCondition {
       var val = _type.size_from_pathname( pathname );
       result = "%lld %s".printf( _size.size.get_size( val ), _size.size.label() );
       return( _size.check( val ) );
-    } else if( _type.is_star() ) {
-      var val = _type.stars_from_pathname( pathname );
-      result = "%d".printf( _star.num );
-      return( _star.check( val ) );
+    } else if( _type.is_int() ) {
+      var val = _type.int_from_pathname( pathname );
+      result = "%d".printf( val );
+      return( _num.check( val ) );
     } else if( _type.is_tags() ) {
       var val = _type.tags_from_pathname( pathname );
       result = string.joinv( ",", val );
@@ -280,8 +297,8 @@ public class ActionCondition {
       _date.save( node );
     } else if( _size != null ) {
       _size.save( node );
-    } else if( _star != null ) {
-      _star.save( node );
+    } else if( _num != null ) {
+      _num.save( node );
     } else if( _tags != null ) {
       _tags.save( node );
     }
@@ -314,9 +331,9 @@ public class ActionCondition {
         _size.load( node );
       }
 
-      if( _type.is_star() ) {
-        _star = new StarCondition();
-        _star.load( node );
+      if( _type.is_int() ) {
+        _num = new IntCondition();
+        _num.load( node );
       }
 
       if( _type.is_tags() ) {

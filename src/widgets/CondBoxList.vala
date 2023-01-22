@@ -55,6 +55,8 @@ public class CondBoxList : BoxList {
       case ActionConditionType.TAG         :  item = new CondTagsBox( type );  break;
       case ActionConditionType.STARS       :  item = new CondStarBox( type );  break;
       case ActionConditionType.COMMENT     :  item = new CondTextBox( type );  break;
+      case ActionConditionType.IMG_WIDTH   :  item = new CondIntBox( type );   break;
+      case ActionConditionType.IMG_HEIGHT  :  item = new CondIntBox( type );   break;
       default                              :  assert_not_reached();
     }
     _conditions.nth( index ).data = item;
