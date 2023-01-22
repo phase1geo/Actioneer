@@ -28,6 +28,10 @@
   background: lightblue;
 }
 
+.selected {
+  background: blue;
+}
+
 .add-item {
   background: lightgreen;
 }

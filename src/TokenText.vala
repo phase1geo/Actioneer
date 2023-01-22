@@ -9,21 +9,25 @@ public enum TextTokenType {
   FILE_OWNER,
   FILE_GROUP,
   UNIQUE_ID,
+  IMAGE_WIDTH,
+  IMAGE_HEIGHT,
   NUM;
 
   public string to_string() {
     switch( this ) {
-      case TEXT       :  return( "text" );
-      case FILE_FULL  :  return( "file-full" );
-      case FILE_BASE  :  return( "file-base" );
-      case FILE_EXT   :  return( "file-ext" );
-      case FILE_CDATE :  return( "file-cdate" );
-      case FILE_MDATE :  return( "file-mdate" );
-      case TODAY      :  return( "today" );
-      case FILE_OWNER :  return( "file-owner" );
-      case FILE_GROUP :  return( "file-group" );
-      case UNIQUE_ID  :  return( "unique-id" );
-      default         :  assert_not_reached();
+      case TEXT         :  return( "text" );
+      case FILE_FULL    :  return( "file-full" );
+      case FILE_BASE    :  return( "file-base" );
+      case FILE_EXT     :  return( "file-ext" );
+      case FILE_CDATE   :  return( "file-cdate" );
+      case FILE_MDATE   :  return( "file-mdate" );
+      case TODAY        :  return( "today" );
+      case FILE_OWNER   :  return( "file-owner" );
+      case FILE_GROUP   :  return( "file-group" );
+      case UNIQUE_ID    :  return( "unique-id" );
+      case IMAGE_WIDTH  :  return( "img-width" );
+      case IMAGE_HEIGHT :  return( "img-height" );
+      default           :  assert_not_reached();
     }
   }
 
@@ -39,39 +43,45 @@ public enum TextTokenType {
       case "file-owner" :  return( FILE_OWNER );
       case "file-group" :  return( FILE_GROUP );
       case "unique-id"  :  return( UNIQUE_ID );
+      case "img-width"  :  return( IMAGE_WIDTH );
+      case "img-height" :  return( IMAGE_HEIGHT );
       default           :  assert_not_reached();
     }
   }
 
   public string label() {
     switch( this ) {
-      case TEXT       :  return( _( "Text" ) );
-      case FILE_FULL  :  return( _( "Filename" ) );
-      case FILE_BASE  :  return( _( "Basename" ) );
-      case FILE_EXT   :  return( _( "Extension" ) );
-      case FILE_CDATE :  return( _( "Creation Date" ) );
-      case FILE_MDATE :  return( _( "Modification Date" ) );
-      case TODAY      :  return( _( "Today" ) );
-      case FILE_OWNER :  return( _( "File Owner" ) );
-      case FILE_GROUP :  return( _( "File Group" ) );
-      case UNIQUE_ID  :  return( _( "Unique ID" ) );
-      default         :  assert_not_reached();
+      case TEXT         :  return( _( "Text" ) );
+      case FILE_FULL    :  return( _( "Filename" ) );
+      case FILE_BASE    :  return( _( "Basename" ) );
+      case FILE_EXT     :  return( _( "Extension" ) );
+      case FILE_CDATE   :  return( _( "Creation Date" ) );
+      case FILE_MDATE   :  return( _( "Modification Date" ) );
+      case TODAY        :  return( _( "Today" ) );
+      case FILE_OWNER   :  return( _( "File Owner" ) );
+      case FILE_GROUP   :  return( _( "File Group" ) );
+      case UNIQUE_ID    :  return( _( "Unique ID" ) );
+      case IMAGE_WIDTH  :  return( _( "Image Width" ) );
+      case IMAGE_HEIGHT :  return( _( "Image Height" ) );
+      default           :  assert_not_reached();
     }
   }
 
   public string convert( File file, string date_pattern ) {
     switch( this ) {
-      case TEXT       :  return( date_pattern );
-      case FILE_FULL  :  return( Utils.file_fullname( file.get_path() ) );
-      case FILE_BASE  :  return( Utils.file_name( file.get_path() ) );
-      case FILE_EXT   :  return( Utils.file_extension( file.get_path() ) );
-      case FILE_CDATE :  return( Utils.date_to_string( Utils.file_create_date( file.get_path() ), date_pattern ) );
-      case FILE_MDATE :  return( Utils.date_to_string( Utils.file_modify_date( file.get_path() ), date_pattern ) );
-      case TODAY      :  return( Utils.date_to_string( new DateTime.now(), date_pattern ) );
-      case FILE_OWNER :  return( Utils.file_owner( file.get_path() ) );
-      case FILE_GROUP :  return( Utils.file_group( file.get_path() ) );
-      case UNIQUE_ID  :  return( "XXXXXX" );
-      default         :  assert_not_reached();
+      case TEXT         :  return( date_pattern );
+      case FILE_FULL    :  return( Utils.file_fullname( file.get_path() ) );
+      case FILE_BASE    :  return( Utils.file_name( file.get_path() ) );
+      case FILE_EXT     :  return( Utils.file_extension( file.get_path() ) );
+      case FILE_CDATE   :  return( Utils.date_to_string( Utils.file_create_date( file.get_path() ), date_pattern ) );
+      case FILE_MDATE   :  return( Utils.date_to_string( Utils.file_modify_date( file.get_path() ), date_pattern ) );
+      case TODAY        :  return( Utils.date_to_string( new DateTime.now(), date_pattern ) );
+      case FILE_OWNER   :  return( Utils.file_owner( file.get_path() ) );
+      case FILE_GROUP   :  return( Utils.file_group( file.get_path() ) );
+      case UNIQUE_ID    :  return( "XXXXXX" );
+      case IMAGE_WIDTH  :  return( Utils.image_width( file.get_path() ).to_string() );
+      case IMAGE_HEIGHT :  return( Utils.image_height( file.get_path() ).to_string() );
+      default           :  assert_not_reached();
     }
   }
 
@@ -81,13 +91,15 @@ public enum TextTokenType {
 
   public bool is_file_part() {
     switch( this ) {
-      case FILE_FULL  :
-      case FILE_BASE  :
-      case FILE_EXT   :
-      case FILE_OWNER :
-      case FILE_GROUP :
-      case UNIQUE_ID  :  return( true );
-      default         :  return( false );
+      case FILE_FULL    :
+      case FILE_BASE    :
+      case FILE_EXT     :
+      case FILE_OWNER   :
+      case FILE_GROUP   :
+      case UNIQUE_ID    :
+      case IMAGE_WIDTH  :
+      case IMAGE_HEIGHT :  return( true );
+      default           :  return( false );
     }
   }
 
