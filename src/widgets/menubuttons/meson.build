@@ -1,5 +1,7 @@
 sources += files(
     'ActionOptMenu.vala',
+    'CompFormatOptMenu.vala',
+    'CompLevelOptMenu.vala',
     'CondOptMenu.vala',
     'DateOptMenu.vala',
     'IntOptMenu.vala',

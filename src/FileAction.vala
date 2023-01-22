@@ -3,6 +3,8 @@ public enum FileActionType {
   COPY,
   RENAME,
   ALIAS,
+  COMPRESS,
+  DECOMPRESS,
   TRASH,
   ADD_TAG,
   REMOVE_TAG,
@@ -19,6 +21,8 @@ public enum FileActionType {
       case COPY       :  return( "copy" );
       case RENAME     :  return( "rename" );
       case ALIAS      :  return( "alias" );
+      case COMPRESS   :  return( "compress" );
+      case DECOMPRESS :  return( "decompress" );
       case TRASH      :  return( "trash" );
       case ADD_TAG    :  return( "tag-add" );
       case REMOVE_TAG :  return( "tag-remove" );
@@ -37,6 +41,8 @@ public enum FileActionType {
       case COPY       :  return( _( "Copy" ) );
       case RENAME     :  return( _( "Rename" ) );
       case ALIAS      :  return( _( "Alias" ) );
+      case COMPRESS   :  return( _( "Compress" ) );
+      case DECOMPRESS :  return( _( "Decompress" ) );
       case TRASH      :  return( _( "Trash" ) );
       case ADD_TAG    :  return( _( "Add Tag" ) );
       case REMOVE_TAG :  return( _( "Remove Tag" ) );
@@ -55,6 +61,8 @@ public enum FileActionType {
       case COPY       :  return( _( "to folder" ) );
       case RENAME     :  return( _( "file as" ) );
       case ALIAS      :  return( _( "from folder" ) );
+      case COMPRESS   :  return( _( "file to format" ) );
+      case DECOMPRESS :  return( _( "compressed file" ) );
       case TRASH      :  return( _( "file" ) );
       case ADD_TAG    :  return( _( "to file" ) );
       case REMOVE_TAG :  return( _( "from file" ) );
@@ -73,6 +81,8 @@ public enum FileActionType {
       case "copy"       :  return( COPY );
       case "rename"     :  return( RENAME );
       case "alias"      :  return( ALIAS );
+      case "compress"   :  return( COMPRESS );
+      case "decompress" :  return( DECOMPRESS );
       case "trash"      :  return( TRASH );
       case "tag-add"    :  return( ADD_TAG );
       case "tag-remove" :  return( REMOVE_TAG );
@@ -86,7 +96,7 @@ public enum FileActionType {
   }
 
   public bool add_separator_after() {
-    return( (this == ALIAS) || (this == TRASH) || (this == COMMENT) );
+    return( (this == ALIAS) || (this == DECOMPRESS) || (this == TRASH) || (this == COMMENT) );
   }
 
   private bool do_move( ref string pathname, File new_file ) {
@@ -117,6 +127,24 @@ public enum FileActionType {
     var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
     return( !FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
             nfile.make_symbolic_link( ofile.get_path() ) );
+  }
+
+  private bool do_compress( ref string pathname, FileCompress comp ) {
+    var ifile = File.new_for_path( pathname );
+    var nfile = File.new_for_path( pathname + comp.extension() );
+    pathname = nfile.get_path();
+    return( comp.compress( ifile, nfile ) );
+  }
+
+  private bool do_decompress( string pathname ) {
+    string new_path;
+    var ifile = File.new_for_path( pathname );
+    var comp  = new FileCompress();
+    if( comp.set_type_from_path( pathname, out new_path ) ) {
+      var nfile = File.new_for_path( new_path );
+      return( comp.decompress( ifile, nfile ) );
+    }
+    return( false );
   }
 
   private bool do_trash( string pathname ) {
@@ -174,13 +202,14 @@ public enum FileActionType {
     return( Process.spawn_command_line_async( script ) );
   }
 
-  public bool file_execute( GLib.Application app, ref string pathname, File? new_file, TokenText? token_text ) {
-
+  public bool file_execute( GLib.Application app, ref string pathname, File? new_file, TokenText? token_text, FileCompress? comp ) {
     switch( this ) {
       case MOVE       :  return( do_move( ref pathname, new_file ) );
       case COPY       :  return( do_copy( pathname, new_file ) );
       case RENAME     :  return( do_rename( ref pathname, token_text ) );
       case ALIAS      :  return( do_alias( pathname, new_file ) );
+      case COMPRESS   :  return( do_compress( ref pathname, comp ) );
+      case DECOMPRESS :  return( do_decompress( pathname ) );
       case TRASH      :  return( do_trash( pathname ) );
       case ADD_TAG    :  return( do_add_tag( pathname, token_text ) );
       case REMOVE_TAG :  return( do_remove_tag( pathname, token_text ) );
@@ -195,10 +224,10 @@ public enum FileActionType {
 
   public bool is_file_type() {
     switch( this ) {
-      case MOVE       :
-      case COPY       :
-      case ALIAS      :  return( true );
-      default         :  return( false );
+      case MOVE     :
+      case COPY     :
+      case ALIAS    :  return( true );
+      default       :  return( false );
     }
   }
 
@@ -215,6 +244,10 @@ public enum FileActionType {
     }
   }
 
+  public bool is_compress() {
+    return( this == COMPRESS );
+  }
+
 }
 
 public class FileAction {
@@ -224,6 +257,7 @@ public class FileAction {
   private FileActionType _type;
   private File?          _file;
   private TokenText?     _token_text;
+  private FileCompress?  _compress;
 
   public FileActionType action_type {
     get {
@@ -240,6 +274,11 @@ public class FileAction {
       return( _token_text );
     }
   }
+  public FileCompress? compress {
+    get {
+      return( _compress );
+    }
+  }
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
@@ -249,13 +288,15 @@ public class FileAction {
     _type       = FileActionType.MOVE;
     _file       = null;
     _token_text = null;
+    _compress   = null;
   }
 
   /* Constructor */
   public FileAction.with_type( FileActionType type ) {
     _type       = type;
     _file       = null;
-    _token_text = type.is_tokenized() ? new TokenText() : null;
+    _token_text = type.is_tokenized() ? new TokenText()    : null;
+    _compress   = type.is_compress()  ? new FileCompress() : null;
   }
 
   /* Constructor */
@@ -263,7 +304,8 @@ public class FileAction {
     assert( type.is_file_type() );
     _type       = type;
     _file       = File.new_for_path( filename );
-    _token_text = type.is_tokenized() ? new TokenText() : null;
+    _token_text = type.is_tokenized() ? new TokenText()    : null;
+    _compress   = type.is_compress()  ? new FileCompress() : null;
   }
 
   /* Copy constructor */
@@ -271,6 +313,7 @@ public class FileAction {
     _type       = other._type;
     _file       = (other._file       == null) ? null : File.new_for_path( other._file.get_path() );
     _token_text = (other._token_text == null) ? null : new TokenText.copy( other._token_text );
+    _compress   = (other._compress   == null) ? null : new FileCompress.copy( other._compress );
   }
 
   /*
@@ -281,7 +324,7 @@ public class FileAction {
   public bool execute( GLib.Application app, ref string pathname ) {
 
     try {
-      return( _type.file_execute( app, ref pathname, _file, _token_text ) );
+      return( _type.file_execute( app, ref pathname, _file, _token_text, _compress ) );
     } catch( SpawnError e ) {
       err    = true;
       errmsg = e.message;
@@ -309,6 +352,10 @@ public class FileAction {
       node->add_child( _token_text.save() );
     }
 
+    if( _compress != null ) {
+      node->add_child( _compress.save() );
+    }
+
     return( node );
 
   }
@@ -327,9 +374,17 @@ public class FileAction {
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
-      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == TokenText.xml_node) ) {
-        _token_text = new TokenText();
-        _token_text.load( it );
+      if( it->type == Xml.ElementType.ELEMENT_NODE ) {
+        switch( it->name ) {
+          case TokenText.xml_node :
+            _token_text = new TokenText();
+            _token_text.load( it );
+            break;
+          case FileCompress.xml_node :
+            _compress = new FileCompress();
+            _compress.load( it );
+            break;
+        }
       }
     }
 

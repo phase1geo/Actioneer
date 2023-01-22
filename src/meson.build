@@ -9,6 +9,7 @@ sources += files(
     'DirList.vala',
     'FileAction.vala',
     'FileActions.vala',
+    'FileCompress.vala',
     'MainWindow.vala',
     'SizeCondition.vala',
     'StarCondition.vala',
