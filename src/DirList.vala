@@ -2,6 +2,8 @@ public class DirList {
 
   private SList<DirActions> _dir_actions;
 
+  public bool background_enabled { set; get; default = true; }
+
   /* Default constructor */
   public DirList() {
     _dir_actions = new SList<DirActions>();
@@ -43,9 +45,11 @@ public class DirList {
 
   /* Run the actions for each listed directory */
   public void run( GLib.Application app ) {
-    _dir_actions.foreach((action) => {
-      action.run( app );
-    });
+    if( background_enabled ) {
+      _dir_actions.foreach((action) => {
+        action.run( app );
+      });
+    }
   }
 
   /* Returns the rules.xml complete filepath */
@@ -72,6 +76,7 @@ public class DirList {
     Xml.Node* root = new Xml.Node( null, "actioneer-rules" );
 
     root->set_prop( "version", Actioneer.version );
+    root->set_prop( "background-enable", background_enabled.to_string() );
 
     _dir_actions.foreach((action) => {
       root->add_child( action.save() );
@@ -94,6 +99,11 @@ public class DirList {
     }
 
     Xml.Node* root = doc->get_root_element();
+
+    var be = root->get_prop( "background-enable" );
+    if( be != null ) {
+      background_enabled = bool.parse( be );
+    }
 
     for( Xml.Node* it=root->children; it!=null; it=it->next ) {
       if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == DirActions.xml_node) ) {

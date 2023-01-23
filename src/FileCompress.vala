@@ -92,7 +92,6 @@ public class FileCompress {
       } else if( t == zlib.to_string() ) {
         type = zlib;
       }
-      stdout.printf( "Loaded compression type: %s for %s\n", type.to_string(), t );
     }
 
     var l = node->get_prop( "level" );

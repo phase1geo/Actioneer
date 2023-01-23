@@ -26,6 +26,7 @@ public class MainWindow : Hdy.ApplicationWindow {
 
   private GLib.Settings   _settings;
   private Hdy.HeaderBar   _header;
+  private Switch          _enable;
   private Gtk.AccelGroup? _accel_group = null;
   private DirectoryList   _dir_list;
   private RuleList        _rule_list;
@@ -55,6 +56,8 @@ public class MainWindow : Hdy.ApplicationWindow {
       return( _rule_stack );
     }
   }
+
+  public signal void background_toggled();
 
   /* Create the main window UI */
   public MainWindow( Actioneer app, GLib.Settings settings ) {
@@ -157,6 +160,14 @@ public class MainWindow : Hdy.ApplicationWindow {
   /* Add widgets to header bar */
   private void populate_header() {
 
+    _enable = new Switch();
+    _enable.set_tooltip_text( _( "Enable for background processor" ) );
+    _enable.button_press_event.connect((e) => {
+      background_toggled();
+      return( false );
+    });
+    _header.pack_start( _enable );
+
     var run_btn = new Button.from_icon_name( "media-playback-start", IconSize.LARGE_TOOLBAR );
     // new_btn.set_tooltip_markup( Utils.tooltip_with_accel( _( "New File" ), "<Control>r" ) );
     run_btn.add_accelerator( "clicked", _accel_group, 'r', Gdk.ModifierType.CONTROL_MASK, AccelFlags.VISIBLE );
@@ -209,6 +220,10 @@ public class MainWindow : Hdy.ApplicationWindow {
       notification.set_priority( priority );
       app.send_notification( "com.github.phase1geo.actioneer", notification );
     }
+  }
+
+  public void set_background_enable( bool enable ) {
+    _enable.set_active( enable );
   }
 
 }

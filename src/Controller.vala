@@ -13,6 +13,9 @@ public class Controller {
     _win  = win;
     _data = data;
 
+    /* Connect to the main window signals */
+    win.background_toggled.connect( background_enable_changed );
+
     /* Connect to the directory list signals */
     win.dir_list.enable_changed.connect( directory_enable_changed );
     win.dir_list.added.connect( directory_added );
@@ -37,6 +40,7 @@ public class Controller {
 
   /* Called when the UI is ready to have its model updated */
   private void initialize() {
+    _win.set_background_enable( _data.background_enabled );
     populate_dirs();
     if( _data.size() > 0 ) {
       _win.dir_list.select_row( 0 );
@@ -69,6 +73,19 @@ public class Controller {
 
     /* Make sure that the welcome2 page is shown */
     _win.rule_stack.visible_child_name = "welcome2";
+
+  }
+
+  // =========================================================
+  // MAIN WINDOW
+  // =========================================================
+
+  private void background_enable_changed() {
+
+    _data.background_enabled = !_data.background_enabled;
+
+    /* Save the changes immediately */
+    _data.save();
 
   }
 
