@@ -41,6 +41,11 @@ public class DirAction {
       _conditions.match_all = value;
     }
   }
+  public ActionConditions conditions {
+    get {
+      return( _conditions );
+    }
+  }
 
   public bool   err     { get; set; default = false; }
   public string errmsg  { get; set; default = ""; }

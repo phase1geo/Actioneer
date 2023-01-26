@@ -36,6 +36,7 @@ public enum ActionConditionType {
   COMMENT,
   IMG_WIDTH,
   IMG_HEIGHT,
+  COND_GROUP,
   NUM;
 
   public string to_string() {
@@ -56,6 +57,7 @@ public enum ActionConditionType {
       case COMMENT     :  return( "comment" );
       case IMG_WIDTH   :  return( "img-width" );
       case IMG_HEIGHT  :  return( "img-height" );
+      case COND_GROUP  :  return( "cond-group" );
       default          :  assert_not_reached();
     }
   }
@@ -78,6 +80,7 @@ public enum ActionConditionType {
       case COMMENT     :  return( _( "Comment" ) );
       case IMG_WIDTH   :  return( _( "Image Width" ) );
       case IMG_HEIGHT  :  return( _( "Image Height" ) );
+      case COND_GROUP  :  return( _( "Condition Group" ) );
       default          :  assert_not_reached();
     }
   }
@@ -100,6 +103,7 @@ public enum ActionConditionType {
       case "comment"           :  return( COMMENT );
       case "img-width"         :  return( IMG_WIDTH );
       case "img-height"        :  return( IMG_HEIGHT );
+      case "cond-group"        :  return( COND_GROUP );
       default                  :  assert_not_reached();
     }
   }
@@ -134,6 +138,10 @@ public enum ActionConditionType {
 
   public bool is_int() {
     return( (this == STARS) || (this == IMG_WIDTH) || (this == IMG_HEIGHT) );
+  }
+
+  public bool is_cond_group() {
+    return( this == COND_GROUP );
   }
 
   /* Returns the current text value associated with the given filename */
@@ -187,12 +195,13 @@ public class ActionCondition {
 
   public static const string xml_node = "condition";
 
-  private ActionConditionType _type = ActionConditionType.NAME;
-  private TextCondition?      _text = null;
-  private DateCondition?      _date = null;
-  private SizeCondition?      _size = null;
-  private TagsCondition?      _tags = null;
-  private IntCondition?       _num  = null;
+  private ActionConditionType _type  = ActionConditionType.NAME;
+  private TextCondition?      _text  = null;
+  private DateCondition?      _date  = null;
+  private SizeCondition?      _size  = null;
+  private TagsCondition?      _tags  = null;
+  private IntCondition?       _num   = null;
+  private ActionConditions?   _group = null;
 
   public ActionConditionType cond_type {
     get {
@@ -224,18 +233,24 @@ public class ActionCondition {
       return( _num );
     }
   }
+  public ActionConditions? group {
+    get {
+      return( _group );
+    }
+  }
 
   /* Default constructor */
   public ActionCondition() {}
 
   /* Constructor */
   public ActionCondition.with_type( ActionConditionType type ) {
-    _type = type;
-    _text = type.is_text() ? new TextCondition() : null;
-    _date = type.is_date() ? new DateCondition() : null;
-    _size = type.is_size() ? new SizeCondition() : null;
-    _num  = type.is_int()  ? new IntCondition()  : null;
-    _tags = type.is_tags() ? new TagsCondition() : null;
+    _type  = type;
+    _text  = type.is_text() ? new TextCondition() : null;
+    _date  = type.is_date() ? new DateCondition() : null;
+    _size  = type.is_size() ? new SizeCondition() : null;
+    _num   = type.is_int()  ? new IntCondition()  : null;
+    _tags  = type.is_tags() ? new TagsCondition() : null;
+    _group = type.is_cond_group() ? new ActionConditions() : null;
   }
 
   /* Copy constructor */
@@ -255,6 +270,10 @@ public class ActionCondition {
     }
     if( other._tags != null ) {
       _tags = new TagsCondition.copy( other._tags );
+    }
+    if( other._group != null ) {
+      _group = new ActionConditions();
+      _group.copy( other._group );
     }
   }
 
@@ -280,6 +299,11 @@ public class ActionCondition {
       var val = _type.tags_from_pathname( pathname );
       result = string.joinv( ",", val );
       return( _tags.check( val ) );
+    } else if( _type.is_cond_group() ) {
+      var results = new Array<TestResult>();
+      var retval  = _group.check( pathname, results );
+      result = "TODO";
+      return( retval );
     }
     return( false );
   }
@@ -301,6 +325,8 @@ public class ActionCondition {
       _num.save( node );
     } else if( _tags != null ) {
       _tags.save( node );
+    } else if( _group != null ) {
+      node->add_child( _group.save() );
     }
 
     return( node );
@@ -339,6 +365,11 @@ public class ActionCondition {
       if( _type.is_tags() ) {
         _tags = new TagsCondition();
         _tags.load( node );
+      }
+
+      if( _type.is_cond_group() ) {
+        _group = new ActionConditions();
+        _group.load( node );
       }
 
     }

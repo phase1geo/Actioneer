@@ -92,14 +92,20 @@ public class BoxList : Box {
     _overlay = new Overlay();
     _overlay.add( ebox );
 
-    var add_btn = new Button.with_label( add_label );
-    add_btn.get_style_context().add_class( "add-item" );
-    add_btn.clicked.connect(() => {
+    var row_btn = new Button.with_label( add_label );
+    row_btn.get_style_context().add_class( "add-item" );
+    row_btn.clicked.connect(() => {
       add_row( 0, true );
     });
 
+    var group_btn = new Button.with_label( _( "Add Group" ) );
+    group_btn.clicked.connect(() => {
+      add_group();
+    });
+
     var bbox = new Box( Orientation.HORIZONTAL, 0 );
-    bbox.pack_start( add_btn, false, false, 0 );
+    bbox.pack_start( row_btn,   false, false, 0 );
+    bbox.pack_start( group_btn, false, false, 0 );
 
     pack_start( _overlay, false, true, 0 );
     pack_start( bbox,     false, true, 0 );
@@ -150,6 +156,28 @@ public class BoxList : Box {
         return( false );
       });
     }
+
+  }
+
+  protected virtual void add_group() {
+
+    var box = new Box( Orientation.HORIZONTAL, 10 );
+    box.margin_left = 10;
+
+    var ibox = new Box( Orientation.VERTICAL, 10 );
+    set_row_content( get_index_for_box( box ), (int)ActionConditionType.COND_GROUP, ibox );
+
+    /* Add close button */
+    var close = new Button.from_icon_name( "window-close-symbolic", IconSize.SMALL_TOOLBAR );
+    close.clicked.connect(() => {
+      delete_row( get_index_for_box( box ) );
+    });
+
+    box.pack_start( ibox,   false, true,  0 );
+    box.pack_end(   close,  false, false, 0 );
+
+    _list_box.pack_start( box, false, true, 0 ); 
+    _list_box.show_all();
 
   }
 
