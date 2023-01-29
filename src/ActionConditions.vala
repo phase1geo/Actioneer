@@ -19,13 +19,48 @@
 * Authored by: Trevor Williams <phase1geo@gmail.com>
 */
 
+public enum ConditionMatchType {
+  ALL,
+  ANY,
+  NONE,
+  NUM;
+
+  public string to_string() {
+    switch( this ) {
+      case ALL  :  return( "all" );
+      case ANY  :  return( "any" );
+      case NONE :  return( "none" );
+      default   :  assert_not_reached();
+    }
+  }
+
+  public string label() {
+    switch( this ) {
+      case ALL  :  return( _( "Match ALL of the following" ) );
+      case ANY  :  return( _( "Match ANY of the following" ) );
+      case NONE :  return( _( "Match NONE of the following" ) );
+      default   :  assert_not_reached();
+    }
+  }
+
+  public static ConditionMatchType parse( string val ) {
+    switch( val ) {
+      case "all"  :  return( ALL );
+      case "any"  :  return( ANY );
+      case "none" :  return( NONE );
+      default     :  assert_not_reached();
+    }
+  }
+
+}
+
 public class ActionConditions {
 
   public static const string xml_node = "conditions";
 
   private SList<ActionCondition> _conditions;
 
-  public bool match_all { get; set; default = true; }
+  public ConditionMatchType match_type { get; set; default = ConditionMatchType.ALL; }
 
   /* Default constructor */
   public ActionConditions() {
@@ -34,7 +69,7 @@ public class ActionConditions {
 
   /* Copies the contents of the specified conditions instance to ourself */
   public void copy( ActionConditions other ) {
-    match_all = other.match_all;
+    match_type = other.match_type;
     _conditions = new SList<ActionCondition>();
     other._conditions.foreach((cond) => {
       _conditions.append( new ActionCondition.copy( cond ) ); 
@@ -60,15 +95,15 @@ public class ActionConditions {
   /* Returns true if the pathname passes all conditions */
   public bool check( string path, Array<TestResult>? results = null ) {
 
-    var pass = match_all ? true : false;
+    var pass = (match_type != ConditionMatchType.ANY);
 
     _conditions.foreach((condition) => {
       string? result = null;
       var passed = condition.check( path, ref result );
-      if( match_all ) {
-        pass &= passed;
-      } else {
-        pass |= passed;
+      switch( match_type ) {
+        case ConditionMatchType.ALL  :  pass &=  passed;  break;
+        case ConditionMatchType.ANY  :  pass |=  passed;  break;
+        case ConditionMatchType.NONE :  pass &= !passed;  break;
       }
       if( results != null ) {
         results.append_val( new TestResult( passed, result ) );
@@ -84,7 +119,7 @@ public class ActionConditions {
 
     Xml.Node* node = new Xml.Node( null, "conditions" );
 
-    node->set_prop( "matchall", match_all.to_string() );
+    node->set_prop( "match-type", match_type.to_string() );
 
     _conditions.foreach((condition) => {
       node->add_child( condition.save() );
@@ -97,9 +132,9 @@ public class ActionConditions {
   /* Loads the given condition from XML format */
   public void load( Xml.Node* node ) {
 
-    var all = node->get_prop( "matchall" );
-    if( all != null ) {
-      match_all = bool.parse( all );
+    var mt = node->get_prop( "match-type" );
+    if( mt != null ) {
+      match_type = ConditionMatchType.parse( mt );
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {

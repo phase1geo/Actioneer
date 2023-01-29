@@ -33,14 +33,6 @@ public class DirAction {
       return( _name );
     }
   }
-  public bool match_all {
-    get {
-      return( _conditions.match_all );
-    }
-    set {
-      _conditions.match_all = value;
-    }
-  }
   public ActionConditions conditions {
     get {
       return( _conditions );

@@ -39,7 +39,7 @@ public class CondGroupBox : CondBase {
     _group.get_data( dir_action );
 
     data.group.copy( dir_action.conditions );
-    data.group.match_all = (bool)_mb.get_current_item();
+    data.group.match_type = (ConditionMatchType)_mb.get_current_item();
 
     return( data );
 
@@ -51,7 +51,7 @@ public class CondGroupBox : CondBase {
 
     dir_action.conditions.copy( data.group );
 
-    _mb.set_current_item( (int)data.group.match_all );
+    _mb.set_current_item( (int)data.group.match_type );
     _group.set_data( dir_action );
 
   }

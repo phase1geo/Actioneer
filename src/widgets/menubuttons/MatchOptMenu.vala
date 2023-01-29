@@ -21,20 +21,6 @@
 
 using Gtk;
 
-public enum MatchType {
-  ALL,
-  ANY,
-  NUM;
-
-  public string label() {
-    switch( this ) {
-      case ALL :  return( "Match ALL Conditions" );
-      case ANY :  return( "Match ANY Condition" );
-      default  :  assert_not_reached();
-    }
-  }
-}
-
 public class MatchOptMenu : OptMenu {
 
   /* Create the main window UI */
@@ -43,11 +29,11 @@ public class MatchOptMenu : OptMenu {
   }
 
   protected override int num_items() {
-    return( MatchType.NUM );
+    return( ConditionMatchType.NUM );
   }
 
   protected override string get_item_label( int index ) {
-    var type = (MatchType)index;
+    var type = (ConditionMatchType)index;
     return( type.label() );
   }
 
