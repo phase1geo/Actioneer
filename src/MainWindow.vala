@@ -161,15 +161,18 @@ public class MainWindow : Hdy.ApplicationWindow {
   private void populate_header() {
 
     _enable = new Switch();
-    _enable.set_tooltip_text( _( "Enable for background processor" ) );
+    _enable.set_tooltip_text( _( "Background processor enable" ) );
     _enable.button_press_event.connect((e) => {
       background_toggled();
       return( false );
     });
     _header.pack_start( _enable );
 
+    var lbl = new Label( "  " );
+    _header.pack_start( lbl );
+
     var run_btn = new Button.from_icon_name( "media-playback-start", IconSize.LARGE_TOOLBAR );
-    // new_btn.set_tooltip_markup( Utils.tooltip_with_accel( _( "New File" ), "<Control>r" ) );
+    run_btn.set_tooltip_markup( Utils.tooltip_with_accel( _( "Run Rules" ), "<Control>r" ) );
     run_btn.add_accelerator( "clicked", _accel_group, 'r', Gdk.ModifierType.CONTROL_MASK, AccelFlags.VISIBLE );
     run_btn.clicked.connect( action_run );
     _header.pack_start( run_btn );

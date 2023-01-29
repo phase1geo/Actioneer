@@ -2,6 +2,11 @@ using Gdk;
 
 public class Utils {
 
+  public static string tooltip_with_accel( string tooltip, string accel ) {
+    string[] accels = {accel};
+    return( Granite.markup_accel_tooltip( accels, tooltip ) );
+  }
+
   /* Returns the full filename (without the leading directory path) of the given filename */
   public static string? file_fullname( string pathname ) {
     return( Filename.display_basename( pathname ) );
