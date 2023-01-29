@@ -103,7 +103,7 @@ public class BoxList : Box {
       add_group();
     });
 
-    var bbox = new Box( Orientation.HORIZONTAL, 0 );
+    var bbox = new Box( Orientation.HORIZONTAL, 10 );
     bbox.pack_start( row_btn,   false, false, 0 );
     bbox.pack_start( group_btn, false, false, 0 );
 
@@ -165,7 +165,6 @@ public class BoxList : Box {
     box.margin_left = 10;
 
     var ibox = new Box( Orientation.VERTICAL, 10 );
-    set_row_content( get_index_for_box( box ), (int)ActionConditionType.COND_GROUP, ibox );
 
     /* Add close button */
     var close = new Button.from_icon_name( "window-close-symbolic", IconSize.SMALL_TOOLBAR );
@@ -173,11 +172,16 @@ public class BoxList : Box {
       delete_row( get_index_for_box( box ) );
     });
 
-    box.pack_start( ibox,   false, true,  0 );
-    box.pack_end(   close,  false, false, 0 );
+    var cbox = new Box( Orientation.VERTICAL, 10 );
+    cbox.pack_start( close, false, false, 0 );
+
+    box.pack_start( ibox, true, true,  0 );
+    box.pack_end(   cbox, false, false, 0 );
 
     _list_box.pack_start( box, false, true, 0 ); 
-    _list_box.show_all();
+
+    set_row_content( get_index_for_box( box ), (int)ActionConditionType.COND_GROUP, ibox );
+    show_all();
 
   }
 

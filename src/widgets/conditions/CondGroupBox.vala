@@ -16,13 +16,17 @@ public class CondGroupBox : CondBase {
 
     _group = new CondBoxList();
 
-    var box  = new Box( Orientation.VERTICAL, 0 );
+    var box = new Box( Orientation.VERTICAL, 10 );
+    box.margin = 10;
     box.pack_start( tbox,   false, true, 0 );
     box.pack_start( _group, false, true, 0 );
 
-    pack_start( box, false, true, 0 );
+    var frame = new Frame( null );
+    frame.add( box );
 
-    stdout.printf( "In CondGroupBox\n" );
+    pack_start( frame, true, true, 0 );
+
+    show_all();
 
   }
 

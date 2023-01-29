@@ -66,7 +66,7 @@ public class CondBoxList : BoxList {
       default                              :  assert_not_reached();
     }
     _conditions.nth( index ).data = item;
-    box.pack_start( (Box)item, false, true, 0 );
+    box.pack_start( (Box)item, true, true, 0 );
   }
 
   public override void get_data( DirAction action ) {
