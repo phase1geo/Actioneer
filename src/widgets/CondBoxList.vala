@@ -18,6 +18,10 @@ public class CondBoxList : BoxList {
     base.add_row( row_type, show_opt_menu );
   }
 
+  protected override bool group_supported() {
+    return( true );
+  }
+
   protected override void add_group() {
     _conditions.append( new CondBase( ActionConditionType.COND_GROUP ) );
     base.add_group();

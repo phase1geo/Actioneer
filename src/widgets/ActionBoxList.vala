@@ -18,6 +18,10 @@ public class ActionBoxList : BoxList {
     base.add_row( row_type, show_opt_menu );
   }
 
+  protected override bool group_supported() {
+    return( false );
+  }
+
   protected override void delete_row( int index ) {
     base.delete_row( index );
     _actions.remove( _actions.nth_data( index ) );

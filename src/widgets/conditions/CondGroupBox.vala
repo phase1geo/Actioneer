@@ -2,17 +2,18 @@ using Gtk;
 
 public class CondGroupBox : CondBase {
 
-  private CondBoxList _group;
+  private MatchOptMenu _mb;
+  private CondBoxList  _group;
 
   /* Default constructor */
   public CondGroupBox( ActionConditionType type ) {
 
     base( type );
 
-    var mb = new MatchOptMenu();
+    _mb = new MatchOptMenu();
 
     var tbox = new Box( Orientation.HORIZONTAL, 0 );
-    tbox.pack_start( mb, false, false, 0 );
+    tbox.pack_start( _mb, false, false, 0 );
 
     _group = new CondBoxList();
 
@@ -38,6 +39,7 @@ public class CondGroupBox : CondBase {
     _group.get_data( dir_action );
 
     data.group.copy( dir_action.conditions );
+    data.group.match_all = (bool)_mb.get_current_item();
 
     return( data );
 
@@ -49,6 +51,7 @@ public class CondGroupBox : CondBase {
 
     dir_action.conditions.copy( data.group );
 
+    _mb.set_current_item( (int)data.group.match_all );
     _group.set_data( dir_action );
 
   }

@@ -92,20 +92,23 @@ public class BoxList : Box {
     _overlay = new Overlay();
     _overlay.add( ebox );
 
+    var bbox = new Box( Orientation.HORIZONTAL, 10 );
+
     var row_btn = new Button.with_label( add_label );
     row_btn.get_style_context().add_class( "add-item" );
     row_btn.clicked.connect(() => {
       add_row( 0, true );
     });
+    bbox.pack_start( row_btn, false, false, 0 );
 
-    var group_btn = new Button.with_label( _( "Add Group" ) );
-    group_btn.clicked.connect(() => {
-      add_group();
-    });
-
-    var bbox = new Box( Orientation.HORIZONTAL, 10 );
-    bbox.pack_start( row_btn,   false, false, 0 );
-    bbox.pack_start( group_btn, false, false, 0 );
+    if( group_supported() ) {
+      var group_btn = new Button.with_label( _( "Add Group" ) );
+      group_btn.get_style_context().add_class( "add-item" );
+      group_btn.clicked.connect(() => {
+        add_group();
+      });
+      bbox.pack_start( group_btn, false, false, 0 );
+    }
 
     pack_start( _overlay, false, true, 0 );
     pack_start( bbox,     false, true, 0 );
@@ -157,6 +160,10 @@ public class BoxList : Box {
       });
     }
 
+  }
+
+  protected virtual bool group_supported() {
+    return( true );
   }
 
   protected virtual void add_group() {

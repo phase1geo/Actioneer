@@ -56,8 +56,8 @@ public class CondTagsBox : CondBase {
   }
 
   public override void set_data( ActionCondition data ) {
-    _menu.set_current_item( (int)data.text.match_type );
-    _entry.text = data.text.text;
+    _menu.set_current_item( (int)data.tags.match_type );
+    _entry.text = data.tags.text;
   }
 
 }
