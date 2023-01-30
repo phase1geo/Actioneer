@@ -11,87 +11,97 @@ public enum FileActionType {
   CLEAR_TAGS,
   STARS,
   COMMENT,
+  IMG_RESIZE,
+  IMG_CONVERT,
   NOTIFY,
   RUN_SCRIPT,
   NUM;
 
   public string to_string() {
     switch( this ) {
-      case MOVE       :  return( "move" );
-      case COPY       :  return( "copy" );
-      case RENAME     :  return( "rename" );
-      case ALIAS      :  return( "alias" );
-      case COMPRESS   :  return( "compress" );
-      case DECOMPRESS :  return( "decompress" );
-      case TRASH      :  return( "trash" );
-      case ADD_TAG    :  return( "tag-add" );
-      case REMOVE_TAG :  return( "tag-remove" );
-      case CLEAR_TAGS :  return( "tag-clear" );
-      case STARS      :  return( "stars" );
-      case COMMENT    :  return( "comment" );
-      case NOTIFY     :  return( "notify" );
-      case RUN_SCRIPT :  return( "run-script" );
-      default         :  assert_not_reached();
+      case MOVE        :  return( "move" );
+      case COPY        :  return( "copy" );
+      case RENAME      :  return( "rename" );
+      case ALIAS       :  return( "alias" );
+      case COMPRESS    :  return( "compress" );
+      case DECOMPRESS  :  return( "decompress" );
+      case TRASH       :  return( "trash" );
+      case ADD_TAG     :  return( "tag-add" );
+      case REMOVE_TAG  :  return( "tag-remove" );
+      case CLEAR_TAGS  :  return( "tag-clear" );
+      case STARS       :  return( "stars" );
+      case COMMENT     :  return( "comment" );
+      case IMG_RESIZE  :  return( "img-resize" );
+      case IMG_CONVERT :  return( "img-convert" );
+      case NOTIFY      :  return( "notify" );
+      case RUN_SCRIPT  :  return( "run-script" );
+      default          :  assert_not_reached();
     }
   }
 
   public string label() {
     switch( this ) {
-      case MOVE       :  return( _( "Move" ) );
-      case COPY       :  return( _( "Copy" ) );
-      case RENAME     :  return( _( "Rename" ) );
-      case ALIAS      :  return( _( "Alias" ) );
-      case COMPRESS   :  return( _( "Compress" ) );
-      case DECOMPRESS :  return( _( "Decompress" ) );
-      case TRASH      :  return( _( "Trash" ) );
-      case ADD_TAG    :  return( _( "Add Tag" ) );
-      case REMOVE_TAG :  return( _( "Remove Tag" ) );
-      case CLEAR_TAGS :  return( _( "Clear Tags" ) );
-      case STARS      :  return( _( "Rating" ) );
-      case COMMENT    :  return( _( "Comment" ) );
-      case NOTIFY     :  return( _( "Notify" ) );
-      case RUN_SCRIPT :  return( _( "Run Script" ) );
-      default         :  assert_not_reached();
+      case MOVE        :  return( _( "Move" ) );
+      case COPY        :  return( _( "Copy" ) );
+      case RENAME      :  return( _( "Rename" ) );
+      case ALIAS       :  return( _( "Alias" ) );
+      case COMPRESS    :  return( _( "Compress" ) );
+      case DECOMPRESS  :  return( _( "Decompress" ) );
+      case TRASH       :  return( _( "Trash" ) );
+      case ADD_TAG     :  return( _( "Add Tag" ) );
+      case REMOVE_TAG  :  return( _( "Remove Tag" ) );
+      case CLEAR_TAGS  :  return( _( "Clear Tags" ) );
+      case STARS       :  return( _( "Rating" ) );
+      case COMMENT     :  return( _( "Comment" ) );
+      case IMG_RESIZE  :  return( _( "Resize Image" ) );
+      case IMG_CONVERT :  return( _( "Convert Image" ) );
+      case NOTIFY      :  return( _( "Notify" ) );
+      case RUN_SCRIPT  :  return( _( "Run Script" ) );
+      default          :  assert_not_reached();
     }
   }
 
   public string pretext() {
     switch( this ) {
-      case MOVE       :  return( _( "to folder" ) );
-      case COPY       :  return( _( "to folder" ) );
-      case RENAME     :  return( _( "file as" ) );
-      case ALIAS      :  return( _( "from folder" ) );
-      case COMPRESS   :  return( _( "file to format" ) );
-      case DECOMPRESS :  return( _( "compressed file" ) );
-      case TRASH      :  return( _( "file" ) );
-      case ADD_TAG    :  return( _( "to file" ) );
-      case REMOVE_TAG :  return( _( "from file" ) );
-      case CLEAR_TAGS :  return( _( "from file" ) );
-      case STARS      :  return( _( "for file" ) );
-      case COMMENT    :  return( _( "for file" ) );
-      case NOTIFY     :  return( _( "with message" ) );
-      case RUN_SCRIPT :  return( "" );
-      default         :  assert_not_reached();
+      case MOVE        :  return( _( "to folder" ) );
+      case COPY        :  return( _( "to folder" ) );
+      case RENAME      :  return( _( "file as" ) );
+      case ALIAS       :  return( _( "from folder" ) );
+      case COMPRESS    :  return( _( "file to format" ) );
+      case DECOMPRESS  :  return( _( "compressed file" ) );
+      case TRASH       :  return( _( "file" ) );
+      case ADD_TAG     :  return( _( "to file" ) );
+      case REMOVE_TAG  :  return( _( "from file" ) );
+      case CLEAR_TAGS  :  return( _( "from file" ) );
+      case STARS       :  return( _( "for file" ) );
+      case COMMENT     :  return( _( "for file" ) );
+      case IMG_RESIZE  :  return( "" );
+      case IMG_CONVERT :  return( _( "with format" ) );
+      case NOTIFY      :  return( _( "with message" ) );
+      case RUN_SCRIPT  :  return( "" );
+      default          :  assert_not_reached();
     }
   }
 
   public static FileActionType parse( string val ) {
     switch( val ) {
-      case "move"       :  return( MOVE );
-      case "copy"       :  return( COPY );
-      case "rename"     :  return( RENAME );
-      case "alias"      :  return( ALIAS );
-      case "compress"   :  return( COMPRESS );
-      case "decompress" :  return( DECOMPRESS );
-      case "trash"      :  return( TRASH );
-      case "tag-add"    :  return( ADD_TAG );
-      case "tag-remove" :  return( REMOVE_TAG );
-      case "tag-clear"  :  return( CLEAR_TAGS );
-      case "stars"      :  return( STARS );
-      case "comment"    :  return( COMMENT );
-      case "notify"     :  return( NOTIFY );
-      case "run-script" :  return( RUN_SCRIPT );
-      default           :  assert_not_reached();
+      case "move"        :  return( MOVE );
+      case "copy"        :  return( COPY );
+      case "rename"      :  return( RENAME );
+      case "alias"       :  return( ALIAS );
+      case "compress"    :  return( COMPRESS );
+      case "decompress"  :  return( DECOMPRESS );
+      case "trash"       :  return( TRASH );
+      case "tag-add"     :  return( ADD_TAG );
+      case "tag-remove"  :  return( REMOVE_TAG );
+      case "tag-clear"   :  return( CLEAR_TAGS );
+      case "stars"       :  return( STARS );
+      case "comment"     :  return( COMMENT );
+      case "img-resize"  :  return( IMG_RESIZE );
+      case "img-convert" :  return( IMG_CONVERT );
+      case "notify"      :  return( NOTIFY );
+      case "run-script"  :  return( RUN_SCRIPT );
+      default            :  assert_not_reached();
     }
   }
 
@@ -185,6 +195,14 @@ public enum FileActionType {
     return( Utils.set_file_comment( pathname, comment ) );
   }
 
+  private bool do_image_resize( string pathname, Imager imager ) {
+    return( imager.resize( pathname ) );
+  }
+
+  private bool do_image_convert( ref string pathname, Imager imager ) {
+    return( imager.convert( ref pathname ) );
+  }
+
   private bool do_notify( GLib.Application app, string pathname, TokenText token_text ) {
     var ofile = File.new_for_path( pathname );
     var msg   = token_text.generate_text( ofile );
@@ -202,23 +220,25 @@ public enum FileActionType {
     return( Process.spawn_command_line_async( script ) );
   }
 
-  public bool file_execute( GLib.Application app, ref string pathname, File? new_file, TokenText? token_text, FileCompress? comp ) {
+  public bool file_execute( GLib.Application app, ref string pathname, File? new_file, TokenText? token_text, FileCompress? comp, Imager? imager ) {
     switch( this ) {
-      case MOVE       :  return( do_move( ref pathname, new_file ) );
-      case COPY       :  return( do_copy( pathname, new_file ) );
-      case RENAME     :  return( do_rename( ref pathname, token_text ) );
-      case ALIAS      :  return( do_alias( pathname, new_file ) );
-      case COMPRESS   :  return( do_compress( ref pathname, comp ) );
-      case DECOMPRESS :  return( do_decompress( pathname ) );
-      case TRASH      :  return( do_trash( pathname ) );
-      case ADD_TAG    :  return( do_add_tag( pathname, token_text ) );
-      case REMOVE_TAG :  return( do_remove_tag( pathname, token_text ) );
-      case CLEAR_TAGS :  return( do_clear_tags( pathname ) );
-      case STARS      :  return( do_rating( pathname, token_text ) );
-      case COMMENT    :  return( do_comment( pathname, token_text ) );
-      case NOTIFY     :  return( do_notify( app, pathname, token_text ) );
-      case RUN_SCRIPT :  return( do_run_script( pathname, token_text ) );
-      default         :  assert_not_reached();
+      case MOVE        :  return( do_move( ref pathname, new_file ) );
+      case COPY        :  return( do_copy( pathname, new_file ) );
+      case RENAME      :  return( do_rename( ref pathname, token_text ) );
+      case ALIAS       :  return( do_alias( pathname, new_file ) );
+      case COMPRESS    :  return( do_compress( ref pathname, comp ) );
+      case DECOMPRESS  :  return( do_decompress( pathname ) );
+      case TRASH       :  return( do_trash( pathname ) );
+      case ADD_TAG     :  return( do_add_tag( pathname, token_text ) );
+      case REMOVE_TAG  :  return( do_remove_tag( pathname, token_text ) );
+      case CLEAR_TAGS  :  return( do_clear_tags( pathname ) );
+      case STARS       :  return( do_rating( pathname, token_text ) );
+      case COMMENT     :  return( do_comment( pathname, token_text ) );
+      case IMG_RESIZE  :  return( do_image_resize( pathname, imager ) );
+      case IMG_CONVERT :  return( do_image_convert( ref pathname, imager ) );
+      case NOTIFY      :  return( do_notify( app, pathname, token_text ) );
+      case RUN_SCRIPT  :  return( do_run_script( pathname, token_text ) );
+      default          :  assert_not_reached();
     }
   }
 
@@ -248,6 +268,14 @@ public enum FileActionType {
     return( this == COMPRESS );
   }
 
+  public bool is_image_resize() {
+    return( this == IMG_RESIZE );
+  }
+
+  public bool is_image_convert() {
+    return( this == IMG_CONVERT );
+  }
+
 }
 
 public class FileAction {
@@ -258,6 +286,7 @@ public class FileAction {
   private File?          _file;
   private TokenText?     _token_text;
   private FileCompress?  _compress;
+  private Imager?        _imager;
 
   public FileActionType action_type {
     get {
@@ -279,6 +308,11 @@ public class FileAction {
       return( _compress );
     }
   }
+  public Imager? imager {
+    get {
+      return( _imager );
+    }
+  }
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
@@ -289,6 +323,7 @@ public class FileAction {
     _file       = null;
     _token_text = null;
     _compress   = null;
+    _imager     = null;
   }
 
   /* Constructor */
@@ -297,6 +332,13 @@ public class FileAction {
     _file       = null;
     _token_text = type.is_tokenized() ? new TokenText()    : null;
     _compress   = type.is_compress()  ? new FileCompress() : null;
+    if( type.is_image_resize() ) {
+      _imager = new ImagerResizer();
+    } else if( type.is_image_convert() ) {
+      _imager = new ImagerConverter();
+    } else {
+      _imager = null;
+    }
   }
 
   /* Constructor */
@@ -306,6 +348,13 @@ public class FileAction {
     _file       = File.new_for_path( filename );
     _token_text = type.is_tokenized() ? new TokenText()    : null;
     _compress   = type.is_compress()  ? new FileCompress() : null;
+    if( type.is_image_resize() ) {
+      _imager = new ImagerResizer();
+    } else if( type.is_image_convert() ) {
+      _imager = new ImagerConverter();
+    } else {
+      _imager = null;
+    }
   }
 
   /* Copy constructor */
@@ -314,6 +363,13 @@ public class FileAction {
     _file       = (other._file       == null) ? null : File.new_for_path( other._file.get_path() );
     _token_text = (other._token_text == null) ? null : new TokenText.copy( other._token_text );
     _compress   = (other._compress   == null) ? null : new FileCompress.copy( other._compress );
+    if( other._imager == null ) {
+      _imager = null;
+    } else if( (other._imager as ImagerResizer) != null ) {
+      _imager = new ImagerResizer.copy( (other._imager as ImagerResizer) );
+    } else if( (other._imager as ImagerConverter) != null ) {
+      _imager = new ImagerConverter.copy( (other._imager as ImagerConverter) );
+    }
   }
 
   /*
@@ -324,7 +380,7 @@ public class FileAction {
   public bool execute( GLib.Application app, ref string pathname ) {
 
     try {
-      return( _type.file_execute( app, ref pathname, _file, _token_text, _compress ) );
+      return( _type.file_execute( app, ref pathname, _file, _token_text, _compress, _imager ) );
     } catch( SpawnError e ) {
       err    = true;
       errmsg = e.message;
@@ -356,6 +412,10 @@ public class FileAction {
       node->add_child( _compress.save() );
     }
 
+    if( _imager != null ) {
+      _imager.save( node );
+    }
+
     return( node );
 
   }
@@ -371,6 +431,14 @@ public class FileAction {
     var file = node->get_prop( "file" );
     if( file != null ) {
       _file = File.new_for_path( file );
+    }
+
+    if( _type.is_image_resize() ) {
+      _imager = new ImagerResizer();
+      _imager.load( node );
+    } else if( _type.is_image_convert() ) {
+      _imager = new ImagerConverter();
+      _imager.load( node );
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
