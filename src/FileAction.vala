@@ -106,13 +106,17 @@ public enum FileActionType {
   }
 
   public bool add_separator_after() {
-    return( (this == ALIAS) || (this == DECOMPRESS) || (this == TRASH) || (this == COMMENT) );
+    return( (this == ALIAS) ||
+            (this == DECOMPRESS) ||
+            (this == TRASH) ||
+            (this == COMMENT) ||
+            (this == IMG_CONVERT) );
   }
 
   private bool do_move( ref string pathname, File new_file ) {
     var ofile  = File.new_for_path( pathname );
     var nfile  = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
-    var retval = ofile.move( nfile, NONE );
+    var retval = ofile.move( nfile, FileCopyFlags.NONE );
     pathname   = nfile.get_path();
     return( retval );
   }
@@ -121,13 +125,13 @@ public enum FileActionType {
     var ofile = File.new_for_path( pathname );
     var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
     return( !FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
-            ofile.copy( new_file, NONE ) );
+            ofile.copy( nfile, FileCopyFlags.NONE ) );
   }
 
   private bool do_rename( ref string pathname, TokenText token_text ) {
     var ofile  = File.new_for_path( pathname );
     var nfile  = File.new_for_path( Path.build_filename( ofile.get_parent().get_path(), token_text.generate_text( ofile ) ) );
-    var retval = ofile.move( nfile, NONE );
+    var retval = ofile.move( nfile, FileCopyFlags.NONE );
     pathname   = nfile.get_path();
     return( retval );
   }

@@ -45,21 +45,23 @@ public class ActionBoxList : BoxList {
     ActionBase item;
     var type = (FileActionType)row_type;
     switch( type ) {
-      case FileActionType.MOVE       :  item = new ActionFileBox( type );      break;
-      case FileActionType.COPY       :  item = new ActionFileBox( type );      break;
-      case FileActionType.RENAME     :  item = new ActionRenameBox( type );    break;
-      case FileActionType.ALIAS      :  item = new ActionFileBox( type );      break;
-      case FileActionType.COMPRESS   :  item = new ActionCompressBox( type );  break;
-      case FileActionType.DECOMPRESS :  item = new ActionEmptyBox( type );     break;
-      case FileActionType.TRASH      :  item = new ActionEmptyBox( type );     break;
-      case FileActionType.ADD_TAG    :  item = new ActionTextBox( type );      break;
-      case FileActionType.REMOVE_TAG :  item = new ActionTextBox( type );      break;
-      case FileActionType.CLEAR_TAGS :  item = new ActionEmptyBox( type );     break;
-      case FileActionType.STARS      :  item = new ActionStarBox( type );      break;
-      case FileActionType.COMMENT    :  item = new ActionTextBox( type );      break;
-      case FileActionType.NOTIFY     :  item = new ActionRenameBox( type );    break;
-      case FileActionType.RUN_SCRIPT :  item = new ActionTextBox( type );      break;
-      default                        :  assert_not_reached();
+      case FileActionType.MOVE        :  item = new ActionFileBox( type );      break;
+      case FileActionType.COPY        :  item = new ActionFileBox( type );      break;
+      case FileActionType.RENAME      :  item = new ActionRenameBox( type );    break;
+      case FileActionType.ALIAS       :  item = new ActionFileBox( type );      break;
+      case FileActionType.COMPRESS    :  item = new ActionCompressBox( type );  break;
+      case FileActionType.DECOMPRESS  :  item = new ActionEmptyBox( type );     break;
+      case FileActionType.TRASH       :  item = new ActionEmptyBox( type );     break;
+      case FileActionType.ADD_TAG     :  item = new ActionTextBox( type );      break;
+      case FileActionType.REMOVE_TAG  :  item = new ActionTextBox( type );      break;
+      case FileActionType.CLEAR_TAGS  :  item = new ActionEmptyBox( type );     break;
+      case FileActionType.STARS       :  item = new ActionStarBox( type );      break;
+      case FileActionType.COMMENT     :  item = new ActionTextBox( type );      break;
+      case FileActionType.IMG_RESIZE  :  item = new ActionResizeBox( type );    break;
+      case FileActionType.IMG_CONVERT :  item = new ActionConvertBox( type );   break;
+      case FileActionType.NOTIFY      :  item = new ActionRenameBox( type );    break;
+      case FileActionType.RUN_SCRIPT  :  item = new ActionTextBox( type );      break;
+      default                         :  assert_not_reached();
     }
     _actions.nth( index ).data = item;
     box.pack_start( (Box)item, true, true, 0 );

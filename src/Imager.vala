@@ -57,8 +57,6 @@ public enum ResizeMethod {
 public enum ImagerFormat {
   JPG,
   PNG,
-  PDF,
-  SVG,
   BMP,
   NUM;
 
@@ -66,8 +64,6 @@ public enum ImagerFormat {
     switch( this ) {
       case JPG :  return( "jpg" );
       case PNG :  return( "png" );
-      case PDF :  return( "pdf" );
-      case SVG :  return( "svg" );
       case BMP :  return( "bmp" );
       default  :  assert_not_reached();
     }
@@ -77,8 +73,6 @@ public enum ImagerFormat {
     switch( this ) {
       case JPG :  return( _( "JPG" ) );
       case PNG :  return( _( "PNG" ) );
-      case PDF :  return( _( "JDF" ) );
-      case SVG :  return( _( "SVG" ) );
       case BMP :  return( _( "BMP" ) );
       default  :  assert_not_reached();
     }
@@ -88,8 +82,6 @@ public enum ImagerFormat {
     switch( val ) {
       case "jpg" :  return( JPG );
       case "png" :  return( PNG );
-      case "pdf" :  return( PDF );
-      case "svg" :  return( SVG );
       case "bmp" :  return( BMP );
       default    :  assert_not_reached();
     }
@@ -112,14 +104,6 @@ public enum ImagerFormat {
     return( buf.save( saveas, "png" ) );
   }
 
-  private bool convert_pdf( Pixbuf buf, string saveas ) {
-    return( false );
-  }
-
-  private bool convert_svg( Pixbuf buf, string saveas ) {
-    return( false );
-  }
-
   private bool convert_bmp( Pixbuf buf, string saveas ) {
     return( buf.save( saveas, "bmp" ) );
   }
@@ -131,8 +115,6 @@ public enum ImagerFormat {
     switch( this ) {
       case JPG :  retval = convert_jpg( buf, npath );  break;
       case PNG :  retval = convert_png( buf, npath );  break;
-      case PDF :  retval = convert_pdf( buf, npath );  break;
-      case SVG :  retval = convert_svg( buf, npath );  break;
       case BMP :  retval = convert_bmp( buf, npath );  break;
       default  :  assert_not_reached();
     }
