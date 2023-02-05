@@ -29,6 +29,7 @@ public class Controller {
     win.rule_list.removed.connect( rule_removed );
     win.rule_list.moved.connect( rule_moved );
     win.rule_list.selected.connect( rule_selected );
+    win.rule_list.execute.connect( rule_execute );
 
     /* Connect to the rule form */
     win.rule_stack.form.save_requested.connect( form_save );
@@ -211,6 +212,16 @@ public class Controller {
 
     /* Save the currently selected rule */
     _current_rule = rule;
+
+  }
+
+  private void rule_execute( int index, string fname ) {
+
+    var rule = (index == -1) ? null : _current_dir.get_rule( index );
+
+    if( rule != null ) {
+      rule.execute( _win.get_app(), fname );
+    }
 
   }
 

@@ -99,6 +99,13 @@ public class DirAction {
     _conditions.check( pathname, cond_results );
   }
 
+  /* Executes this rule on the given pathname */
+  public void execute( GLib.Application app, string path ) {
+    if( _conditions.check( path ) ) {
+      _actions.execute( app, path );
+    }
+  }
+
   /* Runs the current action on the given directory */
   public void run( GLib.Application app, string dirname ) {
 
@@ -114,9 +121,7 @@ public class DirAction {
       /* Get the list of entries within the given directory */
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
-        if( _conditions.check( path ) ) {
-          _actions.execute( app, path );
-        }
+        execute( app, path );
       }
 
     } catch( FileError e ) {

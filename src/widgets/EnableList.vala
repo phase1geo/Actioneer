@@ -36,6 +36,11 @@ public class EnableList : Box {
   private int         _select_index     = -1;
 
   protected MainWindow  win;
+  protected Box list_box {
+    get {
+      return( _list_box );
+    }
+  }
 
   public signal void enable_changed( int index );
   public signal bool added( string pathname );
@@ -160,7 +165,7 @@ public class EnableList : Box {
 
   }
 
-  private int get_index_for_y( double y ) {
+  protected int get_index_for_y( double y ) {
     var index = -1;
     var i     = 0;
     _list_box.get_children().foreach((b) => {
@@ -174,7 +179,7 @@ public class EnableList : Box {
     return( index );
   }
 
-  private Box? get_box_for_y( double y ) {
+  protected Box? get_box_for_y( double y ) {
     Box box = null;
     _list_box.get_children().foreach((b) => {
       Allocation alloc;

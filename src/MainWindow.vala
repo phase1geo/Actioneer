@@ -124,6 +124,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     try {
       // var css_data = ".enablelist-selected { background: #087DFF; }";
       var css_data = ".enablelist-selected { background: #C0E0FF; } " +
+                     ".rulelist-droppable  { background: #00FF00; } " +
                      ".enablelist-padding { " +
                      "  padding-top: 5px; " + 
                      "  padding-bottom: 5px; " +
@@ -179,10 +180,15 @@ public class MainWindow : Hdy.ApplicationWindow {
 
   }
 
-  /* Called when the user uses Control-r keyboard shortcut to run the current actions */
-  private void action_run() {
+  public Actioneer get_app() {
     Actioneer? app = null;
     @get( "application", ref app );
+    return( app );
+  }
+
+  /* Called when the user uses Control-r keyboard shortcut to run the current actions */
+  private void action_run() {
+    var app = get_app();
     app.dirlist.run( app );
   }
 

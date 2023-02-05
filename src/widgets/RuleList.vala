@@ -23,9 +23,62 @@ using Gtk;
 
 public class RuleList : EnableList {
 
+  public static const Gtk.TargetEntry[] DRAG_TARGETS = {
+    {"text/uri-list", 0, DragTypes.URI},
+  };
+
+  private Box _current_box;
+
+  public signal void execute( int index, string fname );
+
   /* Create the main window UI */
   public RuleList( MainWindow w ) {
+
     base( w );
+
+    /* Set ourselves up to be a drag target */
+    Gtk.drag_dest_set( list_box, DestDefaults.MOTION | DestDefaults.DROP, DRAG_TARGETS, Gdk.DragAction.COPY );
+    list_box.drag_motion.connect( handle_drag_motion );
+    list_box.drag_data_received.connect( handle_drag_data_received );
+
+  }
+
+  private bool handle_drag_motion( Gdk.DragContext ctx, int x, int y, uint t ) {
+    return( highlight_row( (double)y ) );
+  }
+
+  private void handle_drag_data_received( Gdk.DragContext ctx, int x, int y, Gtk.SelectionData data, uint info, uint t ) {
+    if( info == DragTypes.URI ) {
+      if( _current_box != null ) {
+        var index = get_index_for_y( (double)y );
+        foreach (var uri in data.get_uris()) {
+          var fname = Filename.from_uri( uri );
+          execute( index, fname );
+        }
+      }
+    }
+    if( _current_box != null ) {
+      _current_box.get_style_context().remove_class( "rulelist-droppable" );
+    }
+    Gtk.drag_finish( ctx, true, false, t );
+  }
+
+  /* Causes the given row to be selected */
+  private bool highlight_row( double y ) {
+
+    if( _current_box != null ) {
+      _current_box.get_style_context().remove_class( "rulelist-droppable" );
+    }
+
+    var box = get_box_for_y( y );
+    if( box != null ) {
+      box.get_style_context().add_class( "rulelist-droppable" );
+    }
+
+    _current_box = box;
+
+    return( _current_box != null );
+
   }
 
   protected virtual SelectionMode select_mode() {
