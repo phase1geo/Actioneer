@@ -30,6 +30,9 @@ public class RuleList : EnableList {
   private Box _current_box;
 
   public signal void execute( int index, string fname );
+  public signal bool duplicated( int index, ref bool enable, ref string label );
+  public signal void move_rule( int rule_index, int dir_index );
+  public signal void copy_rule( int rule_index, int dir_index );
 
   /* Create the main window UI */
   public RuleList( MainWindow w ) {
@@ -61,6 +64,57 @@ public class RuleList : EnableList {
       _current_box.get_style_context().remove_class( "rulelist-droppable" );
     }
     Gtk.drag_finish( ctx, true, false, t );
+  }
+
+  protected override Gtk.Menu? get_contextual_menu( int index ) {
+
+    var menu = new Gtk.Menu();
+
+    var dup = new Gtk.MenuItem.with_label( _( "Duplicate" ) );
+    dup.activate.connect(() => {
+      bool   enable = true;
+      string label  = "";
+      if( duplicated( index, ref enable, ref label ) ) {
+        var row = (int)list_box.get_children().length();
+        add_row( enable, label );
+        select_row( row );
+        selected( row );
+      }
+    });
+
+    var move_menu = new Gtk.Menu();
+    var copy_menu = new Gtk.Menu();
+    var dirs = win.get_app().dirlist;
+
+    for( int i=0; i<dirs.size(); i++ ) {
+      if( dirs.get_directory( i ) != dirs.current_dir ) {
+        var move_dir = new Gtk.MenuItem.with_label( dirs.get_directory( i ).dirname );
+        move_dir.activate.connect(() => {
+          move_rule( index, i );
+        });
+        var copy_dir = new Gtk.MenuItem.with_label( dirs.get_directory( i ).dirname );
+        copy_dir.activate.connect(() => {
+          copy_rule( index, i );
+        });
+        move_menu.add( move_dir );
+        copy_menu.add( copy_dir );
+      }
+    }
+
+    var move = new Gtk.MenuItem.with_label( _( "Move To Directory" ) );
+    move.set_submenu( move_menu );
+
+    var copy = new Gtk.MenuItem.with_label( _( "Copy To Directory" ) );
+    copy.set_submenu( copy_menu );
+
+    menu.add( dup );
+    menu.add( new Gtk.SeparatorMenuItem() );
+    menu.add( move );
+    menu.add( copy );
+    menu.show_all();
+
+    return( menu );
+
   }
 
   /* Causes the given row to be selected */

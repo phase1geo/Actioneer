@@ -2,7 +2,8 @@ public class DirList {
 
   private SList<DirActions> _dir_actions;
 
-  public bool background_enabled { set; get; default = true; }
+  public bool        background_enabled { set; get; default = true; }
+  public DirActions? current_dir        { set; get; default = null; }
 
   /* Default constructor */
   public DirList() {

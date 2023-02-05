@@ -34,8 +34,9 @@ public class EnableList : Box {
   private Allocation  _move_alloc;
   private double      _move_offset;
   private int         _select_index     = -1;
+  private Gtk.Menu    _ctx_menu         = null;
 
-  protected MainWindow  win;
+  protected MainWindow win;
   protected Box list_box {
     get {
       return( _list_box );
@@ -90,17 +91,26 @@ public class EnableList : Box {
     var ebox = new EventBox();
 
     ebox.button_press_event.connect((e) => {
-      _move_box = get_box_for_y( e.y );
-      if( _move_box == null ) {
-        select_row( -1 );
-        selected( _select_index );
+      if( e.button == Gdk.BUTTON_SECONDARY ) {
+        var index = get_index_for_y( e.y );
+        var menu  = get_contextual_menu( index );
+        if( menu != null ) {
+          select_row( index );
+          menu.popup_at_pointer( e );
+        }
       } else {
-        _move_state = MoveState.PRESS;
-        _move_box.get_allocation( out _move_alloc );
-        _move_offset = e.y - _move_alloc.y;
-        _move_blank.set_size_request( _move_alloc.width, _move_alloc.height );
-        _move_start_index = get_index_for_y( e.y );
-        _move_last_index  = _move_start_index;
+        _move_box = get_box_for_y( e.y );
+        if( _move_box == null ) {
+          select_row( -1 );
+          selected( _select_index );
+        } else {
+          _move_state = MoveState.PRESS;
+          _move_box.get_allocation( out _move_alloc );
+          _move_offset = e.y - _move_alloc.y;
+          _move_blank.set_size_request( _move_alloc.width, _move_alloc.height );
+          _move_start_index = get_index_for_y( e.y );
+          _move_last_index  = _move_start_index;
+        }
       }
       return( true );
     });
@@ -215,6 +225,11 @@ public class EnableList : Box {
    we will avoid adding the new row.
   */
   protected virtual string? get_label() {
+    return( null );
+  }
+
+  /* Allows the derived class to display a contextual menu */
+  protected virtual Gtk.Menu? get_contextual_menu( int index ) {
     return( null );
   }
 

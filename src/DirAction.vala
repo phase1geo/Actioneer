@@ -57,8 +57,10 @@ public class DirAction {
     _actions    = new FileActions();
   }
 
-  public void copy( DirAction rule ) {
-    _name = rule.name;
+  public void copy( DirAction rule, string? new_name = null ) {
+    _name   = (new_name != null) ? new_name : rule.name;
+    enabled = rule.enabled;
+    pinned  = rule.pinned;
     _conditions.copy( rule._conditions );
     _actions.copy( rule._actions );
   }

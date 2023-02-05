@@ -4,8 +4,6 @@ public class Controller {
 
   private MainWindow _win;
   private DirList    _data;
-  private DirActions _current_dir  = null;
-  private DirAction  _current_rule = null;
 
   /* Default constructor */
   public Controller( MainWindow win, DirList data ) {
@@ -30,6 +28,9 @@ public class Controller {
     win.rule_list.moved.connect( rule_moved );
     win.rule_list.selected.connect( rule_selected );
     win.rule_list.execute.connect( rule_execute );
+    win.rule_list.duplicated.connect( rule_duplicated );
+    win.rule_list.move_rule.connect( rule_move_to_directory );
+    win.rule_list.copy_rule.connect( rule_move_to_directory );
 
     /* Connect to the rule form */
     win.rule_stack.form.save_requested.connect( form_save );
@@ -141,7 +142,7 @@ public class Controller {
       /* Show the welcome1 stack page */
       _win.rule_stack.visible_child_name = "welcome1";
 
-    } else if( dir != _current_dir ) {
+    } else if( dir != _data.current_dir ) {
 
       /* Update the rule list */
       populate_rules( dir );
@@ -149,7 +150,7 @@ public class Controller {
     }
 
     /* Save the currently selected directory */
-    _current_dir = dir;
+    _data.current_dir = dir;
 
   }
 
@@ -159,7 +160,7 @@ public class Controller {
 
   private void rule_enable_changed( int index ) {
 
-    var rule = _current_dir.get_rule( index );
+    var rule = _data.current_dir.get_rule( index );
     rule.enabled = !rule.enabled;
 
     /* Save the data immediately */
@@ -171,16 +172,36 @@ public class Controller {
 
     var rule = new DirAction.with_name( name );
 
-    return( _current_dir.add_rule( rule ) );
+    return( _data.current_dir.add_rule( rule ) );
+
+  }
+
+  private bool rule_duplicated( int index, ref bool enable, ref string label ) {
+
+    var old_rule = _data.current_dir.get_rule( index );
+    var cpy_name = old_rule.name + " " + _( "Copy" );
+    var idx      = 2;
+
+    enable = old_rule.enabled;
+    label  = cpy_name;
+
+    while( _data.current_dir.find_rule( label ) != null ) {
+      label = cpy_name + " " + idx.to_string();
+    }
+
+    var new_rule = new DirAction();
+    new_rule.copy( old_rule, label );
+
+    return( _data.current_dir.add_rule( new_rule ) );
 
   }
 
   private void rule_removed( int index ) {
 
-    var rule = _current_dir.get_rule( index );
+    var rule = _data.current_dir.get_rule( index );
 
     /* Delete the rule */
-    _current_dir.remove_rule( rule );
+    _data.current_dir.remove_rule( rule );
 
     /* Save the change */
     _data.save();
@@ -189,21 +210,46 @@ public class Controller {
 
   private void rule_moved( int from, int to ) {
 
-    var rule = _current_dir.get_rule( from );
+    var rule = _data.current_dir.get_rule( from );
 
-    _current_dir.move_rule( rule, to );
+    _data.current_dir.move_rule( rule, to );
+
+  }
+
+  private void rule_move_to_directory( int rule_index, int dir_index ) {
+
+    var rule = _data.current_dir.get_rule( rule_index );
+
+    /* Remove the rule from the current directory */
+    _data.current_dir.remove_rule( rule );
+
+    /* Add the rule to the dir_index directory */
+    var dir = _data.get_directory( dir_index );
+    dir.add_rule( rule );
+
+  }
+
+  private void rule_copy_to_directory( int rule_index, int dir_index ) {
+
+    var rule = _data.current_dir.get_rule( rule_index );
+    var rule_copy = new DirAction();
+    rule_copy.copy( rule );
+
+    /* Add the rule to the dir_index directory */
+    var dir = _data.get_directory( dir_index );
+    dir.add_rule( rule_copy );
 
   }
 
   private void rule_selected( int index ) {
 
-    var rule = (index == -1) ? null : _current_dir.get_rule( index );
+    var rule = (index == -1) ? null : _data.current_dir.get_rule( index );
 
     if( rule == null ) {
 
       _win.rule_stack.visible_child_name = "welcome2";
 
-    } else if( (rule != _current_rule) || (_win.rule_stack.visible_child_name != "form") ) {
+    } else if( (rule != _data.current_dir.current_rule) || (_win.rule_stack.visible_child_name != "form") ) {
 
       _win.rule_stack.form.initialize( rule );
       _win.rule_stack.visible_child_name = "form";
@@ -211,13 +257,13 @@ public class Controller {
     }
 
     /* Save the currently selected rule */
-    _current_rule = rule;
+    _data.current_dir.current_rule = rule;
 
   }
 
   private void rule_execute( int index, string fname ) {
 
-    var rule = (index == -1) ? null : _current_dir.get_rule( index );
+    var rule = (index == -1) ? null : _data.current_dir.get_rule( index );
 
     if( rule != null ) {
       rule.execute( _win.get_app(), fname );
@@ -240,7 +286,7 @@ public class Controller {
     _win.rule_list.set_label( rule.name );
 
     /* Copy the rule into the current rule */
-    _current_rule.copy( rule );
+    _data.current_dir.current_rule.copy( rule );
 
     /* Clear the list selection */
     // _win.rule_list.view.get_selection().unselect_iter( it );

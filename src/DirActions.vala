@@ -27,7 +27,8 @@ public class DirActions {
   private SList<DirAction> _actions;
   private MainWindow       _win;
 
-  public bool enabled { get; set; default = true; }
+  public bool       enabled      { get; set; default = true; }
+  public DirAction? current_rule { get; set; default = null; }
   public string dirname {
     get {
       return( _dirname );
