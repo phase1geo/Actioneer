@@ -51,6 +51,15 @@ public class DirActions {
     return( (int)_actions.length() );
   }
 
+  /* Populates the list of pinned rules */
+  public void get_pinned( SList<DirAction> actions ) {
+    _actions.foreach((action) => {
+      if( action.pinned ) {
+        actions.append( action );
+      }
+    });
+  }
+
   /* Returns the rule that matches the given name, if found. */
   public DirAction? find_rule( string name ) {
     DirAction? rule = null;

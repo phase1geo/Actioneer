@@ -28,6 +28,7 @@ public class DirAction {
   private FileActions       _actions;
 
   public bool   enabled { get; set; default = true; }
+  public bool   pinned  { get; set; default = false; }
   public string name {
     get {
       return( _name );
@@ -138,8 +139,9 @@ public class DirAction {
 
     Xml.Node* node = new Xml.Node( null, xml_node );
 
-    node->set_prop( "name", _name );
+    node->set_prop( "name",    _name );
     node->set_prop( "enabled", enabled.to_string() );
+    node->set_prop( "pinned",  pinned.to_string() );
 
     node->add_child( _conditions.save() );
     node->add_child( _actions.save() );
@@ -159,6 +161,11 @@ public class DirAction {
     var e = node->get_prop( "enabled" );
     if( e != null ) {
       enabled = bool.parse( e );
+    }
+
+    var p = node->get_prop( "pinned" );
+    if( p != null ) {
+      pinned = bool.parse( p );
     }
 
     for( Xml.Node* it=node->children; it!=null; it=it->next ) {
