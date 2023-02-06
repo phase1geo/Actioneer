@@ -43,6 +43,7 @@ public class RuleList : EnableList {
     Gtk.drag_dest_set( list_box, DestDefaults.MOTION | DestDefaults.DROP, DRAG_TARGETS, Gdk.DragAction.COPY );
     list_box.drag_motion.connect( handle_drag_motion );
     list_box.drag_data_received.connect( handle_drag_data_received );
+    list_box.drag_leave.connect( handle_drag_leave );
 
   }
 
@@ -64,6 +65,12 @@ public class RuleList : EnableList {
       _current_box.get_style_context().remove_class( "rulelist-droppable" );
     }
     Gtk.drag_finish( ctx, true, false, t );
+  }
+
+  private void handle_drag_leave( Gdk.DragContext ctx, uint t ) {
+    if( _current_box != null ) {
+      _current_box.get_style_context().remove_class( "rulelist-droppable" );
+    }
   }
 
   protected override Gtk.Menu? get_contextual_menu( int index ) {

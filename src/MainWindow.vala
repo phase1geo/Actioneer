@@ -124,12 +124,13 @@ public class MainWindow : Hdy.ApplicationWindow {
     try {
       // var css_data = ".enablelist-selected { background: #087DFF; }";
       var css_data = ".enablelist-selected { background: #C0E0FF; } " +
-                     ".rulelist-droppable  { background: #00FF00; } " +
+                     ".rulelist-droppable  { border-color: #00ff00; border-style: solid; } " +
                      ".enablelist-padding { " +
                      "  padding-top: 5px; " + 
                      "  padding-bottom: 5px; " +
                      "  padding-left: 10px; " +
                      "  padding-right: 10px; " +
+                     "  border-width: 2px; " +
                      "}";
       provider.load_from_data( css_data );
     } catch( GLib.Error e ) {
