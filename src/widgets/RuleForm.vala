@@ -6,6 +6,7 @@ public class RuleForm : Box {
   private const string MATCH_ANY = _( "Match ANY Condition" );
 
   private Entry         _name_entry;
+  private ToggleButton  _pinned;
   private MatchOptMenu  _match_mb;
   private CondBoxList   _conditions;
   private ActionBoxList _actions;
@@ -106,6 +107,12 @@ public class RuleForm : Box {
 
   private Box create_button_bar() {
 
+    _pinned = new ToggleButton();
+    _pinned.image = new Image.from_icon_name( "view-pin-symbolic", IconSize.SMALL_TOOLBAR );
+    _pinned.toggled.connect(() => {
+      _pinned.set_tooltip_text( _pinned.get_active() ? _( "Unpin Rule" ) : _( "Pin Rule" ) );
+    });
+
     var test_btn = new Button.with_label( _( "Test" ) );
     test_btn.clicked.connect(() => {
       test_rule();
@@ -123,6 +130,7 @@ public class RuleForm : Box {
     });
 
     var box = new Box( Orientation.HORIZONTAL, 10 );
+    box.pack_start( _pinned,  false, false, 0 );
     box.pack_start( test_btn, false, false, 0 );
     box.pack_end( save_btn,   false, false, 0 );
     box.pack_end( cancel_btn, false, false, 0 );
@@ -135,6 +143,7 @@ public class RuleForm : Box {
   public void initialize( DirAction rule ) {
 
     _name_entry.text = rule.name;
+    _pinned.set_active( rule.pinned );
     _match_mb.set_current_item( (int)rule.conditions.match_type );
 
     _conditions.clear();
@@ -150,6 +159,7 @@ public class RuleForm : Box {
 
     var rule = new DirAction.with_name( _name_entry.text );
 
+    rule.pinned = _pinned.get_active();
     rule.conditions.match_type = (ConditionMatchType)_match_mb.get_current_item();
 
     _conditions.get_data( rule );

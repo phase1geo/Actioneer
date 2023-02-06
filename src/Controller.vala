@@ -32,6 +32,12 @@ public class Controller {
     win.rule_list.move_rule.connect( rule_move_to_directory );
     win.rule_list.copy_rule.connect( rule_move_to_directory );
 
+    /* Connect to the pin list signals */
+    win.pin_list.removed.connect( pin_removed );
+    win.pin_list.moved.connect( pin_moved );
+    win.pin_list.selected.connect( pin_selected );
+    win.pin_list.execute.connect( pin_execute );
+
     /* Connect to the rule form */
     win.rule_stack.form.save_requested.connect( form_save );
     win.rule_stack.form.cancel_requested.connect( form_cancelled );
@@ -44,6 +50,7 @@ public class Controller {
   private void initialize() {
     _win.set_background_enable( _data.background_enabled );
     populate_dirs();
+    populate_pinned();
     if( _data.size() > 0 ) {
       _win.dir_list.select_row( 0 );
       directory_selected( 0 );
@@ -75,6 +82,22 @@ public class Controller {
 
     /* Make sure that the welcome2 page is shown */
     _win.rule_stack.visible_child_name = "welcome2";
+
+  }
+
+  private void populate_pinned() {
+
+    _win.pin_list.clear();
+
+    for( int i=0; i<_data.size(); i++ ) {
+      var dir = _data.get_directory( i );
+      for( int j=0; j<dir.num_rules(); j++ ) {
+        var rule = dir.get_rule( j );
+        if( rule.pinned ) {
+          _win.pin_list.add_row( false, rule.name );
+        }
+      }
+    }
 
   }
 
@@ -272,6 +295,22 @@ public class Controller {
   }
 
   // =========================================================
+  // PIN LIST
+  // =========================================================
+
+  private void pin_removed( int index ) {
+  }
+
+  private void pin_moved( int from, int to ) {
+  }
+
+  private void pin_selected( int index ) {
+  }
+  
+  private void pin_execute( int index, string path ) {
+  }
+
+  // =========================================================
   // RULE FORM
   // =========================================================
 
@@ -287,9 +326,6 @@ public class Controller {
 
     /* Copy the rule into the current rule */
     _data.current_dir.current_rule.copy( rule );
-
-    /* Clear the list selection */
-    // _win.rule_list.view.get_selection().unselect_iter( it );
 
     /* Save the content */
     _data.save();

@@ -4,6 +4,7 @@ sources += files(
     'CondBoxList.vala',
     'DirectoryList.vala',
     'EnableList.vala',
+    'PinList.vala',
     'RuleForm.vala',
     'RuleList.vala',
     'RuleStack.vala'

@@ -69,20 +69,24 @@ public class EnableList : Box {
     lbl.use_markup = true;
     lbl.margin = 10;
 
-    /* Create button bar at the bottom of the pane */
-    var add_btn = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
-    add_btn.set_tooltip_text( add_tooltip() );
-    add_btn.clicked.connect( action_add );
-
-    _del_btn = new Button.from_icon_name( "list-remove-symbolic", IconSize.SMALL_TOOLBAR );
-    _del_btn.set_tooltip_text( remove_tooltip() );
-    _del_btn.set_sensitive( false );
-    _del_btn.clicked.connect( action_remove );
-
     var bbox = new Box( Orientation.HORIZONTAL, 5 );
     bbox.margin = 5;
-    bbox.pack_start( add_btn,  false, false, 0 );
-    bbox.pack_start( _del_btn, false, false, 0 );
+
+    /* Create button bar at the bottom of the pane */
+    if( add_button_exists() ) {
+      var add_btn = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
+      add_btn.set_tooltip_text( add_tooltip() );
+      add_btn.clicked.connect( action_add );
+      bbox.pack_start( add_btn,  false, false, 0 );
+    }
+
+    if( del_button_exists() ) {
+      _del_btn = new Button.from_icon_name( "list-remove-symbolic", IconSize.SMALL_TOOLBAR );
+      _del_btn.set_tooltip_text( remove_tooltip() );
+      _del_btn.set_sensitive( false );
+      _del_btn.clicked.connect( action_remove );
+      bbox.pack_start( _del_btn, false, false, 0 );
+    }
 
     /* Create list */
     _list_box   = new Box( Orientation.VERTICAL, 0 );
@@ -267,7 +271,10 @@ public class EnableList : Box {
       box.get_style_context().add_class( "enablelist-selected" );
     }
 
-    _del_btn.set_sensitive( index != -1 );
+    if( del_button_exists() ) {
+      _del_btn.set_sensitive( index != -1 );
+    }
+
     _select_index = index;
 
   }
@@ -283,17 +290,17 @@ public class EnableList : Box {
     box.margin_end   = 5;
     box.get_style_context().add_class( "enablelist-padding" );
 
-    var cb = new CheckButton();
-    cb.active = enable;
-    cb.toggled.connect(() => {
-      enable_changed( _list_box.get_children().index( box ) );
-    });
+    if( enables_exist() ) {
+      var cb = new CheckButton();
+      cb.active = enable;
+      cb.toggled.connect(() => {
+        enable_changed( _list_box.get_children().index( box ) );
+      });
+      box.pack_start( cb,  false, false, 0 );
+    }
 
     var lbl = new Label( label );
     lbl.ellipsize = ellipsize_mode();
-    // lbl.ypad = 5;
-
-    box.pack_start( cb,  false, false, 0 );
     box.pack_start( lbl, false, true,  0 );
 
     _list_box.pack_start( box, false, false, 0 );
@@ -301,7 +308,19 @@ public class EnableList : Box {
 
   }
 
-  public void action_add() {
+  public virtual bool enables_exist() {
+    return( true );
+  }
+
+  public virtual bool add_button_exists() {
+    return( true );
+  }
+
+  public virtual bool del_button_exists() {
+    return( true );
+  }
+
+  public virtual void action_add() {
     var label = get_label();
     if( label != null ) {
       if( added( label ) ) {
@@ -313,7 +332,7 @@ public class EnableList : Box {
     }
   }
 
-  public void action_remove() {
+  public virtual void action_remove() {
     var index = _select_index;
     select_row( -1 );
     _list_box.remove( _list_box.get_children().nth_data( index ) );

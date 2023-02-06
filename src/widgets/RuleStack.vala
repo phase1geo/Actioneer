@@ -35,12 +35,18 @@ public class RuleStack : Stack {
       }
     });
 
+    var pinned = new Granite.Widgets.Welcome(
+      _( "Welcome to Pinned Rules" ),
+      _( "Drag and drop files onto a pinned rule to the left to execute that rule's conditions and actions" )
+    );
+
     _form = new RuleForm( win );
 
     /* Add the elements to the stack */
     transition_type = StackTransitionType.NONE;
     add_named( welcome1, "welcome1" );
     add_named( welcome2, "welcome2" );
+    add_named( pinned,   "pinned" );
     add_named( _form,    "form" );
 
   }
