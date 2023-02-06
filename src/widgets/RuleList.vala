@@ -87,14 +87,18 @@ public class RuleList : EnableList {
     var dirs = win.get_app().dirlist;
 
     for( int i=0; i<dirs.size(); i++ ) {
+      int dir_index = i;
       if( dirs.get_directory( i ) != dirs.current_dir ) {
         var move_dir = new Gtk.MenuItem.with_label( dirs.get_directory( i ).dirname );
         move_dir.activate.connect(() => {
-          move_rule( index, i );
+          move_rule( index, dir_index );
+          select_row( -1 );
+          list_box.remove( list_box.get_children().nth_data( index ) );
+          selected( -1 );
         });
         var copy_dir = new Gtk.MenuItem.with_label( dirs.get_directory( i ).dirname );
         copy_dir.activate.connect(() => {
-          copy_rule( index, i );
+          copy_rule( index, dir_index );
         });
         move_menu.add( move_dir );
         copy_menu.add( copy_dir );
