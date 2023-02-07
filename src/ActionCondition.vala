@@ -20,6 +20,7 @@
 */
 
 public enum ActionConditionType {
+  KIND,
   NAME,
   EXTENSION,
   FULLNAME,
@@ -41,6 +42,7 @@ public enum ActionConditionType {
 
   public string to_string() {
     switch( this ) {
+      case KIND        :  return( "kind" );
       case NAME        :  return( "name" );
       case EXTENSION   :  return( "extension" );
       case FULLNAME    :  return( "fullname" );
@@ -64,6 +66,7 @@ public enum ActionConditionType {
 
   public string label() {
     switch( this ) {
+      case KIND        :  return( _( "File Kind" ) );
       case NAME        :  return( _( "Name" ) );
       case EXTENSION   :  return( _( "Extension" ) );
       case FULLNAME    :  return( _( "Full Name" ) );
@@ -87,6 +90,7 @@ public enum ActionConditionType {
 
   public static ActionConditionType parse( string val ) {
     switch( val ) {
+      case "kind"              :  return( KIND );
       case "name"              :  return( NAME );
       case "extension"         :  return( EXTENSION );
       case "fullname"          :  return( FULLNAME );
@@ -106,6 +110,10 @@ public enum ActionConditionType {
       case "cond-group"        :  return( COND_GROUP );
       default                  :  assert_not_reached();
     }
+  }
+
+  public bool is_kind() {
+    return( this == KIND );
   }
 
   public bool is_text() {
@@ -142,6 +150,20 @@ public enum ActionConditionType {
 
   public bool is_cond_group() {
     return( this == COND_GROUP );
+  }
+
+  /* Returns the file type of the given pathname */
+  public FileKind kind_from_pathname( string pathname ) {
+    if( FileUtils.test( pathname, FileTest.IS_DIR ) ) {
+      return( FileKind.FOLDER );
+    } else if( FileUtils.test( pathname, FileTest.IS_SYMLINK ) ) {
+      return( FileKind.ALIAS );
+    } else if( FileUtils.test( pathname, FileTest.IS_REGULAR ) ) {
+      var name = Utils.file_fullname( pathname );
+      return( name.has_prefix( "." ) ? FileKind.HIDDEN : FileKind.FILE );
+    } else {
+      return( FileKind.ANY );
+    }
   }
 
   /* Returns the current text value associated with the given filename */
@@ -196,6 +218,7 @@ public class ActionCondition {
   public static const string xml_node = "condition";
 
   private ActionConditionType _type  = ActionConditionType.NAME;
+  private KindCondition?      _kind  = null;
   private TextCondition?      _text  = null;
   private DateCondition?      _date  = null;
   private SizeCondition?      _size  = null;
@@ -206,6 +229,11 @@ public class ActionCondition {
   public ActionConditionType cond_type {
     get {
       return( _type );
+    }
+  }
+  public KindCondition? kind {
+    get {
+      return( _kind );
     }
   }
   public TextCondition? text {
@@ -245,6 +273,7 @@ public class ActionCondition {
   /* Constructor */
   public ActionCondition.with_type( ActionConditionType type ) {
     _type  = type;
+    _kind  = type.is_kind() ? new KindCondition() : null;
     _text  = type.is_text() ? new TextCondition() : null;
     _date  = type.is_date() ? new DateCondition() : null;
     _size  = type.is_size() ? new SizeCondition() : null;
@@ -256,6 +285,9 @@ public class ActionCondition {
   /* Copy constructor */
   public ActionCondition.copy( ActionCondition other ) {
     _type = other._type;
+    if( other._kind != null ) {
+      _kind = new KindCondition.copy( other._kind );
+    }
     if( other._text != null ) {
       _text = new TextCondition.copy( other._text );
     }
@@ -279,7 +311,11 @@ public class ActionCondition {
 
   /* Returns true if the given pathname passes this condition check */
   public bool check( string pathname, ref string? result ) {
-    if( _type.is_text() ) {
+    if( _type.is_kind() ) {
+      var val = _type.kind_from_pathname( pathname );
+      result = val.to_string();
+      return( _kind.check( val ) );
+    } else if( _type.is_text() ) {
       var val = _type.text_from_pathname( pathname );
       result = val;
       return( _text.check( val ) );
@@ -315,7 +351,9 @@ public class ActionCondition {
 
     node->set_prop( "type", _type.to_string() );
 
-    if( _text != null ) {
+    if( _kind != null ) {
+      _kind.save( node );
+    } else if( _text != null ) {
       _text.save( node );
     } else if( _date != null ) {
       _date.save( node );
@@ -341,6 +379,11 @@ public class ActionCondition {
     if( t != null ) {
 
       _type = ActionConditionType.parse( t );
+
+      if( _type.is_kind() ) {
+        _kind = new KindCondition();
+        _kind.load( node );
+      }
 
       if( _type.is_text() ) {
         _text = new TextCondition();

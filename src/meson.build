@@ -12,6 +12,7 @@ sources += files(
     'FileCompress.vala',
     'Imager.vala',
     'IntCondition.vala',
+    'KindCondition.vala',
     'MainWindow.vala',
     'SizeCondition.vala',
     'TagsCondition.vala',

@@ -50,6 +50,7 @@ public class CondBoxList : BoxList {
     CondBase item;
     var type = (ActionConditionType)row_type;
     switch( type ) {
+      case ActionConditionType.KIND        :  item = new CondKindBox( type );   break;
       case ActionConditionType.NAME        :  item = new CondTextBox( type );   break;
       case ActionConditionType.EXTENSION   :  item = new CondTextBox( type );   break;
       case ActionConditionType.FULLNAME    :  item = new CondTextBox( type );   break;

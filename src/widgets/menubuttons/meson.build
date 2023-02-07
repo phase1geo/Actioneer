@@ -6,6 +6,8 @@ sources += files(
     'ConvertOptMenu.vala',
     'DateOptMenu.vala',
     'IntOptMenu.vala',
+    'KindOptMenu.vala',
+    'KindMatchOptMenu.vala',
     'MatchOptMenu.vala',
     'OptMenu.vala',
     'ResizeOptMenu.vala',
