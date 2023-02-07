@@ -109,6 +109,7 @@ public class RuleForm : Box {
 
     _pinned = new ToggleButton();
     _pinned.image = new Image.from_icon_name( "view-pin-symbolic", IconSize.SMALL_TOOLBAR );
+    _pinned.set_tooltip_text( _( "Pin Rule" ) );
     _pinned.toggled.connect(() => {
       _pinned.set_tooltip_text( _pinned.get_active() ? _( "Unpin Rule" ) : _( "Pin Rule" ) );
     });

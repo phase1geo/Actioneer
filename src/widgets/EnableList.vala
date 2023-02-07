@@ -75,14 +75,14 @@ public class EnableList : Box {
     /* Create button bar at the bottom of the pane */
     if( add_button_exists() ) {
       var add_btn = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
-      add_btn.set_tooltip_text( add_tooltip() );
+      add_btn.set_tooltip_markup( add_tooltip() );
       add_btn.clicked.connect( action_add );
       bbox.pack_start( add_btn,  false, false, 0 );
     }
 
     if( del_button_exists() ) {
       _del_btn = new Button.from_icon_name( "list-remove-symbolic", IconSize.SMALL_TOOLBAR );
-      _del_btn.set_tooltip_text( remove_tooltip() );
+      _del_btn.set_tooltip_markup( remove_tooltip() );
       _del_btn.set_sensitive( false );
       _del_btn.clicked.connect( action_remove );
       bbox.pack_start( _del_btn, false, false, 0 );

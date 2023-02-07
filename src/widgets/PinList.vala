@@ -104,6 +104,10 @@ public class PinList : EnableList {
     return( false );
   }
 
+  protected override bool del_button_exists() {
+    return( false );
+  }
+
   protected override string remove_tooltip() {
     return( _( "Remove Selected Rule" ) );
   }

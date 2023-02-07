@@ -155,7 +155,7 @@ public class RuleList : EnableList {
   }
 
   protected override string add_tooltip() {
-    return( _( "Add Rule" ) );
+    return( Utils.tooltip_with_accel( _( "Add Rule" ), "<Control>n" ) );
   }
 
   protected override string remove_tooltip() {

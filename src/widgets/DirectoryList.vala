@@ -68,7 +68,7 @@ public class DirectoryList : EnableList {
   }
 
   protected override string add_tooltip() {
-    return( _( "Add Directory" ) );
+    return( Utils.tooltip_with_accel( _( "Add Directory" ), "<Control>o" ) );
   }
 
   protected override string remove_tooltip() {

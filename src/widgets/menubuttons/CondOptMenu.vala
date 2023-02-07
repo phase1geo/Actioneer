@@ -29,7 +29,7 @@ public class CondOptMenu : OptMenu {
   }
 
   protected override int num_items() {
-    return( ActionConditionType.NUM );
+    return( ActionConditionType.NUM - 1 );
   }
 
   protected override string get_item_label( int index ) {
