@@ -9,6 +9,7 @@ sources += files(
     'KindOptMenu.vala',
     'KindMatchOptMenu.vala',
     'MatchOptMenu.vala',
+    'OpenOptMenu.vala',
     'OptMenu.vala',
     'ResizeOptMenu.vala',
     'SizeOptMenu.vala',

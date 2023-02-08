@@ -1,6 +1,7 @@
 sources += files(
     'ActionCondition.vala',
     'ActionConditions.vala',
+    'AppList.vala',
     'Application.vala',
     'Controller.vala',
     'DateCondition.vala',

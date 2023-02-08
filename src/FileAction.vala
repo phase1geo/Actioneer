@@ -15,6 +15,7 @@ public enum FileActionType {
   IMG_CONVERT,
   NOTIFY,
   RUN_SCRIPT,
+  OPEN,
   NUM;
 
   public string to_string() {
@@ -35,6 +36,7 @@ public enum FileActionType {
       case IMG_CONVERT :  return( "img-convert" );
       case NOTIFY      :  return( "notify" );
       case RUN_SCRIPT  :  return( "run-script" );
+      case OPEN        :  return( "open" );
       default          :  assert_not_reached();
     }
   }
@@ -57,6 +59,7 @@ public enum FileActionType {
       case IMG_CONVERT :  return( _( "Convert Image" ) );
       case NOTIFY      :  return( _( "Notify" ) );
       case RUN_SCRIPT  :  return( _( "Run Script" ) );
+      case OPEN        :  return( _( "Open" ) );
       default          :  assert_not_reached();
     }
   }
@@ -79,6 +82,7 @@ public enum FileActionType {
       case IMG_CONVERT :  return( _( "with format" ) );
       case NOTIFY      :  return( _( "with message" ) );
       case RUN_SCRIPT  :  return( "" );
+      case OPEN        :  return( _( "with application" ) );
       default          :  assert_not_reached();
     }
   }
@@ -101,6 +105,7 @@ public enum FileActionType {
       case "img-convert" :  return( IMG_CONVERT );
       case "notify"      :  return( NOTIFY );
       case "run-script"  :  return( RUN_SCRIPT );
+      case "open"        :  return( OPEN );
       default            :  assert_not_reached();
     }
   }
@@ -224,7 +229,21 @@ public enum FileActionType {
     return( Process.spawn_command_line_async( script ) );
   }
 
-  public bool file_execute( GLib.Application app, ref string pathname, File? new_file, TokenText? token_text, FileCompress? comp, Imager? imager ) {
+  /* Opens the given pathname in the default application */
+  private bool do_open( string pathname, AppInfo? opener ) {
+    var ofile = File.new_for_path( pathname );
+    if( opener == null ) {
+      return( AppInfo.launch_default_for_uri( ofile.get_uri(), null ) );
+    } else {
+      var uris = new List<string>();
+      uris.append( ofile.get_uri() );
+      return( opener.launch_uris( uris, null ) );
+    }
+  }
+
+  public bool file_execute(
+    GLib.Application app, ref string pathname,
+    File? new_file, TokenText? token_text, FileCompress? comp, Imager? imager, AppInfo? opener ) {
     switch( this ) {
       case MOVE        :  return( do_move( ref pathname, new_file ) );
       case COPY        :  return( do_copy( pathname, new_file ) );
@@ -242,6 +261,7 @@ public enum FileActionType {
       case IMG_CONVERT :  return( do_image_convert( ref pathname, imager ) );
       case NOTIFY      :  return( do_notify( app, pathname, token_text ) );
       case RUN_SCRIPT  :  return( do_run_script( pathname, token_text ) );
+      case OPEN        :  return( do_open( pathname, opener ) );
       default          :  assert_not_reached();
     }
   }
@@ -280,6 +300,10 @@ public enum FileActionType {
     return( this == IMG_CONVERT );
   }
 
+  public bool is_open() {
+    return( this == OPEN );
+  }
+
 }
 
 public class FileAction {
@@ -291,6 +315,7 @@ public class FileAction {
   private TokenText?     _token_text;
   private FileCompress?  _compress;
   private Imager?        _imager;
+  private AppInfo?       _opener;
 
   public FileActionType action_type {
     get {
@@ -317,6 +342,14 @@ public class FileAction {
       return( _imager );
     }
   }
+  public AppInfo? opener {
+    get {
+      return( _opener );
+    }
+    set {
+      _opener = value;
+    }
+  }
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
@@ -328,6 +361,7 @@ public class FileAction {
     _token_text = null;
     _compress   = null;
     _imager     = null;
+    _opener     = null;
   }
 
   /* Constructor */
@@ -343,6 +377,7 @@ public class FileAction {
     } else {
       _imager = null;
     }
+    _opener = null;
   }
 
   /* Constructor */
@@ -359,6 +394,7 @@ public class FileAction {
     } else {
       _imager = null;
     }
+    _opener = null;
   }
 
   /* Copy constructor */
@@ -374,6 +410,7 @@ public class FileAction {
     } else if( (other._imager as ImagerConverter) != null ) {
       _imager = new ImagerConverter.copy( (other._imager as ImagerConverter) );
     }
+    _opener = other._opener;
   }
 
   /*
@@ -384,7 +421,7 @@ public class FileAction {
   public bool execute( GLib.Application app, ref string pathname ) {
 
     try {
-      return( _type.file_execute( app, ref pathname, _file, _token_text, _compress, _imager ) );
+      return( _type.file_execute( app, ref pathname, _file, _token_text, _compress, _imager, _opener ) );
     } catch( SpawnError e ) {
       err    = true;
       errmsg = e.message;
@@ -420,6 +457,10 @@ public class FileAction {
       _imager.save( node );
     }
 
+    if( _type.is_open() ) {
+      node->set_prop( "app-id", (_opener == null) ? "" : _opener.get_id() );
+    }
+
     return( node );
 
   }
@@ -435,6 +476,11 @@ public class FileAction {
     var file = node->get_prop( "file" );
     if( file != null ) {
       _file = File.new_for_path( file );
+    }
+
+    var ia = node->get_prop( "app-id" );
+    if( ia != null ) {
+      _opener = AppList.get_app_with_id( ia );
     }
 
     if( _type.is_image_resize() ) {

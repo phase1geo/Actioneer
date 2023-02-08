@@ -28,6 +28,8 @@ public class OptMenu : MenuButton {
   /* Create the main window UI */
   public OptMenu() {
 
+    initialize();
+
     var menu = new Gtk.Menu();
 
     for( int i=0; i<num_items(); i++ ) {
@@ -55,6 +57,9 @@ public class OptMenu : MenuButton {
     }
 
   }
+
+  /* Allows the extended class to initialize itself, if needed */
+  public virtual void initialize() {}
 
   /* Sets the current item to the given index */
   public void set_current_item( int index ) {

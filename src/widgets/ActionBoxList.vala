@@ -61,6 +61,7 @@ public class ActionBoxList : BoxList {
       case FileActionType.IMG_CONVERT :  item = new ActionConvertBox( type );   break;
       case FileActionType.NOTIFY      :  item = new ActionRenameBox( type );    break;
       case FileActionType.RUN_SCRIPT  :  item = new ActionTextBox( type );      break;
+      case FileActionType.OPEN        :  item = new ActionOpenBox( type );      break;
       default                         :  assert_not_reached();
     }
     _actions.nth( index ).data = item;
