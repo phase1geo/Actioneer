@@ -22,6 +22,15 @@ public enum ServerConnectType {
     }
   }
 
+  public int port() {
+    switch( this ) {
+      case FTP  :  return( 21 );
+      case SFTP :  return( 22 );
+      case DAV  :  return( 443 );
+      default   :  assert_not_reached();
+    }
+  }
+
 }
 
 public class Server {
@@ -34,7 +43,6 @@ public class Server {
   private string            _host;
   private int               _port;
   private string            _user;
-  private string            _path;
   private File?             _handle;
 
   public const string xml_node = "server";
@@ -64,11 +72,6 @@ public class Server {
       return( _user );
     }
   }
-  public string path {
-    get {
-      return( _path );
-    }
-  }
 
   /* Default constructor */
   public Server() {
@@ -78,7 +81,6 @@ public class Server {
     _host      = "";
     _port      = 22;
     _user      = "";
-    _path      = "";
     _handle    = null;
   }
 
@@ -89,7 +91,6 @@ public class Server {
     _host      = other._host;
     _port      = other._port;
     _user      = other._user;
-    _path      = other._path;
   }
 
   /* Creates the password schema */
@@ -106,12 +107,12 @@ public class Server {
   }
 
   /* Stores the connection information and saves the password to the keyring */
-  public bool store( ServerConnectType conn_type, string host, int port, string user, string password, string path ) {
+  public bool store( string name, ServerConnectType conn_type, string host, int port, string user, string password ) {
+    _name      = name;
     _conn_type = conn_type;
     _host      = host;
     _port      = port;
     _user      = user;
-    _path      = path;
     return(
       Secret.password_store_sync(
         _schema, Secret.COLLECTION_DEFAULT, "password", password, null,
@@ -121,7 +122,7 @@ public class Server {
   }
 
   /* Returns the password from the keyring */
-  private string get_password() {
+  public string get_password() {
     return(
       Secret.password_lookup_sync(
         _schema, null, "conn-type", (int)_conn_type, "host", _host, "port", _port, false
@@ -130,9 +131,9 @@ public class Server {
   }
 
   /* Opens a connection to the server */
-  public async bool connect( MainWindow win ) {
+  public async bool connect( MainWindow win, string path ) {
 
-    var uri   = _conn_type.to_string() + "://" + _user + ":" + get_password() + "@" + _host + ":" + _port.to_string() + _path;
+    var uri   = _conn_type.to_string() + "://" + _user + ":" + get_password() + "@" + _host + ":" + _port.to_string() + path;
     var mount = new Gtk.MountOperation( win );
     mount.set_domain( _host );
 
@@ -159,12 +160,12 @@ public class Server {
   }
 
   /* Uploads the given file to this server */
-  public bool upload( MainWindow win, File src ) {
+  public bool upload( MainWindow win, File src, string path ) {
 
     var retval = false;
 
     /* Connect to the server */
-    connect.begin( win, (obj, res) => {
+    connect.begin( win, path, (obj, res) => {
 
       if( connect.end( res ) ) {
 
@@ -198,7 +199,6 @@ public class Server {
     node->set_prop( "host",      _host );
     node->set_prop( "port",      _port.to_string() );
     node->set_prop( "user",      _user );
-    node->set_prop( "path",      _path );
 
     return( node );
 
@@ -229,11 +229,6 @@ public class Server {
     var u = node->get_prop( "user" );
     if( u != null ) {
       _user = u;
-    }
-
-    var a = node->get_prop( "path" );
-    if( a != null ) {
-      _path = a;
     }
 
   }

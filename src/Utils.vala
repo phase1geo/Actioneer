@@ -1,4 +1,5 @@
 using Gdk;
+using Gtk;
 
 public class Utils {
 
@@ -191,6 +192,24 @@ public class Utils {
     int width, height;
     Pixbuf.get_file_info( pathname, out width, out height );
     return( height );
+  }
+
+  /* Show the specified popover */
+  public static void show_popover( Popover popover ) {
+#if GTK322
+    popover.popup();
+#else
+    popover.show();
+#endif
+  }
+
+  /* Hide the specified popover */
+  public static void hide_popover( Popover popover ) {
+#if GTK322
+    popover.popdown();
+#else
+    popover.hide();
+#endif
   }
 
 }

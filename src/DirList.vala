@@ -5,6 +5,11 @@ public class DirList {
 
   public bool        background_enabled { set; get; default = true; }
   public DirActions? current_dir        { set; get; default = null; }
+  public Servers     servers {
+    get {
+      return( _servers );
+    }
+  }
 
   /* Default constructor */
   public DirList() {
@@ -84,6 +89,8 @@ public class DirList {
     _dir_actions.foreach((action) => {
       root->add_child( action.save() );
     });
+
+    root->add_child( _servers.save() );
 
     doc->set_root_element( root );
     doc->save_format_file( rules, 1 );

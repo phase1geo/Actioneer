@@ -9,7 +9,7 @@ public class Servers {
     _servers = new Array<Server>();
   }
 
-  public int num_servers() {
+  public int num() {
     return( (int)_servers.length );
   }
 
@@ -23,6 +23,16 @@ public class Servers {
 
   public void remove_server( int index ) {
     _servers.remove_index( index );
+  }
+
+  public bool remove_server_by_name( string name ) {
+    for( int i=0; i<_servers.length; i++ ) {
+      if( _servers.index( i ).name == name ) {
+        _servers.remove_index( i );
+        return( true );
+      }
+    }
+    return( false );
   }
 
   public Xml.Node* save() {
