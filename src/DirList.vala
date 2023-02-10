@@ -1,6 +1,7 @@
 public class DirList {
 
   private SList<DirActions> _dir_actions;
+  private Servers           _servers;
 
   public bool        background_enabled { set; get; default = true; }
   public DirActions? current_dir        { set; get; default = null; }
@@ -8,6 +9,7 @@ public class DirList {
   /* Default constructor */
   public DirList() {
     _dir_actions = new SList<DirActions>();
+    _servers     = new Servers();
   }
 
   /* Returns the number of stored directory actions */
@@ -107,10 +109,17 @@ public class DirList {
     }
 
     for( Xml.Node* it=root->children; it!=null; it=it->next ) {
-      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == DirActions.xml_node) ) {
-        var dir = new DirActions();
-        dir.load( it );
-        _dir_actions.append( dir );
+      if( it->type == Xml.ElementType.ELEMENT_NODE ) {
+        switch( it->name ) {
+          case DirActions.xml_node :
+            var dir = new DirActions();
+            dir.load( it );
+            _dir_actions.append( dir );
+            break;
+          case Servers.xml_node :
+            _servers.load( it );
+            break;
+        }
       }
     }
 

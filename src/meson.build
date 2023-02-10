@@ -15,6 +15,8 @@ sources += files(
     'IntCondition.vala',
     'KindCondition.vala',
     'MainWindow.vala',
+    'Server.vala',
+    'Servers.vala',
     'SizeCondition.vala',
     'TagsCondition.vala',
     'TestResult.vala',
