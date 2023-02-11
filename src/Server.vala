@@ -113,80 +113,118 @@ public class Server {
     _host      = host;
     _port      = port;
     _user      = user;
-    return(
-      Secret.password_store_sync(
-        _schema, Secret.COLLECTION_DEFAULT, "password", password, null,
-        "conn-type", (int)_conn_type, "host", _host, "port", _port, false
-      )
-    );
+    try {
+      return(
+        Secret.password_store_sync(
+          _schema, Secret.COLLECTION_DEFAULT, "password", password, null,
+          "conn-type", (int)_conn_type, "host", _host, "port", _port, false
+        )
+      );
+    } catch( Error e ) {
+      return( false );
+    }
+  }
+
+  public bool unstore() {
+    try {
+      return(
+        Secret.password_clear_sync(
+          _schema, null,
+          "conn-type", (int)_conn_type, "host", _host, "port", _port, false
+        )
+      );
+    } catch( Error e ) {
+      return( false );
+    }
   }
 
   /* Returns the password from the keyring */
-  public string get_password() {
-    return(
-      Secret.password_lookup_sync(
-        _schema, null, "conn-type", (int)_conn_type, "host", _host, "port", _port, false
-      )
-    );
+  public string? get_password() {
+    try {
+      return(
+        Secret.password_lookup_sync(
+          _schema, null, "conn-type", (int)_conn_type, "host", _host, "port", _port, false
+        )
+      );
+    } catch( Error e ) {
+      return( null );
+    }
   }
 
   /* Opens a connection to the server */
   public async bool connect( MainWindow win, string path ) {
 
-    var uri   = _conn_type.to_string() + "://" + _user + ":" + get_password() + "@" + _host + ":" + _port.to_string() + path;
-    var mount = new Gtk.MountOperation( win );
-    mount.set_domain( _host );
+    var uri = Uri.build_with_user( UriFlags.HAS_PASSWORD, _conn_type.to_string(), _user, get_password(), null, _host, _port, path, null, null );
+
+    var mop = new GLib.MountOperation();
+    mop.set_domain( _host );
+    mop.set_username( _user );
+    mop.set_password( get_password() );
+    mop.set_password_save( PasswordSave.NEVER );
+    mop.ask_password.connect((m,u,d,f) => {
+      mop.reply( MountOperationResult.HANDLED );
+    });
 
     /* Get the handle to the mounted host */
-    _handle = File.new_for_uri( uri );
+    _handle = File.new_for_uri( uri.to_string_partial( UriHideFlags.PASSWORD ) );
 
     try {
-      return yield _handle.mount_enclosing_volume( MountMountFlags.NONE, mount, null );
+      return yield _handle.mount_enclosing_volume( MountMountFlags.NONE, mop, null );
     } catch( Error e ) {
+      stdout.printf( "A ERROR: %s\n", e.message );
       return( false );
     }
 
   }
 
   /* Disconnects the current connection */
-  public async bool disconnect() {
+  public async bool disconnect( MainWindow win ) {
+
+    var mount = _handle.find_enclosing_mount();
 
     try {
-      return yield _handle.eject_mountable_with_operation( MountUnmountFlags.NONE, null );
+      return yield mount.unmount_with_operation( MountUnmountFlags.NONE, null, null );
     } catch( Error e ) {
+      stdout.printf( "B ERROR: %s\n", e.message );
       return( false );
     }
 
   }
 
+  /* Tests to make sure that the connection works */
+  public async bool test( MainWindow win ) {
+
+    if( yield connect( win, "" ) ) {
+      if( yield disconnect( win ) ) {
+        return( true );
+      }
+    }
+
+    return( false );
+
+  }
+
   /* Uploads the given file to this server */
-  public bool upload( MainWindow win, File src, string path ) {
+  public async bool upload( MainWindow win, File src, string path ) {
 
     var retval = false;
 
     /* Connect to the server */
-    connect.begin( win, path, (obj, res) => {
+    if( yield connect( win, path ) ) {
 
-      if( connect.end( res ) ) {
+      var dst = _handle.get_child( src.get_basename() );
 
-        var dst = _handle.get_child( src.get_basename() );
-
-        // TBD - Perform copy operation
-        src.copy_async.begin( dst, FileCopyFlags.OVERWRITE, Priority.DEFAULT, null, null, (obj, res) => {
-          if( src.copy_async.end( res ) ) {
-            retval = true;
-          }
-        });
-
-        disconnect.begin((obj, res) => {
-          retval &= disconnect.end( res );
-        });
-
+      /* Perform copy operation */
+      if( yield src.copy_async( dst, FileCopyFlags.OVERWRITE, Priority.DEFAULT, null, null ) ) {
+        retval = true;
       }
 
-    });
+      /* Disconnect after the copy has completed */
+      retval &= yield disconnect( win );
 
-    return( false );
+    }
+
+    return( retval );
 
   }
 

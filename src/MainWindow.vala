@@ -311,6 +311,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     var pass_label = new Label( _( "Password:" ) );
     var pass_entry = new Entry();
     var pass_info  = new Label( _( "Passwords are saved in your system keyring" ) );
+    var err_info   = new Label( "" );
 
     name_label.halign = Align.END;
     conn_label.halign = Align.END;
@@ -342,9 +343,14 @@ public class MainWindow : Hdy.ApplicationWindow {
     grid.attach( pass_label, 0, 4 );
     grid.attach( pass_entry, 1, 4, 3 );
     grid.attach( pass_info,  1, 5, 3 );
+    grid.attach( err_info,   0, 6, 4 );
 
     var bbar = new Box( Orientation.HORIZONTAL, 10 );
 
+    /*
+     Add delete button if we are editing a server that is not being
+     referenced by any actions.
+    */
     if( server != null ) {
       var del = new Button.with_label( _( "Delete" ) );
       del.clicked.connect(() => {
@@ -353,7 +359,8 @@ public class MainWindow : Hdy.ApplicationWindow {
       bbar.pack_start( del, false, false, 0 );
     }
 
-    var save = new Button.with_label( _( "Save" ) );
+    /* Add test and save button */
+    var save = new Button.with_label( _( "Test and Save" ) );
     save.sensitive = false;
     save.get_style_context().add_class( "suggested-action" );
     save.clicked.connect(() => {
@@ -366,12 +373,22 @@ public class MainWindow : Hdy.ApplicationWindow {
         user_entry.text,
         pass_entry.text
       );
-      servers.add_server( new_server );
-      get_app().dirlist.save();
-      win.close();
+      new_server.test.begin( this, (obj, res) => {
+        if( new_server.test.end( res ) ) {
+          if( server == null ) {
+            servers.add_server( new_server );
+          }
+          get_app().dirlist.save();
+          win.close();
+        } else {
+          new_server.unstore();
+          err_info.label = _( "Unable to connect to server" );
+        }
+      });
     });
     bbar.pack_end( save, false, false, 0 );
 
+    /* Add cancel editing button */
     var cancel = new Button.with_label( _( "Cancel" ) );
     cancel.clicked.connect(() => {
       win.close();
@@ -411,7 +428,7 @@ public class MainWindow : Hdy.ApplicationWindow {
       host_entry.text = server.host;
       port_entry.text = server.port.to_string();
       user_entry.text = server.user;
-      pass_entry.text = server.get_password();
+      pass_entry.text = server.get_password() ?? "";
       validate( save, name_entry.text, host_entry.text, port_entry.text, user_entry.text, pass_entry.text );
     } else {
       conn_mb.set_current_item( 0 );
