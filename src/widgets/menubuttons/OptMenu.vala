@@ -52,7 +52,9 @@ public class OptMenu : MenuButton {
     popup = menu;
 
     /* Initialize ourselves with the first item */
-    if( num_items() > 0 ) {
+    if( initial_label() != null ) {
+      label = initial_label();
+    } else if( num_items() > 0 ) {
       set_current_item( 0 );
     }
 
@@ -60,6 +62,11 @@ public class OptMenu : MenuButton {
 
   /* Allows the extended class to initialize itself, if needed */
   public virtual void initialize() {}
+
+  /* Allows the derived class to provide its own label for the menubutton */
+  public virtual string? initial_label() {
+    return( null );
+  }
 
   /* Sets the current item to the given index */
   public void set_current_item( int index ) {

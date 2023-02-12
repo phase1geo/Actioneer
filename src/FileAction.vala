@@ -3,6 +3,7 @@ public enum FileActionType {
   COPY,
   RENAME,
   ALIAS,
+  UPLOAD,
   COMPRESS,
   DECOMPRESS,
   TRASH,
@@ -24,6 +25,7 @@ public enum FileActionType {
       case COPY        :  return( "copy" );
       case RENAME      :  return( "rename" );
       case ALIAS       :  return( "alias" );
+      case UPLOAD      :  return( "upload" );
       case COMPRESS    :  return( "compress" );
       case DECOMPRESS  :  return( "decompress" );
       case TRASH       :  return( "trash" );
@@ -47,6 +49,7 @@ public enum FileActionType {
       case COPY        :  return( _( "Copy" ) );
       case RENAME      :  return( _( "Rename" ) );
       case ALIAS       :  return( _( "Alias" ) );
+      case UPLOAD      :  return( _( "Upload" ) );
       case COMPRESS    :  return( _( "Compress" ) );
       case DECOMPRESS  :  return( _( "Decompress" ) );
       case TRASH       :  return( _( "Trash" ) );
@@ -70,6 +73,7 @@ public enum FileActionType {
       case COPY        :  return( _( "to folder" ) );
       case RENAME      :  return( _( "file as" ) );
       case ALIAS       :  return( _( "from folder" ) );
+      case UPLOAD      :  return( _( "to" ) );
       case COMPRESS    :  return( _( "file to format" ) );
       case DECOMPRESS  :  return( _( "compressed file" ) );
       case TRASH       :  return( _( "file" ) );
@@ -93,6 +97,7 @@ public enum FileActionType {
       case "copy"        :  return( COPY );
       case "rename"      :  return( RENAME );
       case "alias"       :  return( ALIAS );
+      case "upload"      :  return( UPLOAD );
       case "compress"    :  return( COMPRESS );
       case "decompress"  :  return( DECOMPRESS );
       case "trash"       :  return( TRASH );
@@ -112,144 +117,149 @@ public enum FileActionType {
 
   public bool add_separator_after() {
     return( (this == ALIAS) ||
+            (this == UPLOAD) ||
             (this == DECOMPRESS) ||
             (this == TRASH) ||
             (this == COMMENT) ||
             (this == IMG_CONVERT) );
   }
 
-  private bool do_move( ref string pathname, File new_file ) {
+  private string? do_move( string pathname, File new_file ) {
     var ofile  = File.new_for_path( pathname );
     var nfile  = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
-    var retval = ofile.move( nfile, FileCopyFlags.NONE );
-    pathname   = nfile.get_path();
-    return( retval );
+    return( ofile.move( nfile, FileCopyFlags.NONE ) ? pathname : null );
   }
 
-  private bool do_copy( string pathname, File new_file ) {
+  private string? do_copy( string pathname, File new_file ) {
     var ofile = File.new_for_path( pathname );
     var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
-    return( !FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
-            ofile.copy( nfile, FileCopyFlags.NONE ) );
+    return( (!FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
+             ofile.copy( nfile, FileCopyFlags.NONE )) ? pathname : null );
   }
 
-  private bool do_rename( ref string pathname, TokenText token_text ) {
+  private string? do_rename( string pathname, TokenText token_text ) {
     var ofile  = File.new_for_path( pathname );
     var nfile  = File.new_for_path( Path.build_filename( ofile.get_parent().get_path(), token_text.generate_text( ofile ) ) );
-    var retval = ofile.move( nfile, FileCopyFlags.NONE );
-    pathname   = nfile.get_path();
-    return( retval );
+    return( ofile.move( nfile, FileCopyFlags.NONE ) ? nfile.get_path() : null );
   }
 
-  private bool do_alias( string pathname, File new_file ) {
+  private string? do_alias( string pathname, File new_file ) {
     var ofile = File.new_for_path( pathname );
     var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
-    return( !FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
-            nfile.make_symbolic_link( ofile.get_path() ) );
+    return( (!FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
+             nfile.make_symbolic_link( ofile.get_path() )) ? pathname : null );
   }
 
-  private bool do_compress( ref string pathname, FileCompress comp ) {
+  private string? do_compress( string pathname, FileCompress comp ) {
     var ifile = File.new_for_path( pathname );
     var nfile = File.new_for_path( pathname + comp.extension() );
-    pathname = nfile.get_path();
-    return( comp.compress( ifile, nfile ) );
+    return( comp.compress( ifile, nfile ) ? nfile.get_path() : null );
   }
 
-  private bool do_decompress( string pathname ) {
-    string new_path;
-    var ifile = File.new_for_path( pathname );
-    var comp  = new FileCompress();
+  private string? do_decompress( string pathname ) {
+    var ifile    = File.new_for_path( pathname );
+    var comp     = new FileCompress();
+    var new_path = "";
     if( comp.set_type_from_path( pathname, out new_path ) ) {
       var nfile = File.new_for_path( new_path );
-      return( comp.decompress( ifile, nfile ) );
+      return( comp.decompress( ifile, nfile ) ? new_path : null );
     }
-    return( false );
+    return( null );
   }
 
-  private bool do_trash( string pathname ) {
+  private string? do_trash( string pathname ) {
     var ofile = File.new_for_path( pathname );
-    return( ofile.trash() );
+    return( ofile.trash() ? pathname : null );
   }
 
-  private bool do_add_tag( string pathname, TokenText token_text ) {
-    var ofile = File.new_for_path( pathname );
-    var tag   = token_text.generate_text( ofile );
-    return( Utils.file_add_tag( pathname, tag ) );
-  }
-
-  private bool do_remove_tag( string pathname, TokenText token_text ) {
+  private string? do_add_tag( string pathname, TokenText token_text ) {
     var ofile = File.new_for_path( pathname );
     var tag   = token_text.generate_text( ofile );
-    return( Utils.file_remove_tag( pathname, tag ) );
+    return( Utils.file_add_tag( pathname, tag ) ? pathname : null );
   }
 
-  private bool do_clear_tags( string pathname ) {
-    return( Utils.file_clear_tags( pathname ) );
+  private string? do_remove_tag( string pathname, TokenText token_text ) {
+    var ofile = File.new_for_path( pathname );
+    var tag   = token_text.generate_text( ofile );
+    return( Utils.file_remove_tag( pathname, tag ) ? pathname : null );
   }
 
-  private bool do_rating( string pathname, TokenText token_text ) {
+  private string? do_clear_tags( string pathname ) {
+    return( Utils.file_clear_tags( pathname ) ? pathname : null );
+  }
+
+  private string? do_rating( string pathname, TokenText token_text ) {
     if( token_text.num_tokens() > 0 ) {
       var token = token_text.get_token( 0 );
       if( token.token_type == TextTokenType.TEXT ) {
         var val = int.parse( token.text );
-        return( Utils.set_file_stars( pathname, val ) );
+        return( Utils.set_file_stars( pathname, val ) ? pathname : null );
       }
     }
-    return( false );
+    return( null );
   }
 
-  private bool do_comment( string pathname, TokenText token_text ) {
+  private string? do_comment( string pathname, TokenText token_text ) {
     var ofile   = File.new_for_path( pathname );
     var comment = token_text.generate_text( ofile );
-    return( Utils.set_file_comment( pathname, comment ) );
+    return( Utils.set_file_comment( pathname, comment ) ? pathname : null );
   }
 
-  private bool do_image_resize( string pathname, Imager imager ) {
-    return( imager.resize( pathname ) );
+  private string? do_image_resize( string pathname, Imager imager ) {
+    return( imager.resize( pathname ) ? pathname : null );
   }
 
-  private bool do_image_convert( ref string pathname, Imager imager ) {
-    return( imager.convert( ref pathname ) );
+  private string? do_image_convert( string pathname, Imager imager ) {
+    var path = pathname;
+    return( imager.convert( ref path ) ? path : null );
   }
 
-  private bool do_notify( GLib.Application app, string pathname, TokenText token_text ) {
+  private string? do_notify( GLib.Application app, string pathname, TokenText token_text ) {
     var ofile = File.new_for_path( pathname );
     var msg   = token_text.generate_text( ofile );
     var notification = new Notification( _( "Actioneer" ) );
     notification.set_body( msg );
     app.send_notification( "com.github.phase1geo.actioneer", notification );
     Utils.show_file_info( pathname );
-    return( true );
+    return( pathname );
   }
 
   /* Executes a script determined by token_text */
-  private bool do_run_script( string pathname, TokenText token_text ) {
+  private string? do_run_script( string pathname, TokenText token_text ) {
     var ofile  = File.new_for_path( pathname );
     var script = token_text.generate_text( ofile );
-    return( Process.spawn_command_line_async( script ) );
+    return( Process.spawn_command_line_async( script ) ? pathname : null );
   }
 
   /* Opens the given pathname in the default application */
-  private bool do_open( string pathname, AppInfo? opener ) {
+  private string? do_open( string pathname, AppInfo? opener ) {
     var ofile = File.new_for_path( pathname );
     if( opener == null ) {
-      return( AppInfo.launch_default_for_uri( ofile.get_uri(), null ) );
+      return( AppInfo.launch_default_for_uri( ofile.get_uri(), null ) ? pathname : null );
     } else {
       var uris = new List<string>();
       uris.append( ofile.get_uri() );
-      return( opener.launch_uris( uris, null ) );
+      return( opener.launch_uris( uris, null ) ? pathname : null );
     }
   }
 
-  public bool file_execute(
-    GLib.Application app, ref string pathname,
-    File? new_file, TokenText? token_text, FileCompress? comp, Imager? imager, AppInfo? opener ) {
+  private async string? do_upload( string pathname, ServerConnection conn ) {
+    var ofile  = File.new_for_path( pathname );
+    var retval = yield conn.server.upload( ofile, conn.path );
+    return( retval ? pathname : null );
+  }
+
+  public async string? file_execute(
+    GLib.Application app, string pathname,
+    File? new_file, TokenText? token_text, FileCompress? comp, Imager? imager, AppInfo? opener, ServerConnection? conn
+  ) {
     switch( this ) {
-      case MOVE        :  return( do_move( ref pathname, new_file ) );
+      case MOVE        :  return( do_move( pathname, new_file ) );
       case COPY        :  return( do_copy( pathname, new_file ) );
-      case RENAME      :  return( do_rename( ref pathname, token_text ) );
+      case RENAME      :  return( do_rename( pathname, token_text ) );
       case ALIAS       :  return( do_alias( pathname, new_file ) );
-      case COMPRESS    :  return( do_compress( ref pathname, comp ) );
+      case UPLOAD      :  return( yield do_upload( pathname, conn ) );
+      case COMPRESS    :  return( do_compress( pathname, comp ) );
       case DECOMPRESS  :  return( do_decompress( pathname ) );
       case TRASH       :  return( do_trash( pathname ) );
       case ADD_TAG     :  return( do_add_tag( pathname, token_text ) );
@@ -258,7 +268,7 @@ public enum FileActionType {
       case STARS       :  return( do_rating( pathname, token_text ) );
       case COMMENT     :  return( do_comment( pathname, token_text ) );
       case IMG_RESIZE  :  return( do_image_resize( pathname, imager ) );
-      case IMG_CONVERT :  return( do_image_convert( ref pathname, imager ) );
+      case IMG_CONVERT :  return( do_image_convert( pathname, imager ) );
       case NOTIFY      :  return( do_notify( app, pathname, token_text ) );
       case RUN_SCRIPT  :  return( do_run_script( pathname, token_text ) );
       case OPEN        :  return( do_open( pathname, opener ) );
@@ -304,18 +314,23 @@ public enum FileActionType {
     return( this == OPEN );
   }
 
+  public bool is_upload() {
+    return( this == UPLOAD );
+  }
+
 }
 
 public class FileAction {
 
   public static const string xml_node = "file-action";
 
-  private FileActionType _type;
-  private File?          _file;
-  private TokenText?     _token_text;
-  private FileCompress?  _compress;
-  private Imager?        _imager;
-  private AppInfo?       _opener;
+  private FileActionType    _type;
+  private File?             _file;
+  private TokenText?        _token_text;
+  private FileCompress?     _compress;
+  private Imager?           _imager;
+  private AppInfo?          _opener;
+  private ServerConnection? _conn;
 
   public FileActionType action_type {
     get {
@@ -350,6 +365,14 @@ public class FileAction {
       _opener = value;
     }
   }
+  public ServerConnection? conn {
+    get {
+      return( _conn );
+    }
+    set {
+      _conn = value;
+    }
+  }
 
   public bool   err    { get; set; default = false; }
   public string errmsg { get; set; default = ""; }
@@ -362,6 +385,7 @@ public class FileAction {
     _compress   = null;
     _imager     = null;
     _opener     = null;
+    _conn       = null;
   }
 
   /* Constructor */
@@ -378,6 +402,7 @@ public class FileAction {
       _imager = null;
     }
     _opener = null;
+    _conn   = type.is_upload() ? new ServerConnection() : null;
   }
 
   /* Constructor */
@@ -395,6 +420,7 @@ public class FileAction {
       _imager = null;
     }
     _opener = null;
+    _conn   = type.is_upload() ? new ServerConnection() : null;
   }
 
   /* Copy constructor */
@@ -411,6 +437,7 @@ public class FileAction {
       _imager = new ImagerConverter.copy( (other._imager as ImagerConverter) );
     }
     _opener = other._opener;
+    _conn   = (other._conn == null) ? null : new ServerConnection.copy( other._conn );
   }
 
   /*
@@ -418,10 +445,10 @@ public class FileAction {
    the err and errmsg value will be updated with the error information.  If the
    pathname is changed by the action, updates the pathname value.
   */
-  public bool execute( GLib.Application app, ref string pathname ) {
+  public async string? execute( GLib.Application app, string pathname ) {
 
     try {
-      return( _type.file_execute( app, ref pathname, _file, _token_text, _compress, _imager, _opener ) );
+      return( yield _type.file_execute( app, pathname, _file, _token_text, _compress, _imager, _opener, _conn ) );
     } catch( SpawnError e ) {
       err    = true;
       errmsg = e.message;
@@ -430,7 +457,7 @@ public class FileAction {
       errmsg = e.message;
     }
 
-    return( false );
+    return( null );
 
   }
 
@@ -459,6 +486,11 @@ public class FileAction {
 
     if( _type.is_open() ) {
       node->set_prop( "app-id", (_opener == null) ? "" : _opener.get_id() );
+    }
+
+    if( _conn != null ) {
+      node->set_prop( "server", _conn.server.name );
+      node->set_prop( "remote-path", _conn.path );
     }
 
     return( node );
@@ -501,6 +533,10 @@ public class FileAction {
           case FileCompress.xml_node :
             _compress = new FileCompress();
             _compress.load( it );
+            break;
+          case ServerConnection.xml_node :
+            _conn = new ServerConnection();
+            _conn.load( it );
             break;
         }
       }

@@ -1,20 +1,13 @@
 public class DirList {
 
   private SList<DirActions> _dir_actions;
-  private Servers           _servers;
 
   public bool        background_enabled { set; get; default = true; }
   public DirActions? current_dir        { set; get; default = null; }
-  public Servers     servers {
-    get {
-      return( _servers );
-    }
-  }
 
   /* Default constructor */
   public DirList() {
     _dir_actions = new SList<DirActions>();
-    _servers     = new Servers();
   }
 
   /* Returns the number of stored directory actions */
@@ -90,8 +83,6 @@ public class DirList {
       root->add_child( action.save() );
     });
 
-    root->add_child( _servers.save() );
-
     doc->set_root_element( root );
     doc->save_format_file( rules, 1 );
     delete doc;
@@ -116,17 +107,10 @@ public class DirList {
     }
 
     for( Xml.Node* it=root->children; it!=null; it=it->next ) {
-      if( it->type == Xml.ElementType.ELEMENT_NODE ) {
-        switch( it->name ) {
-          case DirActions.xml_node :
-            var dir = new DirActions();
-            dir.load( it );
-            _dir_actions.append( dir );
-            break;
-          case Servers.xml_node :
-            _servers.load( it );
-            break;
-        }
+      if( (it->type == Xml.ElementType.ELEMENT_NODE) && (it->name == DirActions.xml_node) ) {
+        var dir = new DirActions();
+        dir.load( it );
+        _dir_actions.append( dir );
       }
     }
 

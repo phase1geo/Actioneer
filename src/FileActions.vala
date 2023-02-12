@@ -36,13 +36,13 @@ public class FileActions {
   }
 
   /* Executes all of the actions in serial order */
-  public bool execute( GLib.Application app, string pathname ) {
-    var path   = pathname;
-    var retval = true;
-    _actions.foreach((action) => {
-      retval &= action.execute( app, ref path );
-    });
-    return( retval );
+  public async void execute( GLib.Application app, string pathname ) {
+    string? path = pathname;
+    for( int i=0; i<(int)_actions.length; i++ ) {
+      if( path != null ) {
+        path = yield _actions.nth_data( i ).execute( app, path );
+      }
+    }
   }
 
   /* Saves this instance in XML format */

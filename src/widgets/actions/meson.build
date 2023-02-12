@@ -8,5 +8,6 @@ sources += files(
     'ActionRenameBox.vala',
     'ActionResizeBox.vala',
     'ActionStarBox.vala',
-    'ActionTextBox.vala'
+    'ActionTextBox.vala',
+    'ActionUploadBox.vala'
 )

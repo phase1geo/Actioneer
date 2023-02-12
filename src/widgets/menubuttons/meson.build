@@ -13,6 +13,7 @@ sources += files(
     'OptMenu.vala',
     'ResizeOptMenu.vala',
     'ServerConnOptMenu.vala',
+    'ServerOptMenu.vala',
     'SizeOptMenu.vala',
     'StarOptMenu.vala',
     'TagsOptMenu.vala',

@@ -103,9 +103,9 @@ public class DirAction {
   }
 
   /* Executes this rule on the given pathname */
-  public void execute( GLib.Application app, string path ) {
+  public async void execute( GLib.Application app, string path ) {
     if( _conditions.check( path ) ) {
-      _actions.execute( app, path );
+      yield _actions.execute( app, path );
     }
   }
 
@@ -124,7 +124,9 @@ public class DirAction {
       /* Get the list of entries within the given directory */
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
-        execute( app, path );
+        execute.begin( app, path, (obj, res) => {
+          execute.end( res );
+        });
       }
 
     } catch( FileError e ) {

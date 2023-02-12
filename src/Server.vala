@@ -33,6 +33,49 @@ public enum ServerConnectType {
 
 }
 
+public class ServerConnection {
+
+  public static const string xml_node = "server-connection";
+
+  public Server? server { get; set; default = null; }
+  public string  path   { get; set; default = ""; }
+
+  /* Default constructor */
+  public ServerConnection() {}
+
+  /* Copy constructor */
+  public ServerConnection.copy( ServerConnection other ) {
+    server = new Server.copy( other.server );
+    path   = other.path;
+  }
+
+  public Xml.Node* save() {
+
+    Xml.Node* node = new Xml.Node( null, xml_node );
+
+    node->set_prop( "server", server.name );
+    node->set_prop( "remote-path", path );
+
+    return( node );
+
+  }
+
+  public void load( Xml.Node* node ) {
+
+    var n = node->get_prop( "server" );
+    if( n != null ) {
+      server = Actioneer.servers.get_server_by_name( n );
+    }
+
+    var p = node->get_prop( "remote-path" );
+    if( p != null ) {
+      path = p;
+    }
+
+  }
+
+}
+
 public class Server {
 
   private const string SECRET_SCHEMA = "com.github.phase1geo.Actioneer";
@@ -45,7 +88,7 @@ public class Server {
   private string            _user;
   private File?             _handle;
 
-  public const string xml_node = "server";
+  public static const string xml_node = "server";
 
   public string name {
     get {
@@ -152,7 +195,7 @@ public class Server {
   }
 
   /* Opens a connection to the server */
-  public async bool connect( MainWindow win, string path ) {
+  public async bool connect( string path ) {
 
     var uri = Uri.build_with_user( UriFlags.HAS_PASSWORD, _conn_type.to_string(), _user, get_password(), null, _host, _port, path, null, null );
 
@@ -178,7 +221,7 @@ public class Server {
   }
 
   /* Disconnects the current connection */
-  public async bool disconnect( MainWindow win ) {
+  public async bool disconnect() {
 
     var mount = _handle.find_enclosing_mount();
 
@@ -192,10 +235,10 @@ public class Server {
   }
 
   /* Tests to make sure that the connection works */
-  public async bool test( MainWindow win ) {
+  public async bool test() {
 
-    if( yield connect( win, "" ) ) {
-      if( yield disconnect( win ) ) {
+    if( yield connect( "" ) ) {
+      if( yield disconnect() ) {
         return( true );
       }
     }
@@ -205,12 +248,12 @@ public class Server {
   }
 
   /* Uploads the given file to this server */
-  public async bool upload( MainWindow win, File src, string path ) {
+  public async bool upload( File src, string path ) {
 
     var retval = false;
 
     /* Connect to the server */
-    if( yield connect( win, path ) ) {
+    if( yield connect( path ) ) {
 
       var dst = _handle.get_child( src.get_basename() );
 
@@ -220,7 +263,7 @@ public class Server {
       }
 
       /* Disconnect after the copy has completed */
-      retval &= yield disconnect( win );
+      retval &= yield disconnect();
 
     }
 
