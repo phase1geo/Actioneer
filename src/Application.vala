@@ -68,13 +68,13 @@ public class Actioneer : Granite.Application {
     /* Create the main window */
     appwin = new MainWindow( this, settings );
 
-    /* List of directories and their rules */
-    dirlist = new DirList();
-    dirlist.load();
-
     /* List of servers */
     servers = new Servers();
     servers.load();
+
+    /* List of directories and their rules */
+    dirlist = new DirList();
+    dirlist.load();
 
     /* Create the data controller */
     controller = new Controller( appwin, dirlist );

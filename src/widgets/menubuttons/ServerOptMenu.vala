@@ -37,7 +37,7 @@ public class ServerOptMenu : OptMenu {
   }
 
   protected override string get_item_label( int index ) {
-    return( (index == 0) ? _( "Add Server" ) : Actioneer.servers.get_server( index ).name );
+    return( (index == 0) ? _( "Add Server" ) : Actioneer.servers.get_server( index - 1 ).name );
   }
 
   protected override string? initial_label() {

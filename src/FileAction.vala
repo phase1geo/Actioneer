@@ -489,8 +489,7 @@ public class FileAction {
     }
 
     if( _conn != null ) {
-      node->set_prop( "server", _conn.server.name );
-      node->set_prop( "remote-path", _conn.path );
+      node->add_child( _conn.save() );
     }
 
     return( node );

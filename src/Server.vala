@@ -197,7 +197,12 @@ public class Server {
   /* Opens a connection to the server */
   public async bool connect( string path ) {
 
-    var uri = Uri.build_with_user( UriFlags.HAS_PASSWORD, _conn_type.to_string(), _user, get_password(), null, _host, _port, path, null, null );
+    var npath = ((path.length > 0) && !path.has_prefix( "/" )) ? ("/" + path) : path;
+    var uri   = Uri.build_with_user( UriFlags.HAS_PASSWORD, _conn_type.to_string(), _user, get_password(), null,
+                                     _host, _port, npath, null, null );
+
+    /* Get the handle to the mounted host */
+    _handle = File.new_for_uri( uri.to_string_partial( UriHideFlags.PASSWORD ) );
 
     var mop = new GLib.MountOperation();
     mop.set_domain( _host );
@@ -207,9 +212,6 @@ public class Server {
     mop.ask_password.connect((m,u,d,f) => {
       mop.reply( MountOperationResult.HANDLED );
     });
-
-    /* Get the handle to the mounted host */
-    _handle = File.new_for_uri( uri.to_string_partial( UriHideFlags.PASSWORD ) );
 
     try {
       return yield _handle.mount_enclosing_volume( MountMountFlags.NONE, mop, null );

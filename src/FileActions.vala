@@ -38,7 +38,7 @@ public class FileActions {
   /* Executes all of the actions in serial order */
   public async void execute( GLib.Application app, string pathname ) {
     string? path = pathname;
-    for( int i=0; i<(int)_actions.length; i++ ) {
+    for( int i=0; i<(int)_actions.length(); i++ ) {
       if( path != null ) {
         path = yield _actions.nth_data( i ).execute( app, path );
       }

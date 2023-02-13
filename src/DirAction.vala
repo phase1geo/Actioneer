@@ -105,7 +105,9 @@ public class DirAction {
   /* Executes this rule on the given pathname */
   public async void execute( GLib.Application app, string path ) {
     if( _conditions.check( path ) ) {
+      stdout.printf( "HERE B\n" );
       yield _actions.execute( app, path );
+      stdout.printf( "HERE C\n" );
     }
   }
 
@@ -125,6 +127,7 @@ public class DirAction {
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
         execute.begin( app, path, (obj, res) => {
+          stdout.printf( "HERE A\n" );
           execute.end( res );
         });
       }

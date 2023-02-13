@@ -22,7 +22,8 @@ public class ActionUploadBox : ActionBase {
         var editor = new EditServer( Actioneer.appwin, null );
         editor.completed.connect((index) => {
           if( index != -1 ) {
-            _mb.set_current_item( index );
+            _mb.repopulate_menu();
+            _mb.set_current_item( index + 1 );
           }
         });
       }
@@ -43,13 +44,13 @@ public class ActionUploadBox : ActionBase {
   /* Save the results off as TokenText */
   public override FileAction get_data() {
     var data = new FileAction.with_type( _type );
-    data.conn.server = Actioneer.servers.get_server( _mb.get_current_item() );
+    data.conn.server = Actioneer.servers.get_server( _mb.get_current_item() - 1 );
     data.conn.path   = _entry.text;
     return( data );
   }
 
   public override void set_data( FileAction data ) {
-    _mb.set_current_item( Actioneer.servers.get_server_index( data.conn.server.name ) );
+    _mb.set_current_item( Actioneer.servers.get_server_index( data.conn.server.name ) + 1 );
     _entry.text = data.conn.path;
   }
 
