@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.phase1geo.actioneer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-24 10:52-0600\n"
+"POT-Creation-Date: 2023-02-12 23:36-0600\n"
 "PO-Revision-Date: 2022-01-17 14:34+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: \n"
@@ -18,100 +18,271 @@ msgstr ""
 "X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/ActionCondition.vala:49
+#: src/ActionConditions.vala:39
+#, fuzzy
+msgid "Match ALL of the following"
+msgstr "Voldoen aan ALLE voorwaarden"
+
+#: src/ActionConditions.vala:40
+#, fuzzy
+msgid "Match ANY of the following"
+msgstr "Voldoen aan EEN voorwaarde"
+
+#: src/ActionConditions.vala:41
+msgid "Match NONE of the following"
+msgstr ""
+
+#: src/ActionCondition.vala:69
+msgid "File Kind"
+msgstr ""
+
+#: src/ActionCondition.vala:70
 msgid "Name"
 msgstr "Naam"
 
-#: src/ActionCondition.vala:50 src/TokenText.vala:42
+#: src/ActionCondition.vala:71 src/TokenText.vala:57
 msgid "Extension"
 msgstr "Extensie"
 
-#: src/ActionCondition.vala:51
+#: src/ActionCondition.vala:72
 msgid "Full Name"
 msgstr "Volledige naam"
 
-#: src/ActionCondition.vala:52 src/TokenText.vala:43
+#: src/ActionCondition.vala:73 src/TokenText.vala:58
 msgid "Creation Date"
 msgstr "Aangemaakt op"
 
-#: src/ActionCondition.vala:53 src/TokenText.vala:44
+#: src/ActionCondition.vala:74 src/TokenText.vala:59
 msgid "Modification Date"
 msgstr "Aangepast op"
 
-#: src/ActionCondition.vala:54
+#: src/ActionCondition.vala:75
 msgid "MIME Type"
 msgstr "Mimetype"
 
-#: src/ActionCondition.vala:55
+#: src/ActionCondition.vala:76
 msgid "Content"
 msgstr "Inhoud"
 
-#: src/ActionCondition.vala:56
+#: src/ActionCondition.vala:77
+msgid "Download URL"
+msgstr ""
+
+#: src/ActionCondition.vala:78
 msgid "File Size"
 msgstr ""
 
-#: src/Application.vala:167
+#: src/ActionCondition.vala:79
+msgid "Owner"
+msgstr ""
+
+#: src/ActionCondition.vala:80
+msgid "Group"
+msgstr ""
+
+#: src/ActionCondition.vala:81
+msgid "Tags"
+msgstr ""
+
+#: src/ActionCondition.vala:82 src/FileAction.vala:59
+msgid "Rating"
+msgstr ""
+
+#: src/ActionCondition.vala:83 src/FileAction.vala:60
+msgid "Comment"
+msgstr ""
+
+#: src/ActionCondition.vala:84 src/TokenText.vala:64
+#, fuzzy
+msgid "Image Width"
+msgstr "Vervangen door"
+
+#: src/ActionCondition.vala:85 src/TokenText.vala:65
+msgid "Image Height"
+msgstr ""
+
+#: src/ActionCondition.vala:86
+#, fuzzy
+msgid "Condition Group"
+msgstr "Voorwaarden"
+
+#: src/Application.vala:128
 msgid "Display version number"
 msgstr "Toon het versienummer"
 
-#: src/Application.vala:168
+#: src/Application.vala:129
 msgid "Runs Actioneer rules"
 msgstr "Actioneer-regels uitvoeren"
 
-#: src/Application.vala:169
-msgid "Create rules in app"
-msgstr "Regels aanmaken"
-
-#: src/Application.vala:178
+#: src/Application.vala:138
 #, c-format
 msgid "ERROR: %s\n"
 msgstr "FOUTMELDING: %s\n"
 
-#: src/Application.vala:179
+#: src/Application.vala:139
 #, c-format
 msgid "Run '%s --help' to see valid options\n"
 msgstr "Voer ‘%s --help’ uit om geldige opties te tonen\n"
 
-#: src/FileAction.vala:22
-msgid "Move"
-msgstr "Verplaatsen"
-
-#: src/FileAction.vala:23
+#: src/Controller.vala:205 src/FileAction.vala:49
 msgid "Copy"
 msgstr "Kopiëren"
 
-#: src/FileAction.vala:24
+#: src/FileAction.vala:48
+msgid "Move"
+msgstr "Verplaatsen"
+
+#: src/FileAction.vala:50
 msgid "Rename"
 msgstr "Naam wijzigen"
 
-#: src/FileAction.vala:25
+#: src/FileAction.vala:51
+msgid "Alias"
+msgstr ""
+
+#: src/FileAction.vala:52
+msgid "Upload"
+msgstr ""
+
+#: src/FileAction.vala:53
+msgid "Compress"
+msgstr ""
+
+#: src/FileAction.vala:54
+msgid "Decompress"
+msgstr ""
+
+#: src/FileAction.vala:55
 msgid "Trash"
 msgstr ""
 
-#: src/FileAction.vala:26
+#: src/FileAction.vala:56
+msgid "Add Tag"
+msgstr ""
+
+#: src/FileAction.vala:57
+#, fuzzy
+msgid "Remove Tag"
+msgstr "Verwijderen"
+
+#: src/FileAction.vala:58
+msgid "Clear Tags"
+msgstr ""
+
+#: src/FileAction.vala:61
+msgid "Resize Image"
+msgstr ""
+
+#: src/FileAction.vala:62
+msgid "Convert Image"
+msgstr ""
+
+#: src/FileAction.vala:63
 msgid "Notify"
 msgstr ""
 
-#: src/FileAction.vala:33 src/FileAction.vala:34
+#: src/FileAction.vala:64
+msgid "Run Script"
+msgstr ""
+
+#: src/FileAction.vala:65
+msgid "Open"
+msgstr ""
+
+#: src/FileAction.vala:72 src/FileAction.vala:73
 msgid "to folder"
 msgstr "naar map"
 
-#: src/FileAction.vala:35
+#: src/FileAction.vala:74
 msgid "file as"
 msgstr "bestand als"
 
-#: src/FileAction.vala:36
+#: src/FileAction.vala:75
+#, fuzzy
+msgid "from folder"
+msgstr "naar map"
+
+#: src/FileAction.vala:76
+msgid "to"
+msgstr ""
+
+#: src/FileAction.vala:77
+msgid "file to format"
+msgstr ""
+
+#: src/FileAction.vala:78
+msgid "compressed file"
+msgstr ""
+
+#: src/FileAction.vala:79
 #, fuzzy
 msgid "file"
 msgstr "bestand als"
 
-#: src/FileAction.vala:37
+#: src/FileAction.vala:80
+#, fuzzy
+msgid "to file"
+msgstr "naar map"
+
+#: src/FileAction.vala:81 src/FileAction.vala:82
+#, fuzzy
+msgid "from file"
+msgstr "bestand als"
+
+#: src/FileAction.vala:83 src/FileAction.vala:84
+#, fuzzy
+msgid "for file"
+msgstr "bestand als"
+
+#: src/FileAction.vala:86
+msgid "with format"
+msgstr ""
+
+#: src/FileAction.vala:87
 msgid "with message"
 msgstr ""
 
-#: src/FileAction.vala:82 src/MainWindow.vala:76
+#: src/FileAction.vala:89
+msgid "with application"
+msgstr ""
+
+#: src/FileAction.vala:220 src/MainWindow.vala:91
 msgid "Actioneer"
 msgstr "Actioneer"
+
+#: src/Imager.vala:74
+msgid "JPG"
+msgstr ""
+
+#: src/Imager.vala:75
+msgid "PNG"
+msgstr ""
+
+#: src/Imager.vala:76
+msgid "BMP"
+msgstr ""
+
+#: src/MainWindow.vala:164
+#, c-format
+msgid "Unable to load background color: %s"
+msgstr ""
+
+#: src/MainWindow.vala:195
+msgid "Background processor enable"
+msgstr ""
+
+#: src/MainWindow.vala:206
+#, fuzzy
+msgid "Run Rules"
+msgstr "Regels"
+
+#: src/MainWindow.vala:213
+msgid "Show Pinned Rules"
+msgstr ""
+
+#: src/MainWindow.vala:222
+msgid "Manage servers"
+msgstr ""
 
 #: src/SizeCondition.vala:92
 msgid "byte(s)"
@@ -133,41 +304,58 @@ msgstr ""
 msgid "terabyte(s)"
 msgstr ""
 
-#: src/TokenText.vala:39
+#: src/TokenText.vala:54
 msgid "Text"
 msgstr "Tekst"
 
-#: src/TokenText.vala:40
+#: src/TokenText.vala:55
 msgid "Filename"
 msgstr "Bestandsnaam"
 
-#: src/TokenText.vala:41
+#: src/TokenText.vala:56
 msgid "Basename"
 msgstr "Algemene naam"
 
-#: src/TokenText.vala:45
+#: src/TokenText.vala:60
 msgid "Today"
 msgstr "Vandaag"
 
-#: src/TokenText.vala:106
+#: src/TokenText.vala:61
+#, fuzzy
+msgid "File Owner"
+msgstr "Bestandsnaam"
+
+#: src/TokenText.vala:62
+msgid "File Group"
+msgstr ""
+
+#: src/TokenText.vala:63
+msgid "Unique ID"
+msgstr ""
+
+#: src/TokenText.vala:141
 msgid "No change"
 msgstr "Ongewijzigd laten"
 
-#: src/TokenText.vala:107
+#: src/TokenText.vala:142
 msgid "Lowercase"
 msgstr "Kleine letters"
 
-#: src/TokenText.vala:108
+#: src/TokenText.vala:143
 msgid "Uppercase"
 msgstr "Hoofdletters"
 
-#: src/TokenText.vala:109
+#: src/TokenText.vala:144
 msgid "Titlecase"
 msgstr "Titelschrijfwijze"
 
 #: src/widgets/ActionBoxList.vala:9
 msgid "Add Action"
 msgstr "Actie toevoegen"
+
+#: src/widgets/actions/ActionCompressBox.vala:14
+msgid "with compression level"
+msgstr ""
 
 #: src/widgets/actions/ActionFileBox.vala:16
 msgid "Select a folder"
@@ -177,64 +365,180 @@ msgstr "Kies een map"
 msgid "Browse filesystem"
 msgstr "Kiezen van bestandssysteem"
 
-#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:44
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:79
 msgid "Choose Directory"
 msgstr "Map kiezen"
 
-#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:44
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:79
+#: src/widgets/RuleForm.vala:178
 msgid "Choose"
 msgstr "Kiezen"
 
-#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:44
-#: src/widgets/RuleForm.vala:112
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:79
+#: src/widgets/EditServer.vala:149 src/widgets/RuleForm.vala:128
+#: src/widgets/RuleForm.vala:178
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: src/widgets/actions/ActionRenameBox.vala:24
+#: src/widgets/actions/ActionRenameBox.vala:25
 msgid "Click to select filename rename token"
 msgstr "Klik om de bestandsnaamwijzigingswaarde aan te passen"
 
-#: src/widgets/actions/ActionRenameBox.vala:113
+#: src/widgets/actions/ActionRenameBox.vala:115
 #: src/widgets/tokenbox/TokenBox.vala:267
 msgid "Add Before"
 msgstr "Invoegen vóór"
 
-#: src/widgets/actions/ActionRenameBox.vala:117
+#: src/widgets/actions/ActionRenameBox.vala:119
 #: src/widgets/tokenbox/TokenBox.vala:271
 msgid "Add After"
 msgstr "Invoegen na"
 
-#: src/widgets/actions/ActionRenameBox.vala:121
+#: src/widgets/actions/ActionRenameBox.vala:123
 #: src/widgets/tokenbox/TokenBox.vala:275
 msgid "Replace With"
 msgstr "Vervangen door"
 
-#: src/widgets/actions/ActionRenameBox.vala:125
+#: src/widgets/actions/ActionRenameBox.vala:127
 #: src/widgets/tokenbox/TokenBox.vala:279
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: src/widgets/actions/ActionRenameBox.vala:190
+#: src/widgets/actions/ActionRenameBox.vala:207
 #: src/widgets/tokenbox/TokenBox.vala:141
 #: src/widgets/tokenbox/TokenBox.vala:226
 msgid "Edit..."
 msgstr "Bewerken…"
 
+#: src/widgets/actions/ActionResizeBox.vala:48
+#: src/widgets/actions/ActionResizeBox.vala:68
+msgid "Width in pixels"
+msgstr ""
+
+#: src/widgets/actions/ActionResizeBox.vala:50
+msgid "x"
+msgstr ""
+
+#: src/widgets/actions/ActionResizeBox.vala:53
+#: src/widgets/actions/ActionResizeBox.vala:81
+msgid "Height in pixels"
+msgstr ""
+
+#: src/widgets/actions/ActionResizeBox.vala:94
+msgid "Percent"
+msgstr ""
+
+#: src/widgets/actions/ActionTextBox.vala:21
+#, c-format
+msgid "Enter text, %f will be replaced with the filename"
+msgstr ""
+
+#: src/widgets/actions/ActionUploadBox.vala:33
+msgid "Remote pathname"
+msgstr ""
+
+#: src/widgets/BoxList.vala:105
+msgid "Add Group"
+msgstr ""
+
 #: src/widgets/CondBoxList.vala:9
 msgid "Add Condition"
 msgstr "Voorwaarde toevoegen"
 
-#: src/widgets/DirectoryList.vala:32
+#: src/widgets/DirectoryList.vala:67
 msgid "Directories"
 msgstr "Mappen"
 
-#: src/widgets/DirectoryList.vala:36
+#: src/widgets/DirectoryList.vala:71
 msgid "Add Directory"
 msgstr "Map toevoegen"
 
-#: src/widgets/DirectoryList.vala:40
+#: src/widgets/DirectoryList.vala:75
 msgid "Remove Selected Directory"
 msgstr "Gekozen map verwijderen"
+
+#: src/widgets/EditServer.vala:32 src/widgets/menubuttons/ServerOptMenu.vala:40
+#: src/widgets/menubuttons/.ServerOptMenu.vala.swp:20
+#, fuzzy
+msgid "Add Server"
+msgstr "Invoegen vóór"
+
+#: src/widgets/EditServer.vala:32
+msgid "Edit Server"
+msgstr ""
+
+#: src/widgets/EditServer.vala:40
+#, fuzzy
+msgid "Name:"
+msgstr "Naam"
+
+#: src/widgets/EditServer.vala:42
+msgid "Host URL:"
+msgstr ""
+
+#: src/widgets/EditServer.vala:44
+msgid "Type:"
+msgstr ""
+
+#: src/widgets/EditServer.vala:46
+msgid "Port:"
+msgstr ""
+
+#: src/widgets/EditServer.vala:48
+#, fuzzy
+msgid "Username:"
+msgstr "Algemene naam"
+
+#: src/widgets/EditServer.vala:50
+msgid "Password:"
+msgstr ""
+
+#: src/widgets/EditServer.vala:52
+msgid "Passwords are saved in your system keyring"
+msgstr ""
+
+#: src/widgets/EditServer.vala:68 src/widgets/EditServer.vala:73
+msgid "Show Password"
+msgstr ""
+
+#: src/widgets/EditServer.vala:77
+msgid "Hide Password"
+msgstr ""
+
+#: src/widgets/EditServer.vala:107
+msgid "Delete"
+msgstr ""
+
+#: src/widgets/EditServer.vala:119
+msgid "Test and Save"
+msgstr ""
+
+#: src/widgets/EditServer.vala:142
+msgid "Unable to connect to server"
+msgstr ""
+
+#: src/widgets/menubuttons/OpenOptMenu.vala:41
+msgid "Default"
+msgstr ""
+
+#: src/widgets/menubuttons/ServerOptMenu.vala:44
+#: src/widgets/menubuttons/.ServerOptMenu.vala.swp:20
+#, fuzzy
+msgid "Select Server"
+msgstr "Kies een map"
+
+#: src/widgets/PinList.vala:96
+#, fuzzy
+msgid "Pinned Rules"
+msgstr "Regel toevoegen"
+
+#: src/widgets/PinList.vala:112 src/widgets/RuleList.vala:162
+msgid "Remove Selected Rule"
+msgstr "Gekozen regel verwijderen"
+
+#: src/widgets/PinList.vala:116 src/widgets/RuleList.vala:166
+msgid "New Rule"
+msgstr "Nieuwe regel"
 
 #: src/widgets/RuleForm.vala:5
 msgid "Match ALL Conditions"
@@ -244,37 +548,61 @@ msgstr "Voldoen aan ALLE voorwaarden"
 msgid "Match ANY Condition"
 msgstr "Voldoen aan EEN voorwaarde"
 
-#: src/widgets/RuleForm.vala:58
+#: src/widgets/RuleForm.vala:62
 msgid "Rule Name"
 msgstr "Regelnaam"
 
-#: src/widgets/RuleForm.vala:71
+#: src/widgets/RuleForm.vala:75
 msgid "Conditions"
 msgstr "Voorwaarden"
 
-#: src/widgets/RuleForm.vala:93
+#: src/widgets/RuleForm.vala:97
 msgid "Actions"
 msgstr "Acties"
 
-#: src/widgets/RuleForm.vala:106
+#: src/widgets/RuleForm.vala:112 src/widgets/RuleForm.vala:114
+#, fuzzy
+msgid "Pin Rule"
+msgstr "Regel toevoegen"
+
+#: src/widgets/RuleForm.vala:114
+msgid "Unpin Rule"
+msgstr ""
+
+#: src/widgets/RuleForm.vala:117
+msgid "Test"
+msgstr ""
+
+#: src/widgets/RuleForm.vala:122
 msgid "Save Changes"
 msgstr "Wijzigingen opslaan"
 
-#: src/widgets/RuleList.vala:36
+#: src/widgets/RuleForm.vala:177
+#, fuzzy
+msgid "Choose File"
+msgstr "Kiezen"
+
+#: src/widgets/RuleList.vala:80
+msgid "Duplicate"
+msgstr ""
+
+#: src/widgets/RuleList.vala:115
+#, fuzzy
+msgid "Move To Directory"
+msgstr "Map kiezen"
+
+#: src/widgets/RuleList.vala:118
+#, fuzzy
+msgid "Copy To Directory"
+msgstr "Map kiezen"
+
+#: src/widgets/RuleList.vala:154
 msgid "Rules"
 msgstr "Regels"
 
-#: src/widgets/RuleList.vala:40
+#: src/widgets/RuleList.vala:158
 msgid "Add Rule"
 msgstr "Regel toevoegen"
-
-#: src/widgets/RuleList.vala:44
-msgid "Remove Selected Rule"
-msgstr "Gekozen regel verwijderen"
-
-#: src/widgets/RuleList.vala:48
-msgid "New Rule"
-msgstr "Nieuwe regel"
 
 #: src/widgets/RuleStack.vala:17
 msgid "Welcome to Actioneer"
@@ -309,3 +637,17 @@ msgstr "Voeg een regel toe aan de huidige gekozen map"
 #, fuzzy
 msgid "Or click on the plus (+) button in the Rules panel"
 msgstr "Of klik op de plusknop (+) op het linkerpaneel"
+
+#: src/widgets/RuleStack.vala:39
+#, fuzzy
+msgid "Welcome to Pinned Rules"
+msgstr "Welkom bij Actioneer"
+
+#: src/widgets/RuleStack.vala:40
+msgid ""
+"Drag and drop files onto a pinned rule to the left to execute that rule's "
+"conditions and actions"
+msgstr ""
+
+#~ msgid "Create rules in app"
+#~ msgstr "Regels aanmaken"

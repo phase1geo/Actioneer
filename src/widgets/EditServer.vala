@@ -64,6 +64,19 @@ public class EditServer : Hdy.ApplicationWindow {
     port_entry.max_width_chars = 5;
     pass_entry.input_purpose   = InputPurpose.PASSWORD;
     pass_entry.visibility      = false;
+    pass_entry.secondary_icon_name = "password-show";
+    pass_entry.secondary_icon_tooltip_text = _( "Show Password" );
+    pass_entry.icon_release.connect((p, e) => {
+      if( pass_entry.visibility ) {
+        pass_entry.visibility = false;
+        pass_entry.secondary_icon_name = "password-show";
+        pass_entry.secondary_icon_tooltip_text = _( "Show Password" );
+      } else {
+        pass_entry.visibility = true;
+        pass_entry.secondary_icon_name = "password-hide";
+        pass_entry.secondary_icon_tooltip_text = _( "Hide Password" );
+      }
+    });
 
     var grid = new Grid();
     grid.column_spacing = 10;
@@ -90,7 +103,7 @@ public class EditServer : Hdy.ApplicationWindow {
      Add delete button if we are editing a server that is not being
      referenced by any actions.
     */
-    if( server != null ) {
+    if( (server != null) && !Actioneer.dirlist.server_in_use( server.name ) ) {
       var del = new Button.with_label( _( "Delete" ) );
       del.get_style_context().add_class( "destructive-action" );
       del.clicked.connect(() => {
@@ -171,6 +184,7 @@ public class EditServer : Hdy.ApplicationWindow {
 
     if( server != null ) {
       name_entry.text = server.name;
+      name_entry.editable = false;
       conn_mb.set_current_item( (int)server.conn_type );
       host_entry.text = server.host;
       port_entry.text = server.port.to_string();

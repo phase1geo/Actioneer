@@ -2,5 +2,7 @@
 <gresources>
   <gresource prefix="/com/github/phase1geo/actioneer">
     <file alias="Application.css" compressed="true">Application.css</file>
+    <file alias="password-show.svg">icons/symbolic/password-show.svg</file>
+    <file alias="password-hide.svg">icons/symbolic/password-hide.svg</file>
   </gresource>
 </gresources>

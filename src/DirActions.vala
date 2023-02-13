@@ -103,6 +103,16 @@ public class DirActions {
     });
   }
 
+  /* Returns true if this directory contains any actions that use the given server */
+  public bool server_in_use( string name ) {
+    for( int i=0; i<_actions.length(); i++ ) {
+      if( _actions.nth_data( i ).server_in_use( name ) ) {
+        return( true );
+      }
+    }
+    return( false );
+  }
+
   /* Saves the directory action as XML */
   public Xml.Node* save() {
 

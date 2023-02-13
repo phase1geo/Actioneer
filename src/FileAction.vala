@@ -461,6 +461,11 @@ public class FileAction {
 
   }
 
+  /* Returns true if this action references the given server */
+  public bool server_in_use( string name ) {
+    return( (_conn != null) && (_conn.server.name == name) );
+  }
+
   /* Save this instance in XML format */
   public Xml.Node* save() {
 
