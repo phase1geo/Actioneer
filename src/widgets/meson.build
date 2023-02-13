@@ -3,6 +3,7 @@ sources += files(
     'BoxList.vala',
     'CondBoxList.vala',
     'DirectoryList.vala',
+    'EditServer.vala',
     'EnableList.vala',
     'PinList.vala',
     'RuleForm.vala',

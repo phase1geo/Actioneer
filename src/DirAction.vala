@@ -103,16 +103,14 @@ public class DirAction {
   }
 
   /* Executes this rule on the given pathname */
-  public void execute( GLib.Application app, string path ) {
+  public async void execute( GLib.Application app, string path ) {
     if( _conditions.check( path ) ) {
-      _actions.execute( app, path );
+      yield _actions.execute( app, path );
     }
   }
 
   /* Runs the current action on the given directory */
   public void run( GLib.Application app, string dirname ) {
-
-    stdout.printf( "Running rules for %s, enabled: %s\n", dirname, enabled.to_string() );
 
     if( !enabled ) return;
 
@@ -124,7 +122,9 @@ public class DirAction {
       /* Get the list of entries within the given directory */
       while( (name = dir.read_name()) != null ) {
         string path = Path.build_filename( dirname, name );
-        execute( app, path );
+        execute.begin( app, path, (obj, res) => {
+          execute.end( res );
+        });
       }
 
     } catch( FileError e ) {
@@ -134,6 +134,11 @@ public class DirAction {
 
     }
 
+  }
+
+  /* Returns true if any of the actions contain a reference to the given server */
+  public bool server_in_use( string name ) {
+    return( _actions.server_in_use( name ) );
   }
 
   /* Save the directory action to the given XML file */

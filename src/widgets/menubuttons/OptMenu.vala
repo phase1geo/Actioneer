@@ -30,8 +30,23 @@ public class OptMenu : MenuButton {
 
     initialize();
 
-    var menu = new Gtk.Menu();
+    popup = new Gtk.Menu();
+    populate_menu();
+    popup.show_all();
 
+    /* Initialize ourselves with the first item */
+    if( initial_label() != null ) {
+      label = initial_label();
+    } else if( num_items() > 0 ) {
+      set_current_item( 0 );
+    }
+
+  }
+
+  /* Populates the menu */
+  private void populate_menu() {
+
+    /* Populate the menu */
     for( int i=0; i<num_items(); i++ ) {
       var lbl   = get_item_label( i );
       var sep   = get_item_separator( i );
@@ -41,25 +56,33 @@ public class OptMenu : MenuButton {
         label = lbl;
         activated( index );
       });
-      menu.add( item );
+      popup.add( item );
       if( sep ) {
-        menu.add( new Gtk.SeparatorMenuItem() );
+        popup.add( new Gtk.SeparatorMenuItem() );
       }
     }
 
-    menu.show_all();
+  }
 
-    popup = menu;
+  /* Clears the menu and populates it with the most up-to-date items */
+  public void repopulate_menu() {
 
-    /* Initialize ourselves with the first item */
-    if( num_items() > 0 ) {
-      set_current_item( 0 );
-    }
+    /* Clear the menu */
+    popup.get_children().foreach((item) => {
+      remove( item );
+    });
+
+    populate_menu();
 
   }
 
   /* Allows the extended class to initialize itself, if needed */
   public virtual void initialize() {}
+
+  /* Allows the derived class to provide its own label for the menubutton */
+  public virtual string? initial_label() {
+    return( null );
+  }
 
   /* Sets the current item to the given index */
   public void set_current_item( int index ) {

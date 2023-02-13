@@ -32,7 +32,8 @@ public class Actioneer : Granite.Application {
   private static bool          create       = false;
   private        GLib.Settings iface_settings;
 
-  public         DirList       dirlist;
+  public  static DirList       dirlist;
+  public  static Servers       servers;
   public         Controller    controller;
   public  static MainWindow    appwin { get; private set; }
   public  static GLib.Settings settings;
@@ -66,6 +67,10 @@ public class Actioneer : Granite.Application {
 
     /* Create the main window */
     appwin = new MainWindow( this, settings );
+
+    /* List of servers */
+    servers = new Servers();
+    servers.load();
 
     /* List of directories and their rules */
     dirlist = new DirList();

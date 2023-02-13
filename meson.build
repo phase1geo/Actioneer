@@ -68,7 +68,8 @@ dependencies = [
     granite,
     dependency('gtk+-3.0'),
     dependency('libxml-2.0'),
-    dependency('libhandy-1')
+    dependency('libhandy-1'),
+    dependency('libsecret-1')
 ]
 
 e = executable('com.github.phase1geo.actioneer',

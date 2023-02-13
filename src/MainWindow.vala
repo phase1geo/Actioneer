@@ -25,7 +25,8 @@ using Gdk;
 public class MainWindow : Hdy.ApplicationWindow {
 
   private GLib.Settings   _settings;
-  private Hdy.HeaderBar   _header;
+  private Hdy.HeaderBar   _left_header;
+  private Hdy.HeaderBar   _right_header;
   private Switch          _enable;
   private Gtk.AccelGroup? _accel_group = null;
   private DirectoryList   _dir_list;
@@ -33,6 +34,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   private RuleStack       _rule_stack;
   private PinList         _pin_list;
   private Stack           _list_stack;
+  private Button          _server_btn;
 
   private const GLib.ActionEntry[] action_entries = {
     { "action_add_dir",   action_add_dir },
@@ -103,9 +105,9 @@ public class MainWindow : Hdy.ApplicationWindow {
     add_keyboard_shortcuts( app );
 
     /* Create the header bar */
-    _header = new Hdy.HeaderBar();
-    _header.set_show_close_button( false );
-    populate_header();
+    _left_header = new Hdy.HeaderBar();
+    _left_header.set_show_close_button( false );
+    populate_left_header();
 
     _dir_list   = new DirectoryList( this );
     _rule_list  = new RuleList( this );
@@ -122,14 +124,15 @@ public class MainWindow : Hdy.ApplicationWindow {
     _list_stack.add_named( _pin_list, "pin_rules" );
 
     var left_panel = new Box( Orientation.VERTICAL, 0 );
-    left_panel.pack_start( _header,     false, true, 0 );
-    left_panel.pack_start( _list_stack, true,  true, 0 );
+    left_panel.pack_start( _left_header, false, true, 0 );
+    left_panel.pack_start( _list_stack,  true,  true, 0 );
 
-    var right_header = new Hdy.HeaderBar();
-    right_header.set_show_close_button( true );
+    _right_header = new Hdy.HeaderBar();
+    _right_header.set_show_close_button( true );
+    populate_right_header();
 
     var right_panel = new Box( Orientation.VERTICAL, 0 );
-    right_panel.pack_start( right_header, false, true, 0 );
+    right_panel.pack_start( _right_header, false, true, 0 );
     right_panel.pack_start( _rule_stack,  true,  true, 0 );
 
     var top_pane = new Paned( Orientation.HORIZONTAL );
@@ -186,7 +189,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   }
 
   /* Add widgets to header bar */
-  private void populate_header() {
+  private void populate_left_header() {
 
     _enable = new Switch();
     _enable.set_tooltip_text( _( "Background processor enable" ) );
@@ -194,22 +197,31 @@ public class MainWindow : Hdy.ApplicationWindow {
       background_toggled();
       return( false );
     });
-    _header.pack_start( _enable );
+    _left_header.pack_start( _enable );
 
     var lbl = new Label( "  " );
-    _header.pack_start( lbl );
+    _left_header.pack_start( lbl );
 
     var run_btn = new Button.from_icon_name( "media-playback-start", IconSize.LARGE_TOOLBAR );
     run_btn.set_tooltip_markup( Utils.tooltip_with_accel( _( "Run Rules" ), "<Control>r" ) );
     run_btn.add_accelerator( "clicked", _accel_group, 'r', Gdk.ModifierType.CONTROL_MASK, AccelFlags.VISIBLE );
     run_btn.clicked.connect( action_run );
-    _header.pack_start( run_btn );
+    _left_header.pack_start( run_btn );
 
     var pin_btn = new ToggleButton();
     pin_btn.image = new Image.from_icon_name( "view-pin-symbolic", IconSize.LARGE_TOOLBAR );
     pin_btn.set_tooltip_text( _( "Show Pinned Rules" ) );
     pin_btn.toggled.connect( action_toggle_pin_view );
-    _header.pack_end( pin_btn );
+    _left_header.pack_end( pin_btn );
+
+  }
+
+  private void populate_right_header() {
+
+    _server_btn = new Button.from_icon_name( "network-server-symbolic", IconSize.LARGE_TOOLBAR );
+    _server_btn.set_tooltip_text( _( "Manage servers" ) );
+    _server_btn.clicked.connect( action_show_servers );
+    _right_header.pack_end( _server_btn );
 
   }
 
@@ -244,6 +256,39 @@ public class MainWindow : Hdy.ApplicationWindow {
       _list_stack.set_visible_child_name( "dir_rules" );
       _rule_stack.visible_child_name = "welcome1";
     }
+  }
+
+  private void action_show_servers() {
+
+    var servers = Actioneer.servers;
+
+    var create = new Gtk.MenuItem.with_label( "Add Server" );
+    create.activate.connect(() => {
+      edit_server( null );
+    });
+
+    var menu = new Gtk.Menu();
+    menu.add( create );
+    if( servers.num() > 0 ) {
+      menu.add( new SeparatorMenuItem() );
+    }
+
+    for( int i=0; i<servers.num(); i++ ) {
+      var server = servers.get_server( i );
+      var item   = new Gtk.MenuItem.with_label( server.name );
+      item.activate.connect(() => {
+        edit_server( server );
+      });
+      menu.add( item );
+    }
+
+    menu.show_all();
+    menu.popup_at_widget( _server_btn, Gravity.SOUTH, Gravity.NORTH );
+
+  }
+
+  private void edit_server( Server? server ) {
+    var editor = new EditServer( this, server );
   }
 
   /* Called when the user uses the Control-q keyboard shortcut */

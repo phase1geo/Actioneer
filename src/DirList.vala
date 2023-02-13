@@ -65,6 +65,16 @@ public class DirList {
 
   }
 
+  /* Returns true if any directory actions contain actions using the given server */
+  public bool server_in_use( string name ) {
+    for( int i=0; i<_dir_actions.length(); i++ ) {
+      if( _dir_actions.nth_data( i ).server_in_use( name ) ) {
+        return( true );
+      }
+    }
+    return( false );
+  }
+
   /* Saves the rules.xml file to the filesystem */
   public bool save() {
 
