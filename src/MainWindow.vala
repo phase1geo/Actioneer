@@ -35,6 +35,8 @@ public class MainWindow : Hdy.ApplicationWindow {
   private PinList         _pin_list;
   private Stack           _list_stack;
   private Button          _server_btn;
+  private ToggleButton    _search_btn;
+  private Popover         _search_box;
 
   private const GLib.ActionEntry[] action_entries = {
     { "action_add_dir",   action_add_dir },
@@ -70,6 +72,8 @@ public class MainWindow : Hdy.ApplicationWindow {
   }
 
   public signal void background_toggled();
+  public signal void search_toggled();
+  public signal void search_changed( string text );
 
   /* Create the main window UI */
   public MainWindow( Actioneer app, GLib.Settings settings ) {
@@ -223,6 +227,22 @@ public class MainWindow : Hdy.ApplicationWindow {
     _server_btn.clicked.connect( action_show_servers );
     _right_header.pack_end( _server_btn );
 
+    _search_btn = new ToggleButton();
+    _search_btn.image = new Image.from_icon_name( "system-search-symbolic", IconSize.LARGE_TOOLBAR );
+    _search_btn.set_tooltip_text( _( "Search" ) );
+    _search_btn.toggled.connect( action_search );
+    _right_header.pack_end( _search_btn );
+
+    /* Create the search UI */
+    var search_entry = new SearchEntry();
+    search_entry.search_changed.connect(() => {
+      search_changed( search_entry.text );
+    });
+    _search_box = new Popover( _search_btn );
+    _search_box.add( search_entry );
+    Utils.hide_popover( _search_box );
+    _search_box.show_all();
+
   }
 
   public Actioneer get_app() {
@@ -289,6 +309,18 @@ public class MainWindow : Hdy.ApplicationWindow {
 
   private void edit_server( Server? server ) {
     var editor = new EditServer( this, server );
+  }
+
+  private void action_search() {
+
+    if( _search_btn.active ) {
+      Utils.show_popover( _search_box );
+    } else {
+      Utils.hide_popover( _search_box );
+    }
+
+    search_toggled();
+
   }
 
   /* Called when the user uses the Control-q keyboard shortcut */

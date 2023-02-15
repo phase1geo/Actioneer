@@ -113,6 +113,26 @@ public class DirActions {
     return( false );
   }
 
+  // ---------------------------------------------------------
+  // SEARCH
+  // ---------------------------------------------------------
+
+  public void clear_search() {
+    _actions.foreach((action) => {
+      action.clear_search();
+    });
+  }
+
+  public void do_search( SearchCriteria criteria ) {
+    _actions.foreach((action) => {
+      action.do_search( criteria );
+    });
+  }
+
+  // ---------------------------------------------------------
+  // SAVE/LOAD
+  // ---------------------------------------------------------
+
   /* Saves the directory action as XML */
   public Xml.Node* save() {
 

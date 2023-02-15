@@ -4,15 +4,21 @@ public class Controller {
 
   private MainWindow _win;
   private DirList    _data;
+  private bool       _search_mode;
+  private string     _search_text;
 
   /* Default constructor */
   public Controller( MainWindow win, DirList data ) {
 
-    _win  = win;
-    _data = data;
+    _win         = win;
+    _data        = data;
+    _search_mode = false;
+    _search_text = "";
 
     /* Connect to the main window signals */
     win.background_toggled.connect( background_enable_changed );
+    win.search_toggled.connect( search_toggled );
+    win.search_changed.connect( search_changed );
 
     /* Connect to the directory list signals */
     win.dir_list.enable_changed.connect( directory_enable_changed );
@@ -291,6 +297,29 @@ public class Controller {
     if( rule != null ) {
       rule.execute( _win.get_app(), fname );
     }
+
+  }
+
+  // =========================================================
+  // SEARCH
+  // =========================================================
+
+  private void search_toggled() {
+
+    /* If we are in search mode, display all directories and rules */
+    if( _search_mode ) {
+      _data.clear_search();
+    }
+
+    _search_mode = !_search_mode;
+
+    stdout.printf( "CONTROLLER, search_mode: %s\n", _search_mode.to_string() );
+
+  }
+
+  private void search_changed( string text ) {
+
+    _search_text = text;
 
   }
 

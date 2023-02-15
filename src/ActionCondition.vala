@@ -88,7 +88,7 @@ public enum ActionConditionType {
     }
   }
 
-  public static ActionConditionType parse( string val ) {
+  public static ActionConditionType parse( string val, bool assert_if_not_found = true ) {
     switch( val ) {
       case "kind"              :  return( KIND );
       case "name"              :  return( NAME );
@@ -108,7 +108,13 @@ public enum ActionConditionType {
       case "img-width"         :  return( IMG_WIDTH );
       case "img-height"        :  return( IMG_HEIGHT );
       case "cond-group"        :  return( COND_GROUP );
-      default                  :  assert_not_reached();
+      default                  :
+        if( assert_if_not_found ) {
+          assert_not_reached();
+        } else {
+          return( NUM );
+        }
+        break;
     }
   }
 

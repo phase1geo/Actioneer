@@ -91,7 +91,7 @@ public enum FileActionType {
     }
   }
 
-  public static FileActionType parse( string val ) {
+  public static FileActionType parse( string val, bool assert_if_not_found = true ) {
     switch( val ) {
       case "move"        :  return( MOVE );
       case "copy"        :  return( COPY );
@@ -111,7 +111,13 @@ public enum FileActionType {
       case "notify"      :  return( NOTIFY );
       case "run-script"  :  return( RUN_SCRIPT );
       case "open"        :  return( OPEN );
-      default            :  assert_not_reached();
+      default            :
+        if( assert_if_not_found ) {
+          assert_not_reached();
+        } else {
+          return( NUM );
+        }
+        break;
     }
   }
 

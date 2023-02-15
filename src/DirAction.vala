@@ -29,6 +29,7 @@ public class DirAction {
 
   public bool   enabled { get; set; default = true; }
   public bool   pinned  { get; set; default = false; }
+  public bool   show    { get; set; default = true; }
   public string name {
     get {
       return( _name );
@@ -140,6 +141,22 @@ public class DirAction {
   public bool server_in_use( string name ) {
     return( _actions.server_in_use( name ) );
   }
+
+  // ---------------------------------------------------------
+  // SEARCH
+  // ---------------------------------------------------------
+
+  public void clear_search() {
+    show = true;
+  }
+
+  public void do_search( SearchCriteria criteria ) {
+    show = criteria.matches_rule( this );
+  }
+
+  // ---------------------------------------------------------
+  // SAVE / LOAD
+  // ---------------------------------------------------------
 
   /* Save the directory action to the given XML file */
   public Xml.Node* save() {
