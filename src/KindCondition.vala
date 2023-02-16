@@ -18,7 +18,14 @@ public enum FileKind {
   }
 
   public string label() {
-    return( to_string() );
+    switch( this ) {
+      case FILE   :  return( _( "file" ) );
+      case FOLDER :  return( _( "folder" ) );
+      case ALIAS  :  return( _( "alias" ) );
+      case HIDDEN :  return( _( "hidden" ) );
+      case ANY    :  return( _( "any" ) );
+      default     :  assert_not_reached();
+    }
   }
 
   public static FileKind parse( string val ) {
@@ -91,6 +98,10 @@ public class KindCondition {
   /* Returns true if the file string matches the stored type and text */
   public bool check( FileKind act ) {
     return( (kind == FileKind.ANY) || match_type.matches( act, kind ) );
+  }
+
+  public bool matches( string value ) {
+    return( kind.label().contains( value ) );
   }
 
   public void save( Xml.Node* node ) {

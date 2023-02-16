@@ -94,6 +94,16 @@ public class DirActions {
     _actions.insert( action, to );
   }
 
+  /* Returns true if this directory should be displayed in the UI */
+  public bool show_rules() {
+    for( int i=0; i<_actions.length(); i++ ) {
+      if( _actions.nth_data( i ).show ) {
+        return( true );
+      }
+    }
+    return( false );
+  }
+
   /* Runs the directory actions for this directory */
   public void run( GLib.Application app ) {
     if( !enabled ) return;

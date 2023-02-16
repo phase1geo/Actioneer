@@ -140,6 +140,10 @@ public class TextCondition {
     return( match_type.matches( act, text ) );
   }
 
+  public bool matches( string value ) {
+    return( text.contains( value ) );
+  }
+
   public void save( Xml.Node* node ) {
     node->set_prop( "match_type", match_type.to_string() );
     node->set_prop( "text", text );

@@ -23,6 +23,7 @@ using Gtk;
 
 public class EnableList : Box {
 
+  private Button      _add_btn;
   private Button      _del_btn;
   private Overlay     _overlay;
   private Box         _list_box;
@@ -35,6 +36,7 @@ public class EnableList : Box {
   private double      _move_offset;
   private int         _select_index     = -1;
   private Gtk.Menu    _ctx_menu         = null;
+  private bool        _search_mode      = false;
 
   protected MainWindow win;
   protected Box list_box {
@@ -74,10 +76,10 @@ public class EnableList : Box {
 
     /* Create button bar at the bottom of the pane */
     if( add_button_exists() ) {
-      var add_btn = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
-      add_btn.set_tooltip_markup( add_tooltip() );
-      add_btn.clicked.connect( action_add );
-      bbox.pack_start( add_btn,  false, false, 0 );
+      _add_btn = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
+      _add_btn.set_tooltip_markup( add_tooltip() );
+      _add_btn.clicked.connect( action_add );
+      bbox.pack_start( _add_btn,  false, false, 0 );
     }
 
     if( del_button_exists() ) {
@@ -96,18 +98,20 @@ public class EnableList : Box {
 
     ebox.button_press_event.connect((e) => {
       if( e.button == Gdk.BUTTON_SECONDARY ) {
-        var index = get_index_for_y( e.y );
-        var menu  = get_contextual_menu( index );
-        if( menu != null ) {
-          select_row( index );
-          menu.popup_at_pointer( e );
+        if( !_search_mode ) {
+          var index = get_index_for_y( e.y );
+          var menu  = get_contextual_menu( index );
+          if( menu != null ) {
+            select_row( index );
+            menu.popup_at_pointer( e );
+          }
         }
       } else {
         _move_box = get_box_for_y( e.y );
         if( _move_box == null ) {
           select_row( -1 );
           selected( _select_index );
-        } else {
+        } else if( !_search_mode ) {
           _move_state = MoveState.PRESS;
           _move_box.get_allocation( out _move_alloc );
           _move_offset = e.y - _move_alloc.y;
@@ -182,9 +186,9 @@ public class EnableList : Box {
   protected int get_index_for_y( double y ) {
     var index = -1;
     var i     = 0;
-    _list_box.get_children().foreach((b) => {
+    _list_box.get_children().foreach((r) => {
       Allocation alloc;
-      b.get_allocation( out alloc );
+      r.get_allocation( out alloc );
       if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
         index = i;
       }
@@ -195,11 +199,12 @@ public class EnableList : Box {
 
   protected Box? get_box_for_y( double y ) {
     Box box = null;
-    _list_box.get_children().foreach((b) => {
+    _list_box.get_children().foreach((rev) => {
       Allocation alloc;
-      b.get_allocation( out alloc );
+      var r = (Revealer)rev;
+      r.get_allocation( out alloc );
       if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
-        box = (Box)b;
+        box = (Box)r.get_child();
       }
     });
     return( box );
@@ -251,7 +256,8 @@ public class EnableList : Box {
   /* Sets the label of the currently selected item to the given value */
   public void set_label( string label ) {
 
-    var box = (Box)_list_box.get_children().nth_data( _select_index );
+    var rev = (Revealer)_list_box.get_children().nth_data( _select_index );
+    var box = (Box)rev.get_child();
     var lbl = (Label)box.get_children().nth_data( 1 );
     lbl.label = label;
 
@@ -262,12 +268,14 @@ public class EnableList : Box {
 
     /* Deselect the previous index */
     if( _select_index != -1 ) {
-      var last_box = _list_box.get_children().nth_data( _select_index );
+      var last_rev = (Revealer)_list_box.get_children().nth_data( _select_index );
+      var last_box = (Box)last_rev.get_child();
       last_box.get_style_context().remove_class( "enablelist-selected" );
     }
 
     if( index != -1 ) {
-      var box = _list_box.get_children().nth_data( index );
+      var rev = (Revealer)_list_box.get_children().nth_data( index );
+      var box = (Box)rev.get_child();
       box.get_style_context().add_class( "enablelist-selected" );
     }
 
@@ -283,18 +291,23 @@ public class EnableList : Box {
    Make sure that if this method is overridden that th extended class
    calls this method.
   */
-  public void add_row( bool enable, string label ) {
+  public void add_row( bool enable, string label, bool show ) {
     
     var box = new Box( Orientation.HORIZONTAL, 10 );
     box.margin_start = 5;
     box.margin_end   = 5;
     box.get_style_context().add_class( "enablelist-padding" );
 
+    var rev = new Revealer();
+    rev.transition_duration = 0;
+    rev.reveal_child = show;
+    rev.add( box );
+
     if( enables_exist() ) {
       var cb = new CheckButton();
       cb.active = enable;
       cb.toggled.connect(() => {
-        enable_changed( _list_box.get_children().index( box ) );
+        enable_changed( _list_box.get_children().index( rev ) );
       });
       box.pack_start( cb,  false, false, 0 );
     }
@@ -303,9 +316,15 @@ public class EnableList : Box {
     lbl.ellipsize = ellipsize_mode();
     box.pack_start( lbl, false, true,  0 );
 
-    _list_box.pack_start( box, false, false, 0 );
+    _list_box.pack_start( rev, false, false, 0 );
     _list_box.show_all();
 
+  }
+
+  /* Make the row at the given index show or hide itself */
+  public void set_row_visibility( int index, bool show ) {
+    var r = (Revealer)_list_box.get_children().nth_data( index );
+    r.reveal_child = show;
   }
 
   public virtual bool enables_exist() {
@@ -320,12 +339,18 @@ public class EnableList : Box {
     return( true );
   }
 
+  public void set_search_mode( bool mode ) {
+    _search_mode = mode;
+    _add_btn.set_sensitive( !_search_mode );
+    _del_btn.set_sensitive( !_search_mode && (_select_index != -1) );
+  }
+
   public virtual void action_add() {
     var label = get_label();
     if( label != null ) {
       if( added( label ) ) {
         var row = (int)_list_box.get_children().length();
-        add_row( true, label );
+        add_row( true, label, true );
         select_row( row );
         selected( row );
       }

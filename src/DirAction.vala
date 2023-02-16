@@ -40,6 +40,11 @@ public class DirAction {
       return( _conditions );
     }
   }
+  public FileActions actions {
+    get {
+      return( _actions );
+    }
+  }
 
   public bool   err     { get; set; default = false; }
   public string errmsg  { get; set; default = ""; }
@@ -152,6 +157,7 @@ public class DirAction {
 
   public void do_search( SearchCriteria criteria ) {
     show = criteria.matches_rule( this );
+    stdout.printf( "Matching aginst rule %s, show: %s\n", name, show.to_string() );
   }
 
   // ---------------------------------------------------------

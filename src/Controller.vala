@@ -2,10 +2,11 @@ using Gtk;
 
 public class Controller {
 
-  private MainWindow _win;
-  private DirList    _data;
-  private bool       _search_mode;
-  private string     _search_text;
+  private MainWindow     _win;
+  private DirList        _data;
+  private SearchCriteria _search;
+  private bool           _search_mode;
+  private string         _search_text;
 
   /* Default constructor */
   public Controller( MainWindow win, DirList data ) {
@@ -69,7 +70,7 @@ public class Controller {
 
     for( int i=0; i<_data.size(); i++ ) {
       var dir = _data.get_directory( i );
-      _win.dir_list.add_row( dir.enabled, dir.dirname );
+      _win.dir_list.add_row( dir.enabled, dir.dirname, dir.show_rules() );
     }
 
     /* Make sure that the welcome1 page is shown */
@@ -83,7 +84,7 @@ public class Controller {
 
     for( int j=0; j<dir.num_rules(); j++ ) {
       var rule = dir.get_rule( j );
-      _win.rule_list.add_row( rule.enabled, rule.name );
+      _win.rule_list.add_row( rule.enabled, rule.name, rule.show );
     }
 
     /* Make sure that the welcome2 page is shown */
@@ -100,7 +101,7 @@ public class Controller {
       for( int j=0; j<dir.num_rules(); j++ ) {
         var rule = dir.get_rule( j );
         if( rule.pinned ) {
-          _win.pin_list.add_row( false, rule.name );
+          _win.pin_list.add_row( false, rule.name, true );
         }
       }
     }
@@ -313,13 +314,46 @@ public class Controller {
 
     _search_mode = !_search_mode;
 
-    stdout.printf( "CONTROLLER, search_mode: %s\n", _search_mode.to_string() );
+    // Update the UI based on the search results
+    search_update_ui();
 
   }
 
   private void search_changed( string text ) {
 
-    _search_text = text;
+    // Parse the search criteri string
+    var criteria = new SearchCriteria();
+    criteria.parse_search_text( text );
+    criteria.print();
+
+    // Perform the search on the model
+    _data.clear_search();
+    _data.do_search( criteria );
+
+    // Update the UI based on the search results
+    search_update_ui();
+
+  }
+
+  private void search_update_ui() {
+
+    // Set the search mode
+    _win.dir_list.set_search_mode( _search_mode );
+    _win.rule_list.set_search_mode( _search_mode );
+
+    // Update the UI to match the search state
+    for( int i=0; i<_data.size(); i++ ) {
+      var dir = _data.get_directory( i );
+      _win.dir_list.set_row_visibility( i, dir.show_rules() );
+    }
+
+    // Update the current directory rule list
+    if( _data.current_dir != null ) {
+      for( int i=0; i<_data.current_dir.num_rules(); i++ ) {
+        var rule = _data.current_dir.get_rule( i );
+        _win.rule_list.set_row_visibility( i, rule.show );
+      }
+    }
 
   }
 

@@ -148,11 +148,7 @@ public class BoxList : Box {
     box.pack_end(   close,  false, false, 0 );
     box.pack_end(   result, false, false, 0 );
 
-    var revealer = new Revealer();
-    revealer.transition_duration = 0;
-    revealer.add( box );
-
-    _list_box.pack_start( revealer, false, true, 0 ); 
+    _list_box.pack_start( box, false, true, 0 ); 
     _list_box.show_all();
 
     mb.set_current_item( row_type );
@@ -189,11 +185,7 @@ public class BoxList : Box {
     box.pack_start( ibox, true, true,  0 );
     box.pack_end(   cbox, false, false, 0 );
 
-    var revealer = new Revealer();
-    revealer.transition_duration = 0;
-    revealer.add( box );
-
-    _list_box.pack_start( revealer, false, true, 0 ); 
+    _list_box.pack_start( box, false, true, 0 ); 
 
     set_row_content( get_index_for_box( box ), (int)ActionConditionType.COND_GROUP, ibox );
     show_all();
@@ -203,9 +195,8 @@ public class BoxList : Box {
   private int get_index_for_box( Box box ) {
     var index = -1;
     var i     = 0;
-    _list_box.get_children().foreach((r) => {
-      var rev = (Revealer)r;
-      if( (Box)rev.get_child() == box ) {
+    _list_box.get_children().foreach((b) => {
+      if( (Box)b == box ) {
         index = i;
       }
       i++;
@@ -216,10 +207,8 @@ public class BoxList : Box {
   private int get_index_for_y( double y ) {
     var index = -1;
     var i     = 0;
-    _list_box.get_children().foreach((r) => {
+    _list_box.get_children().foreach((b) => {
       Allocation alloc;
-      var rev = (Revealer)r;
-      var b = (Box)rev.get_child();
       b.get_allocation( out alloc );
       if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
         index = i;
@@ -231,10 +220,8 @@ public class BoxList : Box {
   
   private Box get_box_for_y( double y ) {
     Box box = null;
-    _list_box.get_children().foreach((r) => {
+    _list_box.get_children().foreach((b) => {
       Allocation alloc;
-      var rev = (Revealer)r;
-      var b   = (Box)rev.get_child();
       b.get_allocation( out alloc );
       if( (alloc.y <= y) && (y < (alloc.y + alloc.height + 10)) ) {
         box = (Box)b;
@@ -244,8 +231,7 @@ public class BoxList : Box {
   }
 
   public void set_test_result( int index, TestResult result ) {
-    var row  = (Revealer)_list_box.get_children().nth_data( index );
-    var box  = (Box)row.get_child();
+    var box  = (Box)_list_box.get_children().nth_data( index );
     var rslt = (Image)box.get_children().nth_data( 2 );
     rslt.icon_name    = result.pass ? "emblem-default" : "dialog-error";
     rslt.tooltip_text = result.result;
@@ -258,12 +244,6 @@ public class BoxList : Box {
 
   protected virtual void move_row( int from, int to ) {
     assert( false );
-  }
-
-  /* Make the row at the given index show or hide itself */
-  public void set_row_visibility( int index, bool show ) {
-    var r = (Revealer)_list_box.get_children().nth_data( index );
-    r.reveal_child = show;
   }
 
   /* Removes all elements from this box list in the UI */

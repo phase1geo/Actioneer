@@ -265,6 +265,10 @@ public class TextToken {
     }
   }
 
+  public bool matches( string value ) {
+    return( text.contains( value ) || token_type.label().contains( value ) );
+  }
+
   /* Saves this instance in XML format */
   public Xml.Node* save() {
     Xml.Node* node = new Xml.Node( null, xml_node );
@@ -356,6 +360,16 @@ public class TokenText {
       str += token.generate_text( file );
     });
     return( insert_unique_ids( file, str ) );
+  }
+
+  public bool matches( string value ) {
+    for( int i=0; i<_tokens.length(); i++ ) {
+      var token = _tokens.nth_data( i );
+      if( token.matches( value ) ) {
+        return( true );
+      }
+    }
+    return( false );
   }
 
   /* Saves this instance in XML format */

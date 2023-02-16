@@ -35,8 +35,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   private PinList         _pin_list;
   private Stack           _list_stack;
   private Button          _server_btn;
-  private ToggleButton    _search_btn;
-  private Popover         _search_box;
+  private MenuButton      _search_btn;
 
   private const GLib.ActionEntry[] action_entries = {
     { "action_add_dir",   action_add_dir },
@@ -44,6 +43,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     { "action_run",       action_run },
     { "action_quit",      action_quit },
     { "action_prefs",     action_prefs },
+    { "action_search",    action_search },
     { "action_shortcuts", action_shortcuts }
   };
 
@@ -188,6 +188,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     app.set_accels_for_action( "win.action_run",       { "<Control>r" } );
     app.set_accels_for_action( "win.action_quit",      { "<Control>q" } );
     app.set_accels_for_action( "win.action_prefs",     { "<Control>comma" } );
+    app.set_accels_for_action( "win.action_search",    { "<Control>f" } );
     app.set_accels_for_action( "win.action_shortcuts", { "<Control>question" } );
 
   }
@@ -227,21 +228,27 @@ public class MainWindow : Hdy.ApplicationWindow {
     _server_btn.clicked.connect( action_show_servers );
     _right_header.pack_end( _server_btn );
 
-    _search_btn = new ToggleButton();
+    _search_btn = new MenuButton();
     _search_btn.image = new Image.from_icon_name( "system-search-symbolic", IconSize.LARGE_TOOLBAR );
-    _search_btn.set_tooltip_text( _( "Search" ) );
+    _search_btn.set_tooltip_markup( Utils.tooltip_with_accel( _( "Search" ), "<Control>f" ) );
     _search_btn.toggled.connect( action_search );
     _right_header.pack_end( _search_btn );
 
     /* Create the search UI */
     var search_entry = new SearchEntry();
+    search_entry.width_chars = 50;
     search_entry.search_changed.connect(() => {
       search_changed( search_entry.text );
     });
-    _search_box = new Popover( _search_btn );
-    _search_box.add( search_entry );
-    Utils.hide_popover( _search_box );
-    _search_box.show_all();
+
+    var search_box = new Box( Orientation.VERTICAL, 0 );
+    search_box.pack_start( search_entry, false, true, 0 );
+    search_box.show_all();
+
+    var search_po = new Popover( null );
+    search_po.add( search_box );
+
+    _search_btn.popover = search_po;
 
   }
 
@@ -312,15 +319,7 @@ public class MainWindow : Hdy.ApplicationWindow {
   }
 
   private void action_search() {
-
-    if( _search_btn.active ) {
-      Utils.show_popover( _search_box );
-    } else {
-      Utils.hide_popover( _search_box );
-    }
-
     search_toggled();
-
   }
 
   /* Called when the user uses the Control-q keyboard shortcut */

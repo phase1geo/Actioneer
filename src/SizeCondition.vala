@@ -155,6 +155,10 @@ public class SizeCondition {
     return( match_type.matches( size.get_size( act_bytes ), size.get_size( exp_bytes ) ) );
   }
 
+  public bool matches( string value ) {
+    return( (num.to_string() == value) || (size.label() == value) );
+  }
+
   public void save( Xml.Node* node ) {
     node->set_prop( "match_type", match_type.to_string() );
     node->set_prop( "num", num.to_string() );

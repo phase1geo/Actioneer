@@ -350,6 +350,30 @@ public class ActionCondition {
     return( false );
   }
 
+  public bool matches( ActionConditionType? type, string value ) {
+    if( _type.is_kind() ) {
+      return( _kind.matches( value ) );
+    } else if( _type.is_text() ) {
+      return( _text.matches( value ) );
+    } else if( _type.is_date() ) {
+      return( _date.matches( value ) );
+    } else if( _type.is_size() ) {
+      return( _size.matches( value ) );
+    } else if( _type.is_int() ) {
+      return( _num.matches( value ) );
+    } else if( _type.is_tags() ) {
+      return( _tags.matches( value ) );
+    } else if( _type.is_cond_group() ) {
+      for( int i=0; i<_group.size(); i++ ) {
+        var cond = _group.get_condition( i );
+        if( (type == null) || (cond.cond_type == type) ) {
+          return( cond.matches( type, value ) );
+        }
+      }
+    }
+    return( false );
+  }
+
   /* Saves this condition in XML format */
   public Xml.Node* save() {
 
