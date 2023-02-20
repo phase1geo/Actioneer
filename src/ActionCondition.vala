@@ -118,6 +118,16 @@ public enum ActionConditionType {
     }
   }
 
+  public static ActionConditionType match_to_label( string val ) {
+    for( int i=0; i<NUM; i++ ) {
+      var type = (ActionConditionType)i;
+      if( type.label().down() == val.down() ) {
+        return( type );
+      }
+    }
+    return( NUM );
+  }
+
   public bool is_kind() {
     return( this == KIND );
   }

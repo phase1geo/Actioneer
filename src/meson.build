@@ -16,6 +16,7 @@ sources += files(
     'KindCondition.vala',
     'MainWindow.vala',
     'SearchCriteria.vala',
+    'SearchHistory.vala',
     'Server.vala',
     'Servers.vala',
     'SizeCondition.vala',

@@ -8,7 +8,8 @@ sources += files(
     'PinList.vala',
     'RuleForm.vala',
     'RuleList.vala',
-    'RuleStack.vala'
+    'RuleStack.vala',
+    'SearchPanel.vala'
 )
 
 subdir('actions')

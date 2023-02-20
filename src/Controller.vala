@@ -2,23 +2,23 @@ using Gtk;
 
 public class Controller {
 
-  private MainWindow     _win;
-  private DirList        _data;
-  private SearchCriteria _search;
-  private bool           _search_mode;
-  private string         _search_text;
+  private MainWindow    _win;
+  private DirList       _data;
+  private SearchHistory _history;
+  private bool          _search_mode;
 
   /* Default constructor */
-  public Controller( MainWindow win, DirList data ) {
+  public Controller( MainWindow win, DirList data, SearchHistory history ) {
 
     _win         = win;
     _data        = data;
+    _history     = history;
     _search_mode = false;
-    _search_text = "";
 
     /* Connect to the main window signals */
     win.background_toggled.connect( background_enable_changed );
-    win.search_toggled.connect( search_toggled );
+    win.search_shown.connect( search_shown );
+    win.search_closed.connect( search_closed );
     win.search_changed.connect( search_changed );
 
     /* Connect to the directory list signals */
@@ -302,30 +302,65 @@ public class Controller {
   }
 
   // =========================================================
+  // PIN LIST
+  // =========================================================
+
+  private void pin_removed( int index ) {
+  }
+
+  private void pin_moved( int from, int to ) {
+  }
+
+  private void pin_selected( int index ) {
+  }
+  
+  private void pin_execute( int index, string path ) {
+  }
+
+  // =========================================================
   // SEARCH
   // =========================================================
 
-  private void search_toggled() {
+  private void search_shown() {
 
-    /* If we are in search mode, display all directories and rules */
-    if( _search_mode ) {
-      _data.clear_search();
-    }
+    _search_mode = true;
 
-    _search_mode = !_search_mode;
+    /* Update the search interface */
+    _win.search.set_search_history( _history );
+    _win.search.start_search();
 
-    // Update the UI based on the search results
+    /* Update the UI */
     search_update_ui();
 
   }
 
-  private void search_changed( string text ) {
+  /* TBD - Add the given text to the search history */
+  private void search_closed( string text ) {
+
+    _search_mode = false;
+
+    /* Add the last search item to the history */
+    _history.add_item( text );
+
+    /* If we are in search mode, display all directories and rules */
+    _data.clear_search();
+
+    /* Update the UI based on the search results */
+    search_update_ui();
+
+  }
+
+  private void search_changed( string text, int curpos ) {
 
     // Parse the search criteri string
     var criteria = new SearchCriteria();
     criteria.parse_search_text( text );
     criteria.print();
 
+    var completers = new SList<SearchCompletion>();
+    criteria.get_completers( curpos, ref completers );
+    _win.search.set_completers( completers );
+    
     // Perform the search on the model
     _data.clear_search();
     _data.do_search( criteria );
@@ -358,31 +393,10 @@ public class Controller {
   }
 
   // =========================================================
-  // PIN LIST
-  // =========================================================
-
-  private void pin_removed( int index ) {
-  }
-
-  private void pin_moved( int from, int to ) {
-  }
-
-  private void pin_selected( int index ) {
-  }
-  
-  private void pin_execute( int index, string path ) {
-  }
-
-  // =========================================================
   // RULE FORM
   // =========================================================
 
   private void form_save( DirAction rule ) {
-
-    /*
-    TreeIter it;
-    _win.rule_list.view.get_selection().get_selected( null, out it );
-    */
 
     /* Update the rule list item */
     _win.rule_list.set_label( rule.name );

@@ -111,7 +111,7 @@ public class EnableList : Box {
         if( _move_box == null ) {
           select_row( -1 );
           selected( _select_index );
-        } else if( !_search_mode ) {
+        } else {
           _move_state = MoveState.PRESS;
           _move_box.get_allocation( out _move_alloc );
           _move_offset = e.y - _move_alloc.y;
@@ -142,7 +142,7 @@ public class EnableList : Box {
 
     ebox.motion_notify_event.connect((e) => {
       var index = get_index_for_y( e.y );
-      if( _move_state != MoveState.NONE ) {
+      if( (_move_state != MoveState.NONE) && !_search_mode ) {
         if( _move_state == MoveState.PRESS ) {
           _list_box.pack_start( _move_blank, false, true, 0 );
           _list_box.reorder_child( _move_blank, _move_last_index );

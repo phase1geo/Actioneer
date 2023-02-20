@@ -121,6 +121,16 @@ public enum FileActionType {
     }
   }
 
+  public static FileActionType match_to_label( string val ) {
+    for( int i=0; i<NUM; i++ ) {
+      var type = (FileActionType)i;
+      if( type.label().down() == val.down() ) {
+        return( type );
+      }
+    }
+    return( NUM );
+  }
+
   public bool add_separator_after() {
     return( (this == ALIAS) ||
             (this == UPLOAD) ||
