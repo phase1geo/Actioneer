@@ -24,6 +24,8 @@ public class SearchPanel : Revealer {
     _entry.completion = new EntryCompletion();
     _entry.completion.set_text_column( 0 );
     _entry.completion.popup_completion = true;
+    _entry.completion.popup_single_match = true;
+    _entry.completion.minimum_key_length = 1;
     _entry.completion.set_match_func((c, k, it) => {
       return( true );
     });
@@ -103,11 +105,9 @@ public class SearchPanel : Revealer {
 
     _completers = new SList<SearchCompletion>();
 
-    stdout.printf( "Setting completers\n" );
     completers.foreach((completer) => {
       TreeIter it;
       store.append( out it );
-      stdout.printf( "  %s\n", completer.get_label() );
       store.set( it, 0, completer.get_label(), 1, index++ );
       _completers.append( completer );
     });
@@ -122,8 +122,6 @@ public class SearchPanel : Revealer {
 
     // Get the index of the item into the _completers list
     model.get( it, 1, &index );
-
-    stdout.printf( "index: %d, completers: %u\n", index, _completers.length() );
 
     // Perform the text substitution
     if( index != -1 ) {
