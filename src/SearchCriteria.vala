@@ -160,7 +160,6 @@ public class SearchOpValue : SearchOp {
     return( matches( rule ) );
   }
   public override bool get_completers( int curpos, ref SList<SearchCompletion> completers ) {
-    stdout.printf( "get_completers, VALUE, curpos: %d, spos: %d, end: %d\n", curpos, spos, (spos + _val.char_count()) );
     if( (spos <= curpos) && (curpos <= (spos + _val.char_count())) ) {
       get_matching_completers( _val, _quoted, ref completers );
       return( true );

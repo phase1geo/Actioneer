@@ -157,7 +157,6 @@ public class DirAction {
 
   public void do_search( SearchCriteria criteria ) {
     show = criteria.matches_rule( this );
-    stdout.printf( "Matching aginst rule %s, show: %s\n", name, show.to_string() );
   }
 
   // ---------------------------------------------------------

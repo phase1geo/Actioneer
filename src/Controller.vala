@@ -355,7 +355,7 @@ public class Controller {
     // Parse the search criteri string
     var criteria = new SearchCriteria();
     criteria.parse_search_text( text );
-    criteria.print();
+    // criteria.print();
 
     var completers = new SList<SearchCompletion>();
     criteria.get_completers( curpos, ref completers );
