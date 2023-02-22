@@ -43,6 +43,38 @@ public class SearchPanel : Revealer {
       return( false );
     });
 
+    var info_btn = new MenuButton();
+    info_btn.image = new Image.from_icon_name( "dialog-question-symbolic", IconSize.SMALL_TOOLBAR );
+    info_btn.relief = ReliefStyle.NONE;
+    info_btn.set_tooltip_text( _( "Advanced Search Help" ) );
+    info_btn.popover = new Popover( info_btn );
+    info_btn.popover.border_width = 10;
+
+    var info = new Label(
+      "<b><u>Advanced search syntax:</u></b>\n\n" +
+      "- All searching is case-insensitive\n" +
+      "- Use <b><tt>:</tt></b> within a search term to specify a condition/action label (left) and an associated value (right)\n" +
+      "- Add double-quotes (<b><tt>\"</tt></b>) around search terms containing spaces\n" +
+      "- Add parenthesis around search terms to group them into a single search term\n" +
+      "- Use <b><tt>&amp;</tt></b> between search terms to require both to be true\n" +
+      "- Use <b><tt>|</tt></b> between search terms to require one or both to be true\n" +
+      "- Use <b><tt>!</tt></b> before a search term to require the term to be false\n" +
+      "- Whitespace is ignored unless used within double-quotes\n\n" +
+      "<b><u>Examples:</u></b>\n\n" +
+      "- Search for any rules that include \"Example Rule\" in their name\n" +
+      "    <tt>\"Example Rule\"</tt>\n" +
+      "- Searches any rules containing the Upload file action using a server called \"Test Server\":\n" +
+      "    <tt>Upload:\"Test Server\"</tt>\n" +
+      "- Search for any rules with Example and contains either an Extension condition of jpg or jpeg:\n" +
+      "    <tt>Example &amp; (Extension:jpg | Extension:jpeg)</tt>\n"
+    );
+    info.use_markup = true;
+    info.wrap = true;
+    info.wrap_mode = Pango.WrapMode.WORD;
+    info.max_width_chars = 80;
+    info.show_all();
+    info_btn.popover.add( info );
+
     _history_btn = new MenuButton();
     _history_btn.image = new Image.from_icon_name( "go-down-symbolic", IconSize.SMALL_TOOLBAR );
     _history_btn.popup = _history;
@@ -52,6 +84,7 @@ public class SearchPanel : Revealer {
     box.border_width = 10;
     box.pack_start( _entry,       true,  true,  0 );
     box.pack_end(   _history_btn, false, false, 0 );
+    box.pack_end(   info_btn,     false, false, 0 );
     box.show_all();
 
     add( box );
