@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.phase1geo.actioneer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-12 23:36-0600\n"
+"POT-Creation-Date: 2023-02-22 00:19-0600\n"
 "PO-Revision-Date: 2022-01-19 21:00+0100\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -104,25 +104,25 @@ msgstr ""
 msgid "Condition Group"
 msgstr "Condizioni"
 
-#: src/Application.vala:128
+#: src/Application.vala:133
 msgid "Display version number"
 msgstr "Visualizza il numero di versione"
 
-#: src/Application.vala:129
+#: src/Application.vala:134
 msgid "Runs Actioneer rules"
 msgstr "Esegue le regole di Actioneer"
 
-#: src/Application.vala:138
+#: src/Application.vala:143
 #, c-format
 msgid "ERROR: %s\n"
 msgstr "ERRORE: %s\n"
 
-#: src/Application.vala:139
+#: src/Application.vala:144
 #, c-format
 msgid "Run '%s --help' to see valid options\n"
 msgstr "Esegui '%s --help' per vedere le opzioni valide\n"
 
-#: src/Controller.vala:205 src/FileAction.vala:49
+#: src/Controller.vala:212 src/FileAction.vala:49
 msgid "Copy"
 msgstr "Copia"
 
@@ -212,7 +212,7 @@ msgstr ""
 msgid "compressed file"
 msgstr ""
 
-#: src/FileAction.vala:79
+#: src/FileAction.vala:79 src/KindCondition.vala:22
 #, fuzzy
 msgid "file"
 msgstr "file come"
@@ -244,9 +244,13 @@ msgstr ""
 msgid "with application"
 msgstr ""
 
-#: src/FileAction.vala:220 src/MainWindow.vala:91
+#: src/FileAction.vala:236 src/MainWindow.vala:103
 msgid "Actioneer"
 msgstr "Actioneer"
+
+#: src/FileAction.vala:496 src/widgets/menubuttons/OpenOptMenu.vala:41
+msgid "Default"
+msgstr ""
 
 #: src/Imager.vala:74
 msgid "JPG"
@@ -260,26 +264,47 @@ msgstr ""
 msgid "BMP"
 msgstr ""
 
-#: src/MainWindow.vala:164
+#: src/KindCondition.vala:23
+#, fuzzy
+msgid "folder"
+msgstr "alla cartella"
+
+#: src/KindCondition.vala:24
+msgid "alias"
+msgstr ""
+
+#: src/KindCondition.vala:25
+msgid "hidden"
+msgstr ""
+
+#: src/KindCondition.vala:26
+msgid "any"
+msgstr ""
+
+#: src/MainWindow.vala:186
 #, c-format
 msgid "Unable to load background color: %s"
 msgstr ""
 
-#: src/MainWindow.vala:195
+#: src/MainWindow.vala:218
 msgid "Background processor enable"
 msgstr ""
 
-#: src/MainWindow.vala:206
+#: src/MainWindow.vala:229
 #, fuzzy
 msgid "Run Rules"
 msgstr "Regole"
 
-#: src/MainWindow.vala:213
+#: src/MainWindow.vala:236
 msgid "Show Pinned Rules"
 msgstr ""
 
-#: src/MainWindow.vala:222
+#: src/MainWindow.vala:245
 msgid "Manage servers"
+msgstr ""
+
+#: src/MainWindow.vala:250
+msgid "Search"
 msgstr ""
 
 #: src/SizeCondition.vala:92
@@ -515,10 +540,6 @@ msgstr ""
 msgid "Unable to connect to server"
 msgstr ""
 
-#: src/widgets/menubuttons/OpenOptMenu.vala:41
-msgid "Default"
-msgstr ""
-
 #: src/widgets/menubuttons/ServerOptMenu.vala:44
 #: src/widgets/menubuttons/.ServerOptMenu.vala.swp:20
 #, fuzzy
@@ -645,6 +666,99 @@ msgstr "Benvenuto in Actioneer"
 msgid ""
 "Drag and drop files onto a pinned rule to the left to execute that rule's "
 "conditions and actions"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:49
+msgid "Advanced Search Help"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:54
+msgid ""
+"<b><u>Advanced search syntax:</u></b>\n"
+"\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:55
+msgid "- All searching is case-insensitive\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:56
+msgid ""
+"- Use <b><tt>:</tt></b> within a search term to specify a condition/action "
+"label (left) and an associated value (right)\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:57
+msgid ""
+"- Add double-quotes (<b><tt>\"</tt></b>) around search terms containing "
+"spaces\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:58
+msgid ""
+"- Add parenthesis around search terms to group them into a single search "
+"term\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:59
+msgid ""
+"- Use <b><tt>&amp;</tt></b> between search terms to require both to be true\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:60
+msgid ""
+"- Use <b><tt>|</tt></b> between search terms to require one or both to be "
+"true\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:61
+msgid ""
+"- Use <b><tt>!</tt></b> before a search term to require the term to be "
+"false\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:62
+msgid ""
+"- Whitespace is ignored unless used within double-quotes\n"
+"\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:63
+msgid ""
+"<b><u>Examples:</u></b>\n"
+"\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:64
+msgid "- Search for any rules that include \"Example Rule\" in their name\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:65
+msgid "    <tt>\"Example Rule\"</tt>\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:66
+msgid ""
+"- Searches any rules containing the Upload file action using a server called "
+"\"Test Server\":\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:67
+msgid "    <tt>Upload:\"Test Server\"</tt>\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:68
+msgid ""
+"- Search for any rules with Example and contains either an Extension "
+"condition of jpg or jpeg:\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:69
+msgid "    <tt>Example &amp; (Extension:jpg | Extension:jpeg)</tt>\n"
+msgstr ""
+
+#: src/widgets/SearchPanel.vala:81
+msgid "Search History"
 msgstr ""
 
 #~ msgid "Create rules in app"

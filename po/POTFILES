@@ -4,6 +4,7 @@ src/Application.vala
 src/Controller.vala
 src/FileAction.vala
 src/Imager.vala
+src/KindCondition.vala
 src/MainWindow.vala
 src/SizeCondition.vala
 src/TokenText.vala
@@ -25,4 +26,6 @@ src/widgets/PinList.vala
 src/widgets/RuleForm.vala
 src/widgets/RuleList.vala
 src/widgets/RuleStack.vala
+src/widgets/SearchPanel.vala
+src/widgets/.SearchPanel.vala.swp
 src/widgets/tokenbox/TokenBox.vala
