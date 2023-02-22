@@ -51,22 +51,22 @@ public class SearchPanel : Revealer {
     info_btn.popover.border_width = 10;
 
     var info = new Label(
-      "<b><u>Advanced search syntax:</u></b>\n\n" +
-      "- All searching is case-insensitive\n" +
-      "- Use <b><tt>:</tt></b> within a search term to specify a condition/action label (left) and an associated value (right)\n" +
-      "- Add double-quotes (<b><tt>\"</tt></b>) around search terms containing spaces\n" +
-      "- Add parenthesis around search terms to group them into a single search term\n" +
-      "- Use <b><tt>&amp;</tt></b> between search terms to require both to be true\n" +
-      "- Use <b><tt>|</tt></b> between search terms to require one or both to be true\n" +
-      "- Use <b><tt>!</tt></b> before a search term to require the term to be false\n" +
-      "- Whitespace is ignored unless used within double-quotes\n\n" +
-      "<b><u>Examples:</u></b>\n\n" +
-      "- Search for any rules that include \"Example Rule\" in their name\n" +
-      "    <tt>\"Example Rule\"</tt>\n" +
-      "- Searches any rules containing the Upload file action using a server called \"Test Server\":\n" +
-      "    <tt>Upload:\"Test Server\"</tt>\n" +
-      "- Search for any rules with Example and contains either an Extension condition of jpg or jpeg:\n" +
-      "    <tt>Example &amp; (Extension:jpg | Extension:jpeg)</tt>\n"
+      _( "<b><u>Advanced search syntax:</u></b>\n\n" ) +
+      _( "- All searching is case-insensitive\n" ) +
+      _( "- Use <b><tt>:</tt></b> within a search term to specify a condition/action label (left) and an associated value (right)\n" ) +
+      _( "- Add double-quotes (<b><tt>\"</tt></b>) around search terms containing spaces\n" ) +
+      _( "- Add parenthesis around search terms to group them into a single search term\n" ) +
+      _( "- Use <b><tt>&amp;</tt></b> between search terms to require both to be true\n" ) +
+      _( "- Use <b><tt>|</tt></b> between search terms to require one or both to be true\n" ) +
+      _( "- Use <b><tt>!</tt></b> before a search term to require the term to be false\n" ) +
+      _( "- Whitespace is ignored unless used within double-quotes\n\n" ) +
+      _( "<b><u>Examples:</u></b>\n\n" ) +
+      _( "- Search for any rules that include \"Example Rule\" in their name\n" ) +
+      _( "    <tt>\"Example Rule\"</tt>\n" ) +
+      _( "- Searches any rules containing the Upload file action using a server called \"Test Server\":\n" ) +
+      _( "    <tt>Upload:\"Test Server\"</tt>\n" ) +
+      _( "- Search for any rules with Example and contains either an Extension condition of jpg or jpeg:\n" ) +
+      _( "    <tt>Example &amp; (Extension:jpg | Extension:jpeg)</tt>\n" )
     );
     info.use_markup = true;
     info.wrap = true;
