@@ -37,6 +37,8 @@ public class SearchPanel : Revealer {
     _entry.key_press_event.connect((e) => {
       if( e.keyval == Key.Escape ) {
         end_search();
+      } else if( e.keyval == Key.Tab ) {
+        insert_first_match();
       }
       return( false );
     });
@@ -132,6 +134,14 @@ public class SearchPanel : Revealer {
 
     return( true );
 
+  }
+
+  private void insert_first_match() {
+    TreeIter iter = {};
+    var model = _entry.completion.get_model();
+    if( (model != null) && model.get_iter_first( out iter ) ) {
+      completion_match_selected( model, iter );
+    }
   }
 
 }
