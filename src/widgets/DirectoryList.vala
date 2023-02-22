@@ -52,7 +52,7 @@ public class DirectoryList : EnableList {
       foreach (var uri in data.get_uris()) {
         var fname = Filename.from_uri( uri );
         if( added( fname ) ) {
-          add_row( true, fname );
+          add_row( true, fname, true );
         }
       }
     }

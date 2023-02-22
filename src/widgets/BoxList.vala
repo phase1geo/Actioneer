@@ -196,7 +196,7 @@ public class BoxList : Box {
     var index = -1;
     var i     = 0;
     _list_box.get_children().foreach((b) => {
-      if( b == box ) {
+      if( (Box)b == box ) {
         index = i;
       }
       i++;
@@ -231,8 +231,8 @@ public class BoxList : Box {
   }
 
   public void set_test_result( int index, TestResult result ) {
-    var row  = (Box)_list_box.get_children().nth_data( index );
-    var rslt = (Image)row.get_children().nth_data( 2 );
+    var box  = (Box)_list_box.get_children().nth_data( index );
+    var rslt = (Image)box.get_children().nth_data( 2 );
     rslt.icon_name    = result.pass ? "emblem-default" : "dialog-error";
     rslt.tooltip_text = result.result;
     rslt.opacity      = 1;

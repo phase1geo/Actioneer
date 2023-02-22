@@ -75,6 +75,28 @@ public class DirList {
     return( false );
   }
 
+  // --------------------------------------------------------
+  // SEARCH
+  // --------------------------------------------------------
+
+  /* Clears the current search items */
+  public void clear_search() {
+    _dir_actions.foreach((action) => {
+      action.clear_search();
+    });
+  }
+
+  /* Performs the search given the search criteria */
+  public void do_search( SearchCriteria criteria ) {
+    _dir_actions.foreach((action) => {
+      action.do_search( criteria );
+    });
+  }
+  
+  // --------------------------------------------------------
+  // SAVE/LOAD
+  // --------------------------------------------------------
+
   /* Saves the rules.xml file to the filesystem */
   public bool save() {
 

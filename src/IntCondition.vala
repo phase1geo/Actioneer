@@ -87,6 +87,10 @@ public class IntCondition {
     return( match_type.matches( act, num ) );
   }
 
+  public bool matches( string value ) {
+    return( num.to_string() == value );
+  }
+
   public void save( Xml.Node* node ) {
     node->set_prop( "match_type", match_type.to_string() );
     node->set_prop( "num", num.to_string() );

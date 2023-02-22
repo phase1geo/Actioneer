@@ -34,6 +34,7 @@ public class Actioneer : Granite.Application {
 
   public  static DirList       dirlist;
   public  static Servers       servers;
+  public  static SearchHistory history;
   public         Controller    controller;
   public  static MainWindow    appwin { get; private set; }
   public  static GLib.Settings settings;
@@ -72,12 +73,16 @@ public class Actioneer : Granite.Application {
     servers = new Servers();
     servers.load();
 
+    /* Search history */
+    history = new SearchHistory();
+    history.load();
+
     /* List of directories and their rules */
     dirlist = new DirList();
     dirlist.load();
 
     /* Create the data controller */
-    controller = new Controller( appwin, dirlist );
+    controller = new Controller( appwin, dirlist, history );
 
     /* Handle any changes to the position of the window */
     appwin.configure_event.connect(() => {

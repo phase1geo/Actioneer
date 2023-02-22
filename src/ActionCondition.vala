@@ -88,7 +88,7 @@ public enum ActionConditionType {
     }
   }
 
-  public static ActionConditionType parse( string val ) {
+  public static ActionConditionType parse( string val, bool assert_if_not_found = true ) {
     switch( val ) {
       case "kind"              :  return( KIND );
       case "name"              :  return( NAME );
@@ -108,8 +108,24 @@ public enum ActionConditionType {
       case "img-width"         :  return( IMG_WIDTH );
       case "img-height"        :  return( IMG_HEIGHT );
       case "cond-group"        :  return( COND_GROUP );
-      default                  :  assert_not_reached();
+      default                  :
+        if( assert_if_not_found ) {
+          assert_not_reached();
+        } else {
+          return( NUM );
+        }
+        break;
     }
+  }
+
+  public static ActionConditionType match_to_label( string val ) {
+    for( int i=0; i<NUM; i++ ) {
+      var type = (ActionConditionType)i;
+      if( type.label().down() == val.down() ) {
+        return( type );
+      }
+    }
+    return( NUM );
   }
 
   public bool is_kind() {
@@ -340,6 +356,30 @@ public class ActionCondition {
       var retval  = _group.check( pathname, results );
       result = "TODO";
       return( retval );
+    }
+    return( false );
+  }
+
+  public bool matches( ActionConditionType? type, string value ) {
+    if( _type.is_kind() ) {
+      return( _kind.matches( value ) );
+    } else if( _type.is_text() ) {
+      return( _text.matches( value ) );
+    } else if( _type.is_date() ) {
+      return( _date.matches( value ) );
+    } else if( _type.is_size() ) {
+      return( _size.matches( value ) );
+    } else if( _type.is_int() ) {
+      return( _num.matches( value ) );
+    } else if( _type.is_tags() ) {
+      return( _tags.matches( value ) );
+    } else if( _type.is_cond_group() ) {
+      for( int i=0; i<_group.size(); i++ ) {
+        var cond = _group.get_condition( i );
+        if( (type == null) || (cond.cond_type == type) ) {
+          return( cond.matches( type, value ) );
+        }
+      }
     }
     return( false );
   }

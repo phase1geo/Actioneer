@@ -2,17 +2,24 @@ using Gtk;
 
 public class Controller {
 
-  private MainWindow _win;
-  private DirList    _data;
+  private MainWindow    _win;
+  private DirList       _data;
+  private SearchHistory _history;
+  private bool          _search_mode;
 
   /* Default constructor */
-  public Controller( MainWindow win, DirList data ) {
+  public Controller( MainWindow win, DirList data, SearchHistory history ) {
 
-    _win  = win;
-    _data = data;
+    _win         = win;
+    _data        = data;
+    _history     = history;
+    _search_mode = false;
 
     /* Connect to the main window signals */
     win.background_toggled.connect( background_enable_changed );
+    win.search_shown.connect( search_shown );
+    win.search_closed.connect( search_closed );
+    win.search_changed.connect( search_changed );
 
     /* Connect to the directory list signals */
     win.dir_list.enable_changed.connect( directory_enable_changed );
@@ -63,7 +70,7 @@ public class Controller {
 
     for( int i=0; i<_data.size(); i++ ) {
       var dir = _data.get_directory( i );
-      _win.dir_list.add_row( dir.enabled, dir.dirname );
+      _win.dir_list.add_row( dir.enabled, dir.dirname, dir.show_rules() );
     }
 
     /* Make sure that the welcome1 page is shown */
@@ -77,7 +84,7 @@ public class Controller {
 
     for( int j=0; j<dir.num_rules(); j++ ) {
       var rule = dir.get_rule( j );
-      _win.rule_list.add_row( rule.enabled, rule.name );
+      _win.rule_list.add_row( rule.enabled, rule.name, rule.show );
     }
 
     /* Make sure that the welcome2 page is shown */
@@ -94,7 +101,7 @@ public class Controller {
       for( int j=0; j<dir.num_rules(); j++ ) {
         var rule = dir.get_rule( j );
         if( rule.pinned ) {
-          _win.pin_list.add_row( false, rule.name );
+          _win.pin_list.add_row( false, rule.name, true );
         }
       }
     }
@@ -311,15 +318,85 @@ public class Controller {
   }
 
   // =========================================================
+  // SEARCH
+  // =========================================================
+
+  private void search_shown() {
+
+    _search_mode = true;
+
+    /* Update the search interface */
+    _win.search.set_search_history( _history );
+    _win.search.start_search();
+
+    /* Update the UI */
+    search_update_ui();
+
+  }
+
+  /* TBD - Add the given text to the search history */
+  private void search_closed( string text ) {
+
+    _search_mode = false;
+
+    /* Add the last search item to the history */
+    _history.add_item( text );
+
+    /* If we are in search mode, display all directories and rules */
+    _data.clear_search();
+
+    /* Update the UI based on the search results */
+    search_update_ui();
+
+  }
+
+  private void search_changed( string text, int curpos ) {
+
+    // Parse the search criteri string
+    var criteria = new SearchCriteria();
+    criteria.parse_search_text( text );
+    // criteria.print();
+
+    var completers = new SList<SearchCompletion>();
+    criteria.get_completers( curpos, ref completers );
+    _win.search.set_completers( completers );
+    
+    // Perform the search on the model
+    _data.clear_search();
+    _data.do_search( criteria );
+
+    // Update the UI based on the search results
+    search_update_ui();
+
+  }
+
+  private void search_update_ui() {
+
+    // Set the search mode
+    _win.dir_list.set_search_mode( _search_mode );
+    _win.rule_list.set_search_mode( _search_mode );
+
+    // Update the UI to match the search state
+    for( int i=0; i<_data.size(); i++ ) {
+      var dir = _data.get_directory( i );
+      _win.dir_list.set_row_visibility( i, dir.show_rules() );
+    }
+
+    // Update the current directory rule list
+    if( _data.current_dir != null ) {
+      for( int i=0; i<_data.current_dir.num_rules(); i++ ) {
+        var rule = _data.current_dir.get_rule( i );
+        _win.rule_list.set_row_visibility( i, rule.show );
+      }
+    }
+
+  }
+
+  // =========================================================
   // RULE FORM
   // =========================================================
 
   private void form_save( DirAction rule ) {
-
-    /*
-    TreeIter it;
-    _win.rule_list.view.get_selection().get_selected( null, out it );
-    */
 
     /* Update the rule list item */
     _win.rule_list.set_label( rule.name );

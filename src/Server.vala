@@ -49,6 +49,10 @@ public class ServerConnection {
     path   = other.path;
   }
 
+  public bool matches( string value ) {
+    return( server.matches( value ) || path.contains( value ) );
+  }
+
   public Xml.Node* save() {
 
     Xml.Node* node = new Xml.Node( null, xml_node );
@@ -271,6 +275,14 @@ public class Server {
 
     return( retval );
 
+  }
+
+  public bool matches( string value ) {
+    return( _name.contains( value ) ||
+            _conn_type.to_string().contains( value ) ||
+            _host.contains( value ) ||
+            (_port.to_string() == value) ||
+            _user.contains( value ) );
   }
 
   public Xml.Node* save() {

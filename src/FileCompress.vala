@@ -67,6 +67,10 @@ public class FileCompress {
     return( convert( src, dst, new ZlibDecompressor( type ) ) );
   }
 
+  public bool matches( string value ) {
+    return( type.to_string() == value );
+  }
+
   public Xml.Node* save() {
 
     Xml.Node* node = new Xml.Node( null, xml_node );

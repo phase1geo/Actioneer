@@ -91,7 +91,7 @@ public enum FileActionType {
     }
   }
 
-  public static FileActionType parse( string val ) {
+  public static FileActionType parse( string val, bool assert_if_not_found = true ) {
     switch( val ) {
       case "move"        :  return( MOVE );
       case "copy"        :  return( COPY );
@@ -111,8 +111,24 @@ public enum FileActionType {
       case "notify"      :  return( NOTIFY );
       case "run-script"  :  return( RUN_SCRIPT );
       case "open"        :  return( OPEN );
-      default            :  assert_not_reached();
+      default            :
+        if( assert_if_not_found ) {
+          assert_not_reached();
+        } else {
+          return( NUM );
+        }
+        break;
     }
+  }
+
+  public static FileActionType match_to_label( string val ) {
+    for( int i=0; i<NUM; i++ ) {
+      var type = (FileActionType)i;
+      if( type.label().down() == val.down() ) {
+        return( type );
+      }
+    }
+    return( NUM );
   }
 
   public bool add_separator_after() {
@@ -464,6 +480,24 @@ public class FileAction {
   /* Returns true if this action references the given server */
   public bool server_in_use( string name ) {
     return( (_conn != null) && (_conn.server.name == name) );
+  }
+
+  /* Returns true if our entry matches the given value */
+  public bool matches( string value ) {
+    if( _type.is_file_type() ) {
+      return( _file.get_path().contains( value ) );
+    } else if( _type.is_tokenized() ) {
+      return( _token_text.matches( value ) );
+    } else if( _type.is_compress() ) {
+      return( _compress.matches( value ) );
+    } else if( _type.is_image_resize() || _type.is_image_convert() ) {
+      return( _imager.matches( value ) );
+    } else if( _type.is_open() ) {
+      return( (_opener == null) ? _( "Default" ).contains( value ) : _opener.get_name().contains( value ) );
+    } else if( _type.is_upload() ) {
+      return( _conn.matches( value ) );
+    }
+    return( false );
   }
 
   /* Save this instance in XML format */

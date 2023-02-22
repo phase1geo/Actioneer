@@ -191,6 +191,10 @@ public class DateCondition {
     return( false );
   }
 
+  public bool matches( string value ) {
+    return( time_type.label().contains( value ) || (num.to_string() == value) || (exp.to_string() == value) );
+  }
+
   public void save( Xml.Node* node ) {
 
     node->set_prop( "match_type", match_type.to_string() );

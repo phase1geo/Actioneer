@@ -21,5 +21,10 @@
       <summary>Most recent height of Actioneer window</summary>
       <description>Most recent height of Actioneer window</description>
     </key>
+    <key name="search-history-depth" type="i">
+      <default>10</default>
+      <summary>Number of search history searches that we will remember</summary>
+      <description>Number of search history searches that we will remember</description>
+    </key>
   </schema>
 </schemalist>

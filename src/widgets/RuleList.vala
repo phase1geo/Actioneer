@@ -83,7 +83,7 @@ public class RuleList : EnableList {
       string label  = "";
       if( duplicated( index, ref enable, ref label ) ) {
         var row = (int)list_box.get_children().length();
-        add_row( enable, label );
+        add_row( enable, label, true );
         select_row( row );
         selected( row );
       }

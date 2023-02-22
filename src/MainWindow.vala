@@ -33,8 +33,10 @@ public class MainWindow : Hdy.ApplicationWindow {
   private RuleList        _rule_list;
   private RuleStack       _rule_stack;
   private PinList         _pin_list;
+  private SearchPanel     _search;
   private Stack           _list_stack;
   private Button          _server_btn;
+  private Button          _search_btn;
 
   private const GLib.ActionEntry[] action_entries = {
     { "action_add_dir",   action_add_dir },
@@ -42,6 +44,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     { "action_run",       action_run },
     { "action_quit",      action_quit },
     { "action_prefs",     action_prefs },
+    { "action_search",    action_search },
     { "action_shortcuts", action_shortcuts }
   };
 
@@ -63,6 +66,12 @@ public class MainWindow : Hdy.ApplicationWindow {
     }
   }
 
+  public SearchPanel search {
+    get {
+      return( _search );
+    }
+  }
+
   public RuleStack rule_stack {
     get {
       return( _rule_stack );
@@ -70,6 +79,9 @@ public class MainWindow : Hdy.ApplicationWindow {
   }
 
   public signal void background_toggled();
+  public signal void search_shown();
+  public signal void search_closed( string text );
+  public signal void search_changed( string text, int curpos );
 
   /* Create the main window UI */
   public MainWindow( Actioneer app, GLib.Settings settings ) {
@@ -113,6 +125,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     _rule_list  = new RuleList( this );
     _rule_stack = new RuleStack( this );
     _pin_list   = new PinList( this );
+    _search     = new SearchPanel( this );
 
     /* Create list pane (contains directory and rule lists */
     var list_pane = new Paned( Orientation.HORIZONTAL );
@@ -133,7 +146,8 @@ public class MainWindow : Hdy.ApplicationWindow {
 
     var right_panel = new Box( Orientation.VERTICAL, 0 );
     right_panel.pack_start( _right_header, false, true, 0 );
-    right_panel.pack_start( _rule_stack,  true,  true, 0 );
+    right_panel.pack_start( _search,       false, true, 0 );
+    right_panel.pack_start( _rule_stack,   true,  true, 0 );
 
     var top_pane = new Paned( Orientation.HORIZONTAL );
     top_pane.pack1( left_panel,  true, true );
@@ -145,6 +159,14 @@ public class MainWindow : Hdy.ApplicationWindow {
 
     /* Make sure that the directory rules are shown by default */
     _list_stack.set_visible_child_name( "dir_rules" );
+
+    /* Hook up the search signals */
+    _search.search_closed.connect((text) => {
+      search_closed( text );
+    });
+    _search.search_changed.connect((text, cpos) => {
+      search_changed( text, cpos );
+    });
 
     /* Create UI styles */
     CssProvider provider = new CssProvider();
@@ -184,6 +206,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     app.set_accels_for_action( "win.action_run",       { "<Control>r" } );
     app.set_accels_for_action( "win.action_quit",      { "<Control>q" } );
     app.set_accels_for_action( "win.action_prefs",     { "<Control>comma" } );
+    app.set_accels_for_action( "win.action_search",    { "<Control>f" } );
     app.set_accels_for_action( "win.action_shortcuts", { "<Control>question" } );
 
   }
@@ -222,6 +245,11 @@ public class MainWindow : Hdy.ApplicationWindow {
     _server_btn.set_tooltip_text( _( "Manage servers" ) );
     _server_btn.clicked.connect( action_show_servers );
     _right_header.pack_end( _server_btn );
+
+    _search_btn = new Button.from_icon_name( "system-search-symbolic", IconSize.LARGE_TOOLBAR );
+    _search_btn.set_tooltip_markup( Utils.tooltip_with_accel( _( "Search" ), "<Control>f" ) );
+    _search_btn.clicked.connect( action_search );
+    _right_header.pack_end( _search_btn );
 
   }
 
@@ -289,6 +317,15 @@ public class MainWindow : Hdy.ApplicationWindow {
 
   private void edit_server( Server? server ) {
     var editor = new EditServer( this, server );
+  }
+
+  private void action_search() {
+    if( _search.child_revealed ) {
+      _search.end_search();
+    } else {
+      _search.start_search();
+      search_shown();
+    }
   }
 
   /* Called when the user uses the Control-q keyboard shortcut */
