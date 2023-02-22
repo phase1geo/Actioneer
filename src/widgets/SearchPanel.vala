@@ -35,10 +35,10 @@ public class SearchPanel : Revealer {
       search_changed( _entry.text, _entry.cursor_position );
     });
     _entry.key_press_event.connect((e) => {
-      if( e.keyval == Key.Escape ) {
-        end_search();
-      } else if( e.keyval == Key.Tab ) {
-        insert_first_match();
+      switch( e.keyval ) {
+        case Key.Escape    :  end_search();               break;
+        case Key.Tab       :  insert_first_match();       break;
+        case Key.parenleft :  insert_completion_paren();  break;
       }
       return( false );
     });
@@ -142,6 +142,11 @@ public class SearchPanel : Revealer {
     if( (model != null) && model.get_iter_first( out iter ) ) {
       completion_match_selected( model, iter );
     }
+  }
+
+  private void insert_completion_paren() {
+    _entry.insert_at_cursor( ")" );
+    _entry.set_position( _entry.get_position() - 1 );
   }
 
 }
