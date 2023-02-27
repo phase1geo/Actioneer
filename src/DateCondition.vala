@@ -191,8 +191,10 @@ public class DateCondition {
     return( false );
   }
 
-  public bool matches( string value ) {
-    return( time_type.label().contains( value ) || (num.to_string() == value) || (exp.to_string() == value) );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( time_type.label().down() ) ||
+            pattern.match_string( num.to_string() ) ||
+            pattern.match_string( exp.to_string() ) );
   }
 
   public void save( Xml.Node* node ) {

@@ -140,8 +140,8 @@ public class TextCondition {
     return( match_type.matches( act, text ) );
   }
 
-  public bool matches( string value ) {
-    return( text.contains( value ) );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( text.down() ) );
   }
 
   public void save( Xml.Node* node ) {

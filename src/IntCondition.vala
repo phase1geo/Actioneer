@@ -87,8 +87,8 @@ public class IntCondition {
     return( match_type.matches( act, num ) );
   }
 
-  public bool matches( string value ) {
-    return( num.to_string() == value );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( num.to_string() ) );
   }
 
   public void save( Xml.Node* node ) {

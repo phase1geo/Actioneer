@@ -143,7 +143,7 @@ public class Imager {
     return( "imager" );
   }
 
-  public virtual bool matches( string value ) {
+  public virtual bool matches( PatternSpec pattern ) {
     return( false );
   }
 
@@ -175,11 +175,11 @@ public class ImagerResizer : Imager {
     return( method.resize( pathname, width, height, percent ) );
   }
 
-  public override bool matches( string value ) {
-    return( method.label().contains( value ) ||
-            (width.to_string() == value) ||
-            (height.to_string() == value) || 
-            percent.to_string().contains( value ) );
+  public override bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( method.label().down() ) ||
+            pattern.match_string( width.to_string() ) ||
+            pattern.match_string( height.to_string() ) || 
+            pattern.match_string( percent.to_string() ) );
   }
 
   public override void save( Xml.Node* node ) {
@@ -238,8 +238,8 @@ public class ImagerConverter : Imager {
     return( format.convert( ref pathname ) );
   }
 
-  public override bool matches( string value ) {
-    return( format.to_string() == value );
+  public override bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( format.to_string() ) );
   }
 
   public override void save( Xml.Node* node ) {

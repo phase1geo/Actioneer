@@ -85,8 +85,8 @@ public class TagsCondition {
     return( match_type.matches( act, text ) );
   }
 
-  public bool matches( string value ) {
-    return( text.contains( value ) );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( text ) );
   }
 
   public void save( Xml.Node* node ) {

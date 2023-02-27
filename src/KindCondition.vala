@@ -100,8 +100,8 @@ public class KindCondition {
     return( (kind == FileKind.ANY) || match_type.matches( act, kind ) );
   }
 
-  public bool matches( string value ) {
-    return( kind.label().contains( value ) );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( kind.label().down() ) );
   }
 
   public void save( Xml.Node* node ) {

@@ -483,19 +483,20 @@ public class FileAction {
   }
 
   /* Returns true if our entry matches the given value */
-  public bool matches( string value ) {
+  public bool matches( PatternSpec pattern ) {
     if( _type.is_file_type() ) {
-      return( _file.get_path().contains( value ) );
+      return( pattern.match_string( _file.get_path() ) );
     } else if( _type.is_tokenized() ) {
-      return( _token_text.matches( value ) );
+      return( _token_text.matches( pattern ) );
     } else if( _type.is_compress() ) {
-      return( _compress.matches( value ) );
+      return( _compress.matches( pattern ) );
     } else if( _type.is_image_resize() || _type.is_image_convert() ) {
-      return( _imager.matches( value ) );
+      return( _imager.matches( pattern ) );
     } else if( _type.is_open() ) {
-      return( (_opener == null) ? _( "Default" ).contains( value ) : _opener.get_name().contains( value ) );
+      return( (_opener == null) ? pattern.match_string( _( "Default" ).down() ) :
+                                  pattern.match_string( _opener.get_name().down() ) );
     } else if( _type.is_upload() ) {
-      return( _conn.matches( value ) );
+      return( _conn.matches( pattern ) );
     }
     return( false );
   }

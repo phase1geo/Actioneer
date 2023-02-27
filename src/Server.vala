@@ -49,8 +49,8 @@ public class ServerConnection {
     path   = other.path;
   }
 
-  public bool matches( string value ) {
-    return( server.matches( value ) || path.contains( value ) );
+  public bool matches( PatternSpec pattern ) {
+    return( server.matches( pattern ) || pattern.match_string( path.down() ) );
   }
 
   public Xml.Node* save() {
@@ -277,12 +277,12 @@ public class Server {
 
   }
 
-  public bool matches( string value ) {
-    return( _name.contains( value ) ||
-            _conn_type.to_string().contains( value ) ||
-            _host.contains( value ) ||
-            (_port.to_string() == value) ||
-            _user.contains( value ) );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( _name.down() ) ||
+            pattern.match_string( _conn_type.to_string() ) ||
+            pattern.match_string( _host.down() ) ||
+            pattern.match_string( _port.to_string() ) ||
+            pattern.match_string( _user.down() ) );
   }
 
   public Xml.Node* save() {

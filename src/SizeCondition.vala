@@ -155,8 +155,9 @@ public class SizeCondition {
     return( match_type.matches( size.get_size( act_bytes ), size.get_size( exp_bytes ) ) );
   }
 
-  public bool matches( string value ) {
-    return( (num.to_string() == value) || (size.label() == value) );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( num.to_string() ) ||
+            pattern.match_string( size.label().down() ) );
   }
 
   public void save( Xml.Node* node ) {

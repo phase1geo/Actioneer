@@ -88,20 +88,24 @@ public class SearchOp {
     return( true );
   }
 
-  private void check_and_add_completer( string label, string text, bool quoted, ref SList<SearchCompletion> completers ) {
-    if( label.down().contains( text.down() ) && (label.down() != text.down()) ) {
-      completers.append( new SearchCompletion( spos, quoted, text, label ) );
+  private void check_and_add_completer( string label, string text, PatternSpec text_pattern, bool quoted,
+                                        ref SList<SearchCompletion> completers ) {
+    if( label.down() != text.down() ) {
+      if( text_pattern.match_string( label.down() ) ) {
+        completers.append( new SearchCompletion( spos, quoted, text, label ) );
+      }
     }
   }
 
-  protected void get_matching_completers( string text, bool quoted, ref SList<SearchCompletion> completers ) {
+  protected void get_matching_completers( string text, PatternSpec text_pattern, bool quoted,
+                                          ref SList<SearchCompletion> completers ) {
     for( int i=0; i<ActionConditionType.NUM; i++ ) {
       var type = (ActionConditionType)i;
-      check_and_add_completer( type.label(), text, quoted, ref completers );
+      check_and_add_completer( type.label(), text, text_pattern, quoted, ref completers );
     }
     for( int i=0; i<FileActionType.NUM; i++ ) {
       var type = (FileActionType)i;
-      check_and_add_completer( type.label(), text, quoted, ref completers );
+      check_and_add_completer( type.label(), text, text_pattern, quoted, ref completers );
     }
   }
 
@@ -134,34 +138,36 @@ public class SearchOpNot : SearchOp {
 }
 
 public class SearchOpValue : SearchOp {
-  private bool   _quoted;
-  private string _val;
+  private bool        _quoted;
+  private string      _val;
+  private PatternSpec _pattern;
   public SearchOpValue( int spos, bool quoted, string val ) {
     base( SearchOpType.VALUE, spos );
-    _quoted = quoted;
-    _val    = val;
+    _quoted  = quoted;
+    _val     = val;
+    _pattern = new PatternSpec( "*" + val.down() + "*" );
   }
   public bool matches( DirAction rule ) {
     for( int i=0; i<rule.conditions.size(); i++ ) {
       var cond = rule.conditions.get_condition( i );
-      if( cond.matches( null, _val ) ) {
+      if( cond.matches( null, _pattern ) ) {
         return( true );
       }
     }
     for( int i=0; i<rule.actions.size(); i++ ) {
       var act = rule.actions.get_action( i );
-      if( act.matches( _val ) ) {
+      if( act.matches( _pattern ) ) {
         return( true );
       }
     }
-    return( rule.name.contains( _val ) );
+    return( _pattern.match_string( rule.name ) );
   }
   public override bool check_match( DirAction rule ) {
     return( matches( rule ) );
   }
   public override bool get_completers( int curpos, ref SList<SearchCompletion> completers ) {
     if( (spos <= curpos) && (curpos <= (spos + _val.char_count())) ) {
-      get_matching_completers( _val, _quoted, ref completers );
+      get_matching_completers( _val, _pattern, _quoted, ref completers );
       return( true );
     }
     return( false );
@@ -172,14 +178,18 @@ public class SearchOpValue : SearchOp {
 }
 
 public class SearchOpKeyValue : SearchOp {
-  private bool   _quoted;
-  private string _key;
-  private string _val;
+  private bool        _quoted;
+  private string      _key;
+  private string      _val;
+  private PatternSpec _kpattern;
+  private PatternSpec _vpattern;
   public SearchOpKeyValue( int spos, bool quoted, string key, string val ) {
     base( SearchOpType.KEY_VALUE, spos );
-    _quoted = quoted;
-    _key    = key;
-    _val    = val;
+    _quoted  = quoted;
+    _key     = key;
+    _val     = val;
+    _kpattern = new PatternSpec( "*" + key.down() + "*" );
+    _vpattern = new PatternSpec( "*" + val.down() + "*" );
   }
   public bool matches( DirAction rule ) {
     var cond_type = ActionConditionType.match_to_label( _key );
@@ -188,18 +198,18 @@ public class SearchOpKeyValue : SearchOp {
       for( int i=0; i<rule.conditions.size(); i++ ) {
         var cond = rule.conditions.get_condition( i );
         if( cond.cond_type == cond_type ) {
-          return( cond.matches( cond_type, _val ) );
+          return( cond.matches( cond_type, _vpattern ) );
         }
       }
     } else if( act_type != FileActionType.NUM ) {
       for( int i=0; i<rule.actions.size(); i++ ) {
         var act = rule.actions.get_action( i );
         if( act.action_type == act_type ) {
-          return( act.matches( _val ) );
+          return( act.matches( _vpattern ) );
         }
       }
     } else {
-      return( rule.name.contains( _val ) );
+      return( _kpattern.match_string( rule.name ) );
     }
     return( false );
   }
@@ -208,7 +218,7 @@ public class SearchOpKeyValue : SearchOp {
   }
   public override bool get_completers( int curpos, ref SList<SearchCompletion> completers ) {
     if( (spos <= curpos) && (curpos <= (spos + _key.char_count())) ) {
-      get_matching_completers( _key, _quoted, ref completers );
+      get_matching_completers( _key, _kpattern, _quoted, ref completers );
       return( true );
     }
     return( false );

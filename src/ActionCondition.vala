@@ -360,24 +360,24 @@ public class ActionCondition {
     return( false );
   }
 
-  public bool matches( ActionConditionType? type, string value ) {
+  public bool matches( ActionConditionType? type, PatternSpec pattern ) {
     if( _type.is_kind() ) {
-      return( _kind.matches( value ) );
+      return( _kind.matches( pattern ) );
     } else if( _type.is_text() ) {
-      return( _text.matches( value ) );
+      return( _text.matches( pattern ) );
     } else if( _type.is_date() ) {
-      return( _date.matches( value ) );
+      return( _date.matches( pattern ) );
     } else if( _type.is_size() ) {
-      return( _size.matches( value ) );
+      return( _size.matches( pattern ) );
     } else if( _type.is_int() ) {
-      return( _num.matches( value ) );
+      return( _num.matches( pattern ) );
     } else if( _type.is_tags() ) {
-      return( _tags.matches( value ) );
+      return( _tags.matches( pattern ) );
     } else if( _type.is_cond_group() ) {
       for( int i=0; i<_group.size(); i++ ) {
         var cond = _group.get_condition( i );
         if( (type == null) || (cond.cond_type == type) ) {
-          return( cond.matches( type, value ) );
+          return( cond.matches( type, pattern ) );
         }
       }
     }

@@ -83,8 +83,8 @@ public class SearchPanel : Revealer {
     var box = new Box( Orientation.HORIZONTAL, 10 );
     box.border_width = 10;
     box.pack_start( _entry,       true,  true,  0 );
-    box.pack_end(   _history_btn, false, false, 0 );
     box.pack_end(   info_btn,     false, false, 0 );
+    box.pack_end(   _history_btn, false, false, 0 );
     box.show_all();
 
     add( box );
@@ -139,6 +139,8 @@ public class SearchPanel : Revealer {
     var index = 0;
 
     _completers = new SList<SearchCompletion>();
+
+    stdout.printf( "In set_completers, num: %u\n", completers.length() );
 
     completers.foreach((completer) => {
       TreeIter it;

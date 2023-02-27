@@ -265,8 +265,9 @@ public class TextToken {
     }
   }
 
-  public bool matches( string value ) {
-    return( text.contains( value ) || token_type.label().contains( value ) );
+  public bool matches( PatternSpec pattern ) {
+    return( pattern.match_string( text.down() ) ||
+            pattern.match_string( token_type.label().down() ) );
   }
 
   /* Saves this instance in XML format */
@@ -362,10 +363,10 @@ public class TokenText {
     return( insert_unique_ids( file, str ) );
   }
 
-  public bool matches( string value ) {
+  public bool matches( PatternSpec pattern ) {
     for( int i=0; i<_tokens.length(); i++ ) {
       var token = _tokens.nth_data( i );
-      if( token.matches( value ) ) {
+      if( token.matches( pattern ) ) {
         return( true );
       }
     }
