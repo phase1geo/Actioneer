@@ -49,6 +49,7 @@ public class ActionBoxList : BoxList {
       case FileActionType.COPY        :  item = new ActionFileBox( type );      break;
       case FileActionType.RENAME      :  item = new ActionRenameBox( type );    break;
       case FileActionType.ALIAS       :  item = new ActionFileBox( type );      break;
+      case FileActionType.SUBFOLDER   :  item = new ActionSubfolderBox( type ); break;
       case FileActionType.UPLOAD      :  item = new ActionUploadBox( type );    break;
       case FileActionType.COMPRESS    :  item = new ActionCompressBox( type );  break;
       case FileActionType.DECOMPRESS  :  item = new ActionEmptyBox( type );     break;

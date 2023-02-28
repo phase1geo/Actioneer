@@ -1,17 +1,9 @@
 using Gtk;
 using Gdk;
 
-public enum TokenModifyType {
-  BEFORE,
-  AFTER,
-  REPLACE
-}
-
 public class ActionRenameBox : ActionBase {
 
-  private Box      _tbox;
-  private Revealer _add_reveal;
-  private bool     _id_used = false;
+  private TokenTextBox _tbox;
 
   /* Default constructor */
   public ActionRenameBox( FileActionType type ) {
@@ -21,297 +13,24 @@ public class ActionRenameBox : ActionBase {
     var label = new Label( type.pretext() );
     pack_start( label, false, false, 0 );
 
-    var add = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
-    add.set_tooltip_text( _( "Click to select filename rename token" ) );
-    add.get_style_context().add_class( "circular" );
-    add.get_style_context().add_class( "token" );
-    add.clicked.connect(() => {
-      Gtk.Menu menu;
-      add_token_menu( out menu, null, TokenModifyType.BEFORE );
-      menu.show_all();
-      menu.popup_at_widget( add, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
-    });
-    _add_reveal = new Gtk.Revealer();
-    _add_reveal.transition_type     = RevealerTransitionType.NONE;
-    _add_reveal.transition_duration = 0;
-    _add_reveal.add( add );
-    pack_start( _add_reveal, false, false, 0 );
-
-    _tbox = new Box( Orientation.HORIZONTAL, 2 );
-
-    var sw = new ScrolledWindow( null, null );
-    sw.hscrollbar_policy = PolicyType.EXTERNAL;
-    sw.vscrollbar_policy = PolicyType.NEVER;
-    sw.hexpand = true;
-    sw.hexpand_set = true;
-    sw.add( _tbox );
-
-    pack_start( sw, true, true, 0 );
+    _tbox = new TokenTextBox();
+    pack_start( _tbox, true, true, 0 );
 
     /* Create default tokens */
-    insert_token( 0, TextTokenType.FILE_BASE, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
-    insert_token( 1, TextTokenType.TEXT,      ".",  TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
-    insert_token( 2, TextTokenType.FILE_EXT,  null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
+    _tbox.insert_token( 0, TextTokenType.FILE_BASE, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
+    _tbox.insert_token( 1, TextTokenType.TEXT,      ".",  TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
+    _tbox.insert_token( 2, TextTokenType.FILE_EXT,  null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
 
-  }
-
-  /* Returns the index of the given widget in the tbox */
-  private int get_index( Widget? w ) {
-    var index = -1;
-    if( w != null ) {
-      var i = 0;
-      _tbox.get_children().foreach((item) => {
-        if( item == w ) {
-          index = i;
-        }
-        i++;
-      });
-    }
-    return( index );
-  }
-
-  /* Inserts the given token */
-  private void insert_token( int index, TextTokenType type, string? text, TextTokenModifier modifier, TextTokenFormat format ) {
-    _add_reveal.reveal_child = false;
-    var w = (type == TextTokenType.TEXT) ? insert_text( text ) : insert_button( type, modifier, format );
-    _tbox.pack_start( w, false, false, 0 );
-    if( (index + 1) < _tbox.get_children().length() ) {
-      _tbox.reorder_child( w, index );
-    }
-  }
-
-  private void add_token_menu( out Gtk.Menu menu, Widget? w, TokenModifyType type ) {
-    menu = new Gtk.Menu();
-    for( int i=0; i<TextTokenType.NUM; i++ ) {
-      var token_type = (TextTokenType)i;
-      if( (token_type == TextTokenType.UNIQUE_ID) && _id_used ) continue;
-      var item       = new Gtk.MenuItem.with_label( token_type.label() );
-      var mtype      = type;
-      item.activate.connect(() => {
-        var index = get_index( w );
-        switch( mtype ) {
-          case TokenModifyType.BEFORE  :
-            insert_token( index, token_type, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
-            break;
-          case TokenModifyType.AFTER   :
-            insert_token( (index + 1), token_type, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
-            break;
-          case TokenModifyType.REPLACE :
-            _tbox.remove( w );
-            insert_token( index, token_type, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
-            break;
-        }
-        show_all();
-      });
-      menu.add( item );
-    }
-    menu.show_all();
-  }
-
-  private void add_change_remove( Gtk.Menu menu, Widget w, TextTokenType type ) {
-
-    Gtk.Menu submenu;
-
-    var before = new Gtk.MenuItem.with_label( _( "Add Before" ) );
-    add_token_menu( out submenu, w, TokenModifyType.BEFORE );
-    before.submenu = submenu;
-
-    var after  = new Gtk.MenuItem.with_label( _( "Add After" ) );
-    add_token_menu( out submenu, w, TokenModifyType.AFTER );
-    after.submenu = submenu;
-
-    var replace = new Gtk.MenuItem.with_label( _( "Replace With" ) );
-    add_token_menu( out submenu, w, TokenModifyType.REPLACE );
-    replace.submenu = submenu;
-
-    var remove = new Gtk.MenuItem.with_label( _( "Remove" ) );
-    remove.activate.connect(() => {
-      _tbox.remove( w ); 
-      if( _tbox.get_children().length() == 0 ) {
-        _add_reveal.reveal_child = true;
-      }
-      if( type == TextTokenType.UNIQUE_ID ) {
-        _id_used = false;
-      }
-      show_all();
-    });
-
-    menu.add( before );
-    menu.add( after );
-    menu.add( replace );
-    menu.add( remove );
-
-  }
-
-  private void add_id_format( Gtk.Menu menu, Widget w ) {
-    for( int i=0; i<TextTokenFormat.NUM; i++ ) {
-      var fmt  = (TextTokenFormat)i;
-      var item = new Gtk.MenuItem.with_label( fmt.label() );
-      item.activate.connect(() => {
-        var btn = (Button)w;
-        btn.label = fmt.label();
-      });
-      menu.add( item );
-    }
-  }
-
-  private void add_modifiers( Gtk.Menu menu, Widget w ) {
-    for( int i=0; i<TextTokenModifier.NUM; i++ ) {
-      var mod  = (TextTokenModifier)i;
-      var item = new Gtk.MenuItem.with_label( mod.label() );
-      item.activate.connect(() => {
-        var btn = (Button)w;
-        btn.label = mod.format( btn.label );
-      });
-      menu.add( item );
-    }
-  }
-
-  private void edit_text( Label label ) {
-
-    var entry = new Entry();
-    entry.text = label.label;
-
-    var popover = new Popover( label );
-
-    entry.key_press_event.connect((e) => {
-      if( e.keyval == Gdk.Key.Return ) {
-        label.label = entry.text;
-        popover.popdown();
-        return( true );
-      }
-      return( false );
-    });
-
-    popover.add( entry );
-    popover.show_all();
-    popover.popup();
-
-  }
-
-  /* Inserts a text entry */
-  private Widget insert_text( string? text ) {
-    var label = new Label( text ?? "" );
-    label.margin_left  = 3;
-    label.margin_right = 3;
-    var frame = new Frame( null );
-    frame.add( label );
-    frame.get_style_context().add_class( "token" );
-    var ebox = new EventBox();
-    ebox.add( frame );
-    ebox.button_press_event.connect((e) => {
-      if( e.button == Gdk.BUTTON_PRIMARY ) {
-        // Start a drag event?
-      } else if( e.button == Gdk.BUTTON_SECONDARY ) {
-        var menu = new Gtk.Menu();
-        var edit = new Gtk.MenuItem.with_label( _( "Edit..." ) );
-        edit.activate.connect(() => {
-          edit_text( label );
-        });
-        menu.add( edit );
-        menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, ebox, TextTokenType.TEXT );
-        menu.show_all();
-        menu.popup_at_widget( frame, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
-      }
-      return( true );
-    });
-    if( text == null ) {
-      Idle.add(() => {
-        edit_text( label );
-        return( false );
-      });
-    }
-    return( ebox );
-  }
-
-  /* Inserts a conversion button */
-  private Widget insert_button( TextTokenType type, TextTokenModifier mod, TextTokenFormat fmt ) {
-    var is_id = (type == TextTokenType.UNIQUE_ID);
-    var btn   = new Button.with_label( is_id ? fmt.label() : mod.format( type.label() ) );
-    btn.get_style_context().add_class( "circular" );
-    btn.get_style_context().add_class( "token" );
-    btn.button_press_event.connect((e) => {
-      if( e.button == Gdk.BUTTON_PRIMARY ) {
-      } else if( e.button == Gdk.BUTTON_SECONDARY ) {
-        var menu = new Gtk.Menu();
-        if( is_id ) {
-          add_id_format( menu, btn );
-        } else {
-          add_modifiers( menu, btn );
-        }
-        menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, btn, type );
-        menu.show_all();
-        menu.popup_at_widget( btn, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
-      }
-      return( true );
-    });
-    if( is_id ) {
-      _id_used = true;
-    }
-    return( btn );
   }
 
   public override FileAction get_data() {
     var data = new FileAction.with_type( _type );
-    _tbox.get_children().foreach((w) => {
-      if( (w as EventBox) != null ) {
-        var ebox  = (EventBox)w;
-        var frame = (Frame)ebox.get_child();
-        var lbl   = (Label)frame.get_child();
-        var token = new TextToken.with_text( lbl.label );
-        data.token_text.add_token( token );
-      } else if( (w as Button) != null ) {
-        var btn   = (Button)w;
-        var found = false;
-        var i     = 0;
-        while( (i < TextTokenType.NUM) && !found ) {
-          var type = (TextTokenType)i;
-          if( type == TextTokenType.UNIQUE_ID ) {
-            for( int j=0; j<TextTokenFormat.NUM; j++ ) {
-              var fmt = (TextTokenFormat)j;
-              if( btn.label == fmt.label() ) {
-                var token = new TextToken.with_type( type );
-                token.id_format = fmt;
-                data.token_text.add_token( token );
-                found = true;
-                break;
-              }
-            }
-          } else {
-            for( int j=0; j<TextTokenModifier.NUM; j++ ) {
-              var mod = (TextTokenModifier)j;
-              if( btn.label == mod.format( type.label() ) ) {
-                var token = new TextToken.with_type( type );
-                token.modifier = mod;
-                data.token_text.add_token( token );
-                found = true;
-                break;
-              }
-            }
-          }
-          i++;
-        }
-      }
-    });
+    _tbox.get_data( data.token_text );
     return( data );
   }
 
   public override void set_data( FileAction data ) {
-    _tbox.get_children().foreach((w) => {
-      _tbox.remove( w );
-    });
-    var token_text = data.token_text;
-    if( token_text == null ) {
-      _add_reveal.reveal_child = true;
-    } else {
-      for( int i=0; i<token_text.num_tokens(); i++ ) {
-        var token = token_text.get_token( i );
-        insert_token( i, token.token_type, token.text, token.modifier, token.id_format );
-      }
-      _tbox.show_all();
-    }
+    _tbox.set_data( data.token_text );
   }
 
 }

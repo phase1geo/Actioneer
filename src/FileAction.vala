@@ -3,6 +3,7 @@ public enum FileActionType {
   COPY,
   RENAME,
   ALIAS,
+  SUBFOLDER,
   UPLOAD,
   COMPRESS,
   DECOMPRESS,
@@ -25,6 +26,7 @@ public enum FileActionType {
       case COPY        :  return( "copy" );
       case RENAME      :  return( "rename" );
       case ALIAS       :  return( "alias" );
+      case SUBFOLDER   :  return( "subfolder" );
       case UPLOAD      :  return( "upload" );
       case COMPRESS    :  return( "compress" );
       case DECOMPRESS  :  return( "decompress" );
@@ -49,6 +51,7 @@ public enum FileActionType {
       case COPY        :  return( _( "Copy" ) );
       case RENAME      :  return( _( "Rename" ) );
       case ALIAS       :  return( _( "Alias" ) );
+      case SUBFOLDER   :  return( _( "Move To Subfolder" ) );
       case UPLOAD      :  return( _( "Upload" ) );
       case COMPRESS    :  return( _( "Compress" ) );
       case DECOMPRESS  :  return( _( "Decompress" ) );
@@ -73,6 +76,7 @@ public enum FileActionType {
       case COPY        :  return( _( "to folder" ) );
       case RENAME      :  return( _( "file as" ) );
       case ALIAS       :  return( _( "from folder" ) );
+      case SUBFOLDER   :  return( _( "of folder" ) );
       case UPLOAD      :  return( _( "to" ) );
       case COMPRESS    :  return( _( "file to format" ) );
       case DECOMPRESS  :  return( _( "compressed file" ) );
@@ -97,6 +101,7 @@ public enum FileActionType {
       case "copy"        :  return( COPY );
       case "rename"      :  return( RENAME );
       case "alias"       :  return( ALIAS );
+      case "subfolder"   :  return( SUBFOLDER );
       case "upload"      :  return( UPLOAD );
       case "compress"    :  return( COMPRESS );
       case "decompress"  :  return( DECOMPRESS );
@@ -132,7 +137,7 @@ public enum FileActionType {
   }
 
   public bool add_separator_after() {
-    return( (this == ALIAS) ||
+    return( (this == SUBFOLDER) ||
             (this == UPLOAD) ||
             (this == DECOMPRESS) ||
             (this == TRASH) ||
@@ -164,6 +169,16 @@ public enum FileActionType {
     var nfile = File.new_for_path( Path.build_filename( new_file.get_path(), ofile.get_basename() ) );
     return( (!FileUtils.test( nfile.get_path(), FileTest.EXISTS ) &&
              nfile.make_symbolic_link( ofile.get_path() )) ? pathname : null );
+  }
+
+  private string? do_subfolder( string pathname, TokenText token_text ) {
+    var ofile  = File.new_for_path( pathname );
+    var ndir   = token_text.generate_text( ofile );
+    if( DirUtils.create_with_parents( ndir, 0755 ) < 0 ) {
+      return( null );
+    }
+    var nfile  = File.new_for_path( Path.build_filename( ndir, ofile.get_basename() ) );
+    return( ofile.move( nfile, FileCopyFlags.NONE ) ? nfile.get_path() : null );
   }
 
   private string? do_compress( string pathname, FileCompress comp ) {
@@ -274,6 +289,7 @@ public enum FileActionType {
       case COPY        :  return( do_copy( pathname, new_file ) );
       case RENAME      :  return( do_rename( pathname, token_text ) );
       case ALIAS       :  return( do_alias( pathname, new_file ) );
+      case SUBFOLDER   :  return( do_subfolder( pathname, token_text ) );
       case UPLOAD      :  return( yield do_upload( pathname, conn ) );
       case COMPRESS    :  return( do_compress( pathname, comp ) );
       case DECOMPRESS  :  return( do_decompress( pathname ) );
@@ -304,6 +320,7 @@ public enum FileActionType {
   public bool is_tokenized() {
     switch( this ) {
       case RENAME     :
+      case SUBFOLDER  :
       case NOTIFY     :
       case ADD_TAG    :
       case REMOVE_TAG :

@@ -5,11 +5,13 @@ sources += files(
     'DirectoryList.vala',
     'EditServer.vala',
     'EnableList.vala',
+    'FileEntry.vala',
     'PinList.vala',
     'RuleForm.vala',
     'RuleList.vala',
     'RuleStack.vala',
-    'SearchPanel.vala'
+    'SearchPanel.vala',
+    'TokenTextBox.vala'
 )
 
 subdir('actions')

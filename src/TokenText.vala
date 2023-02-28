@@ -1,5 +1,7 @@
 public enum TextTokenType {
   TEXT,
+  DIR_SEP,
+  FILE_PARENT,
   FILE_FULL,
   FILE_BASE,
   FILE_EXT,
@@ -16,6 +18,8 @@ public enum TextTokenType {
   public string to_string() {
     switch( this ) {
       case TEXT         :  return( "text" );
+      case DIR_SEP      :  return( "sep" );
+      case FILE_PARENT  :  return( "file-parent" );
       case FILE_FULL    :  return( "file-full" );
       case FILE_BASE    :  return( "file-base" );
       case FILE_EXT     :  return( "file-ext" );
@@ -33,25 +37,29 @@ public enum TextTokenType {
 
   public static TextTokenType parse( string val ) {
     switch( val ) {
-      case "text"       :  return( TEXT );
-      case "file-full"  :  return( FILE_FULL );
-      case "file-base"  :  return( FILE_BASE );
-      case "file-ext"   :  return( FILE_EXT );
-      case "file-cdate" :  return( FILE_CDATE );
-      case "file-mdate" :  return( FILE_MDATE );
-      case "today"      :  return( TODAY );
-      case "file-owner" :  return( FILE_OWNER );
-      case "file-group" :  return( FILE_GROUP );
-      case "unique-id"  :  return( UNIQUE_ID );
-      case "img-width"  :  return( IMAGE_WIDTH );
-      case "img-height" :  return( IMAGE_HEIGHT );
-      default           :  assert_not_reached();
+      case "text"        :  return( TEXT );
+      case "sep"         :  return( DIR_SEP );
+      case "file-parent" :  return( FILE_PARENT );
+      case "file-full"   :  return( FILE_FULL );
+      case "file-base"   :  return( FILE_BASE );
+      case "file-ext"    :  return( FILE_EXT );
+      case "file-cdate"  :  return( FILE_CDATE );
+      case "file-mdate"  :  return( FILE_MDATE );
+      case "today"       :  return( TODAY );
+      case "file-owner"  :  return( FILE_OWNER );
+      case "file-group"  :  return( FILE_GROUP );
+      case "unique-id"   :  return( UNIQUE_ID );
+      case "img-width"   :  return( IMAGE_WIDTH );
+      case "img-height"  :  return( IMAGE_HEIGHT );
+      default            :  assert_not_reached();
     }
   }
 
   public string label() {
     switch( this ) {
       case TEXT         :  return( _( "Text" ) );
+      case DIR_SEP      :  return( _( "Directory Separator" ) );
+      case FILE_PARENT  :  return( _( "Parent Directory" ) );
       case FILE_FULL    :  return( _( "Filename" ) );
       case FILE_BASE    :  return( _( "Basename" ) );
       case FILE_EXT     :  return( _( "Extension" ) );
@@ -70,6 +78,8 @@ public enum TextTokenType {
   public string convert( File file, string date_pattern ) {
     switch( this ) {
       case TEXT         :  return( date_pattern );
+      case DIR_SEP      :  return( Path.DIR_SEPARATOR_S );
+      case FILE_PARENT  :  return( Utils.file_fullname( file.get_parent().get_path() ) );
       case FILE_FULL    :  return( Utils.file_fullname( file.get_path() ) );
       case FILE_BASE    :  return( Utils.file_name( file.get_path() ) );
       case FILE_EXT     :  return( Utils.file_extension( file.get_path() ) );
@@ -89,8 +99,13 @@ public enum TextTokenType {
     return( this == TEXT );
   }
 
+  public bool is_separator() {
+    return( this == DIR_SEP );
+  }
+
   public bool is_file_part() {
     switch( this ) {
+      case FILE_PARENT  :
       case FILE_FULL    :
       case FILE_BASE    :
       case FILE_EXT     :
