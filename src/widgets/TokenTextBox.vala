@@ -222,8 +222,13 @@ public class TokenTextBox : Box {
   private Widget insert_button( TextTokenType type, TextTokenModifier mod, TextTokenFormat fmt ) {
     var is_id  = (type == TextTokenType.UNIQUE_ID);
     var is_sep = (type == TextTokenType.DIR_SEP);
-    var btn    = new Button.with_label( is_sep ? Path.DIR_SEPARATOR_S :
-                                        is_id  ? fmt.label() : mod.format( type.label() ) );
+    var label  = mod.format( type.label() );
+    if( is_sep ) {
+      label = Path.DIR_SEPARATOR_S;
+    } else if( is_id ) {
+      label = fmt.label();
+    }
+    var btn = new Button.with_label( label );
     btn.get_style_context().add_class( "circular" );
     btn.get_style_context().add_class( "token" );
     btn.button_press_event.connect((e) => {

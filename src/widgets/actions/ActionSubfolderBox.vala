@@ -28,7 +28,9 @@ public class ActionSubfolderBox : ActionBase {
   public override FileAction get_data() {
     var data = new FileAction.with_type( _type );
     var dir  = new TextToken.with_text( _entry.text );
+    var sep  = new TextToken.with_type( TextTokenType.DIR_SEP );
     data.token_text.add_token( dir );
+    data.token_text.add_token( sep );
     _tbox.get_data( data.token_text );
     return( data );
   }
@@ -37,7 +39,7 @@ public class ActionSubfolderBox : ActionBase {
     var token = data.token_text.get_token( 0 );
     if( token.token_type == TextTokenType.TEXT ) {
       _entry.text = token.text;
-      _tbox.set_data( data.token_text, 1 );
+      _tbox.set_data( data.token_text, 2 );
     }
   }
 
