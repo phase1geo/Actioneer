@@ -12,6 +12,7 @@ public class TokenTextBox : Box {
   private Box      _tbox;
   private Revealer _add_reveal;
   private bool     _id_used = false;
+  private Widget?  _current = null;
 
   /* Default constructor */
   public TokenTextBox() {
@@ -67,6 +68,23 @@ public class TokenTextBox : Box {
   public void insert_token( int index, TextTokenType type, string? text, TextTokenModifier modifier, TextTokenFormat format ) {
     _add_reveal.reveal_child = false;
     var w = (type == TextTokenType.TEXT) ? insert_text( text ) : insert_button( type, modifier, format );
+    w.key_press_event.connect((e) => {
+      var control = (bool)(e.state & ModifierType.CONTROL_MASK);
+      if( control ) {
+        switch( e.keyval ) {
+          case Gdk.Key.Left  :  move_token( -1 );  break;
+          case Gdk.Key.Right :  move_token(  1 );  break;
+        }
+      } else {
+        switch( e.keyval ) {
+          case Gdk.Key.Left   :  change_select( -1 );   break;
+          case Gdk.Key.Right  :  change_select(  1 );   break;
+          case Gdk.Key.Escape :  select_token( null );  break;
+          case Gdk.Key.Delete :  stdout.printf( "Deleting current token\n" );  break;
+        }
+      }
+      return( true );
+    });
     _tbox.pack_start( w, false, false, 0 );
     if( (index + 1) < _tbox.get_children().length() ) {
       _tbox.reorder_child( w, index );
@@ -193,6 +211,7 @@ public class TokenTextBox : Box {
     var ebox = new EventBox();
     ebox.add( frame );
     ebox.button_press_event.connect((e) => {
+      select_token( ebox );
       if( e.button == Gdk.BUTTON_PRIMARY ) {
         // Start a drag event?
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
@@ -232,6 +251,7 @@ public class TokenTextBox : Box {
     btn.get_style_context().add_class( "circular" );
     btn.get_style_context().add_class( "token" );
     btn.button_press_event.connect((e) => {
+      select_token( btn );
       if( e.button == Gdk.BUTTON_PRIMARY ) {
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
         var menu = new Gtk.Menu();
@@ -251,6 +271,51 @@ public class TokenTextBox : Box {
       _id_used = true;
     }
     return( btn );
+  }
+
+  private void select_token( Widget? token ) {
+    if( _current != null ) {
+      var ebox = _current as EventBox;
+      if( ebox != null ) {
+        ebox.get_children().nth_data( 0 ).get_style_context().remove_class( "selected" );
+      } else {
+        _current.get_style_context().remove_class( "selected" );
+      }
+    }
+    if( token != null ) {
+      var ebox = token as EventBox;
+      if( ebox != null ) {
+        ebox.get_children().nth_data( 0 ).get_style_context().add_class( "selected" );
+      } else {
+        token.get_style_context().add_class( "selected" );
+      }
+    }
+    _current = token;
+    _current.grab_focus();
+  }
+
+  private int get_current_pos() {
+    int index = 0;
+    for( int i=0; i<_tbox.get_children().length(); i++ ) {
+      if( _tbox.get_children().nth_data( i ) == _current ) {
+        return( i );
+      }
+    }
+    return( -1 );
+  }
+
+  private void move_token( int dir ) {
+    var pos = get_current_pos();
+    if( ((pos + dir) >= 0) && ((pos + dir) < _tbox.get_children().length()) ) {
+      _tbox.reorder_child( _current, (pos + dir) );
+    }
+  }
+
+  private void change_select( int dir ) {
+    var pos = get_current_pos();
+    if( ((pos + dir) >= 0) && ((pos + dir) < _tbox.get_children().length()) ) {
+      select_token( _tbox.get_children().nth_data( pos + dir ) );
+    }
   }
 
   public void get_data( TokenText token_text ) {
