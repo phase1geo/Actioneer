@@ -77,11 +77,20 @@ public class TokenTextBox : Box {
         }
       } else {
         switch( e.keyval ) {
-          case Gdk.Key.Left   :  change_select( -1 );   break;
-          case Gdk.Key.Right  :  change_select(  1 );   break;
-          case Gdk.Key.Escape :  select_token( null );  break;
-          case Gdk.Key.Delete :  stdout.printf( "Deleting current token\n" );  break;
+          case Gdk.Key.Left      :  change_select( -1 );       break;
+          case Gdk.Key.Right     :  change_select(  1 );       break;
+          case Gdk.Key.Escape    :  select_token( null );      break;
+          case Gdk.Key.Delete    :  remove_token( type, 0 );   break;
+          case Gdk.Key.BackSpace :  remove_token( type, -1 );  break;
+          case Gdk.Key.space     :
+          case Gdk.Key.Down      :  show_contextual_menu( w, type );  break;
         }
+      }
+      return( true );
+    });
+    w.focus_out_event.connect((e) => {
+      if( (w == _current) && (Gtk.Menu.get_for_attach_widget( get_stylized_widget( w ) ).length() == 0) ) {
+        select_token( null );
       }
       return( true );
     });
@@ -137,14 +146,7 @@ public class TokenTextBox : Box {
 
     var remove = new Gtk.MenuItem.with_label( _( "Remove" ) );
     remove.activate.connect(() => {
-      _tbox.remove( w ); 
-      if( _tbox.get_children().length() == 0 ) {
-        _add_reveal.reveal_child = true;
-      }
-      if( type == TextTokenType.UNIQUE_ID ) {
-        _id_used = false;
-      }
-      show_all();
+      remove_token( type, 0 );
     });
 
     menu.add( before );
@@ -172,7 +174,8 @@ public class TokenTextBox : Box {
       var item = new Gtk.MenuItem.with_label( mod.label() );
       item.activate.connect(() => {
         var btn = (Button)w;
-        btn.label = mod.format( btn.label );
+        var nmod = TextTokenModifier.TITLE;
+        btn.label = mod.format( nmod.format( btn.label ) );
       });
       menu.add( item );
     }
@@ -200,6 +203,46 @@ public class TokenTextBox : Box {
 
   }
 
+  private void show_text_context_menu( EventBox ebox ) {
+    var frame = (Frame)ebox.get_child();
+    var label = (Label)frame.get_child();
+    var menu  = new Gtk.Menu();
+    menu.attach_widget = frame;
+    var edit = new Gtk.MenuItem.with_label( _( "Edit..." ) );
+    edit.activate.connect(() => {
+      edit_text( label );
+    });
+    menu.add( edit );
+    menu.add( new SeparatorMenuItem() );
+    add_change_remove( menu, ebox, TextTokenType.TEXT );
+    menu.show_all();
+    menu.popup_at_widget( frame, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
+  }
+
+  private void show_button_context_menu( Button btn, TextTokenType type ) {
+    var is_id  = (type == TextTokenType.UNIQUE_ID);
+    var is_sep = (type == TextTokenType.DIR_SEP);
+    var menu = new Gtk.Menu();
+    menu.attach_widget = btn;
+    if( is_id ) {
+      add_id_format( menu, btn );
+    } else if( !is_sep ) {
+      add_modifiers( menu, btn );
+    }
+    menu.add( new SeparatorMenuItem() );
+    add_change_remove( menu, btn, type );
+    menu.show_all();
+    menu.popup_at_widget( btn, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
+  }
+
+  private void show_contextual_menu( Widget w, TextTokenType type ) {
+    if( (w as Button) != null ) {
+      show_button_context_menu( (w as Button), type );
+    } else {
+      show_text_context_menu( (w as EventBox) );
+    }
+  }
+
   /* Inserts a text entry */
   private Widget insert_text( string? text ) {
     var label = new Label( text ?? "" );
@@ -209,22 +252,14 @@ public class TokenTextBox : Box {
     frame.add( label );
     frame.get_style_context().add_class( "token" );
     var ebox = new EventBox();
+    ebox.can_focus = true;
     ebox.add( frame );
     ebox.button_press_event.connect((e) => {
       select_token( ebox );
       if( e.button == Gdk.BUTTON_PRIMARY ) {
         // Start a drag event?
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
-        var menu = new Gtk.Menu();
-        var edit = new Gtk.MenuItem.with_label( _( "Edit..." ) );
-        edit.activate.connect(() => {
-          edit_text( label );
-        });
-        menu.add( edit );
-        menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, ebox, TextTokenType.TEXT );
-        menu.show_all();
-        menu.popup_at_widget( frame, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
+        show_text_context_menu( ebox );
       }
       return( true );
     });
@@ -254,16 +289,7 @@ public class TokenTextBox : Box {
       select_token( btn );
       if( e.button == Gdk.BUTTON_PRIMARY ) {
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
-        var menu = new Gtk.Menu();
-        if( is_id ) {
-          add_id_format( menu, btn );
-        } else if( !is_sep ) {
-          add_modifiers( menu, btn );
-        }
-        menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, btn, type );
-        menu.show_all();
-        menu.popup_at_widget( btn, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
+        show_button_context_menu( btn, type );
       }
       return( true );
     });
@@ -273,25 +299,55 @@ public class TokenTextBox : Box {
     return( btn );
   }
 
+  private Widget get_stylized_widget( Widget w ) {
+    var ebox = w as EventBox;
+    if( ebox != null ) {
+      return( ebox.get_child() );
+    } else {
+      return( w );
+    }
+  }
+
+  private void remove_token( TextTokenType type, int select_dir ) {
+
+    var next = get_current_pos() + select_dir;
+    if( next == -1 ) {
+      next = 0;
+    } else if( (next + 1) == _tbox.get_children().length() ) {
+      next--;
+    }
+
+    /* Remove the token */
+    _tbox.remove( _current ); 
+
+    /* Reveal the "add" button if the token list is empty */
+    if( _tbox.get_children().length() == 0 ) {
+      _add_reveal.reveal_child = true;
+    } else {
+      select_token( _tbox.get_children().nth_data( next ) );
+    }
+
+    /* If the UNIQUE_ID token is removed, clear the id_used indicator */
+    if( type == TextTokenType.UNIQUE_ID ) {
+      _id_used = false;
+    }
+
+    /* Update the UI */
+    show_all();
+
+  }
+
   private void select_token( Widget? token ) {
     if( _current != null ) {
-      var ebox = _current as EventBox;
-      if( ebox != null ) {
-        ebox.get_children().nth_data( 0 ).get_style_context().remove_class( "selected" );
-      } else {
-        _current.get_style_context().remove_class( "selected" );
-      }
+      get_stylized_widget( _current ).get_style_context().remove_class( "selected" );
     }
     if( token != null ) {
-      var ebox = token as EventBox;
-      if( ebox != null ) {
-        ebox.get_children().nth_data( 0 ).get_style_context().add_class( "selected" );
-      } else {
-        token.get_style_context().add_class( "selected" );
-      }
+      get_stylized_widget( token ).get_style_context().add_class( "selected" );
     }
     _current = token;
-    _current.grab_focus();
+    if( _current != null ) {
+      _current.grab_focus();
+    }
   }
 
   private int get_current_pos() {

@@ -167,7 +167,7 @@ public enum TextTokenModifier {
       case NONE  :  return( val );
       case LOWER :  return( val.down() );
       case UPPER :  return( val.up() );
-      case TITLE :  return( val.splice( 0, 0, val.slice( 0, 0 ).up() ) );
+      case TITLE :  return( val.down().splice( 0, 1, val.slice( 0, 1 ).up() ) );
       default    :  assert_not_reached();
     }
   }
