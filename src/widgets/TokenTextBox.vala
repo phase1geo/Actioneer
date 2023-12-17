@@ -10,9 +10,17 @@ public enum TokenModifyType {
 public class TokenTextBox : Box {
 
   private Box      _tbox;
+  private Overlay  _overlay;
   private Revealer _add_reveal;
   private bool     _id_used = false;
   private Widget?  _current = null;
+
+  private bool       _move = false;
+  private double     _move_offset = 0;
+  private Widget?    _move_item = null;
+  private int        _move_index;
+  private int        _move_last_index;
+  private Allocation _move_alloc;
 
   /* Default constructor */
   public TokenTextBox() {
@@ -38,12 +46,15 @@ public class TokenTextBox : Box {
 
     _tbox = new Box( Orientation.HORIZONTAL, 2 );
 
+    _overlay = new Overlay();
+    _overlay.add( _tbox );
+
     var sw = new ScrolledWindow( null, null );
     sw.hscrollbar_policy = PolicyType.EXTERNAL;
     sw.vscrollbar_policy = PolicyType.NEVER;
     sw.hexpand = true;
     sw.hexpand_set = true;
-    sw.add( _tbox );
+    sw.add( _overlay );
 
     pack_start( sw, true, true, 0 );
 
@@ -64,6 +75,20 @@ public class TokenTextBox : Box {
     return( index );
   }
 
+  private int get_index_for_x( double x ) {
+    var index = -1;
+    var i     = 0;
+    _tbox.get_children().foreach((b) => {
+      Allocation alloc;
+      b.get_allocation( out alloc );
+      if( (alloc.x <= x) && (x < (alloc.x + alloc.width + 10)) ) {
+        index = i;
+      }
+      i++;
+    });
+    return( index );
+  }
+  
   /* Inserts the given token */
   public void insert_token( int index, TextTokenType type, string? text, TextTokenModifier modifier, TextTokenFormat format ) {
     _add_reveal.reveal_child = false;
@@ -91,6 +116,48 @@ public class TokenTextBox : Box {
     w.focus_out_event.connect((e) => {
       if( (w == _current) && (Gtk.Menu.get_for_attach_widget( get_stylized_widget( w ) ).length() == 0) ) {
         select_token( null );
+      }
+      return( true );
+    });
+    w.button_press_event.connect((e) => {
+      if( e.button == Gdk.BUTTON_PRIMARY ) {
+        _move = true;
+        _move_index = get_index( w );
+        _move_last_index = _move_index;
+        w.opacity = 0.0;
+        w.get_allocation( out _move_alloc );
+        _move_offset = e.x;
+        _move_item = copy_widget( w );
+        _move_item.margin_left = _move_alloc.x;
+        _move_item.halign      = Align.START;
+        _move_item.valign      = Align.FILL;
+        _overlay.add_overlay( _move_item );
+        _overlay.show_all();
+      }
+      return( true );
+    });
+    w.button_release_event.connect((e) => {
+      if( _move ) {
+        w.opacity = 1.0;
+        _overlay.remove( _move_item );
+        _overlay.show_all();
+        _move = false;
+      }
+      return( true );
+    });
+    w.motion_notify_event.connect((e) => {
+      if( _move ) {
+        var idx  = get_index_for_x( e.x );
+        var left = (int)((e.x - _move_offset) + _move_alloc.x);
+        stdout.printf( "e.x: %g, move_offset: %g, move_alloc.x: %g, left: %d\n", e.x, _move_offset, _move_alloc.x, left );
+        if( (left >= 0) && ((left + _move_alloc.width) < _tbox.get_allocated_width()) ) {
+          _move_item.margin_left = left;
+        }
+        if( idx != _move_last_index ) {
+          _tbox.reorder_child( w, idx );
+          w.get_allocation( out _move_alloc );
+        }
+        _move_last_index = idx;
       }
       return( true );
     });
@@ -255,13 +322,11 @@ public class TokenTextBox : Box {
     ebox.can_focus = true;
     ebox.add( frame );
     ebox.button_press_event.connect((e) => {
-      select_token( ebox );
-      if( e.button == Gdk.BUTTON_PRIMARY ) {
-        // Start a drag event?
-      } else if( e.button == Gdk.BUTTON_SECONDARY ) {
+      if( e.button == Gdk.BUTTON_SECONDARY ) {
+        select_token( ebox );
         show_text_context_menu( ebox );
       }
-      return( true );
+      return( false );
     });
     if( text == null ) {
       Idle.add(() => {
@@ -286,12 +351,11 @@ public class TokenTextBox : Box {
     btn.get_style_context().add_class( "circular" );
     btn.get_style_context().add_class( "token" );
     btn.button_press_event.connect((e) => {
-      select_token( btn );
-      if( e.button == Gdk.BUTTON_PRIMARY ) {
-      } else if( e.button == Gdk.BUTTON_SECONDARY ) {
+      if( e.button == Gdk.BUTTON_SECONDARY ) {
+        select_token( btn );
         show_button_context_menu( btn, type );
       }
-      return( true );
+      return( false );
     });
     if( is_id ) {
       _id_used = true;
@@ -305,6 +369,27 @@ public class TokenTextBox : Box {
       return( ebox.get_child() );
     } else {
       return( w );
+    }
+  }
+
+  private Widget copy_widget( Widget w ) {
+    var ebox = w as EventBox;
+    if( ebox != null ) {
+      var frame      = (Frame)ebox.get_child();
+      var orig_label = (Label)frame.get_child();
+      var new_label  = new Label( orig_label.label );
+      new_label.margin_left  = 3;
+      new_label.margin_right = 3;
+      var new_frame = new Frame( null );
+      new_frame.add( new_label );
+      new_frame.get_style_context().add_class( "token" );
+      return( new_frame );
+    } else {
+      var orig_btn = (Button)w;
+      var new_btn  = new Button.with_label( orig_btn.label );
+      new_btn.get_style_context().add_class( "circular" );
+      new_btn.get_style_context().add_class( "token" );
+      return( new_btn );
     }
   }
 
