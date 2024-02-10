@@ -23,7 +23,7 @@ using Gtk;
 using Gdk;
 using GLib;
 
-public class Actioneer : Granite.Application {
+public class Actioneer : Gtk.Application {
 
   private const string INTERFACE_SCHEMA = "org.gnome.desktop.interface";
 

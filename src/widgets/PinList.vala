@@ -23,10 +23,6 @@ using Gtk;
 
 public class PinList : EnableList {
 
-  public static const Gtk.TargetEntry[] DRAG_TARGETS = {
-    {"text/uri-list", 0, DragTypes.URI},
-  };
-
   private Box _current_box;
 
   public signal void execute( int index, string fname );
@@ -36,38 +32,32 @@ public class PinList : EnableList {
 
     base( w );
 
-    /* Set ourselves up to be a drag target */
-    Gtk.drag_dest_set( list_box, DestDefaults.MOTION | DestDefaults.DROP, DRAG_TARGETS, Gdk.DragAction.COPY );
-    list_box.drag_motion.connect( handle_drag_motion );
-    list_box.drag_data_received.connect( handle_drag_data_received );
-    list_box.drag_leave.connect( handle_drag_leave );
+    var drop = new DropTarget( Type.STRING, Gdk.DragAction.COPY );
 
-  }
-
-  private bool handle_drag_motion( Gdk.DragContext ctx, int x, int y, uint t ) {
-    return( highlight_row( (double)y ) );
-  }
-
-  private void handle_drag_data_received( Gdk.DragContext ctx, int x, int y, Gtk.SelectionData data, uint info, uint t ) {
-    if( info == DragTypes.URI ) {
+    drop.motion.connect((x, y) => {
+      return( highlight_row( y ) ? Gdk.DragAction.COPY : 0 );
+    });
+    drop.leave.connect(() => {
       if( _current_box != null ) {
-        var index = get_index_for_y( (double)y );
-        foreach (var uri in data.get_uris()) {
-          var fname = Filename.from_uri( uri );
-          execute( index, fname );
-        }
+        _current_box.get_style_context().remove_class( "rulelist-droppable" );
       }
-    }
-    if( _current_box != null ) {
-      _current_box.get_style_context().remove_class( "rulelist-droppable" );
-    }
-    Gtk.drag_finish( ctx, true, false, t );
+    });
+    drop.drop.connect( handle_drop );
+
+    add_controller( drop );
+
   }
 
-  private void handle_drag_leave( Gdk.DragContext ctx, uint t ) {
+  private bool handle_drop( Value val, double x, int y ) {
     if( _current_box != null ) {
+      var index = get_index_for_y( y );
+      var uri   = val.get_string();
+      var fname = Filename.from_uri( uri );
+      execute( index, fname );
       _current_box.get_style_context().remove_class( "rulelist-droppable" );
+      return( true );
     }
+    return( false );
   }
 
   /* Causes the given row to be selected */

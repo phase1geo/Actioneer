@@ -35,7 +35,7 @@ public class EnableList : Box {
   private Allocation  _move_alloc;
   private double      _move_offset;
   private int         _select_index     = -1;
-  private Gtk.Menu    _ctx_menu         = null;
+  private GLib.Menu   _ctx_menu         = null;
   private bool        _search_mode      = false;
 
   protected MainWindow win;
@@ -238,7 +238,7 @@ public class EnableList : Box {
   }
 
   /* Allows the derived class to display a contextual menu */
-  protected virtual Gtk.Menu? get_contextual_menu( int index ) {
+  protected virtual GLib.Menu? get_contextual_menu( int index ) {
     return( null );
   }
 

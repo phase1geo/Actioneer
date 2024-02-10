@@ -23,11 +23,13 @@ using Gtk;
 
 public class RuleList : EnableList {
 
-  public static const Gtk.TargetEntry[] DRAG_TARGETS = {
-    {"text/uri-list", 0, DragTypes.URI},
-  };
-
   private Box _current_box;
+
+  private const GLib.ActionEntry[] action_entries = {
+    { "action_duplicate",      action_duplicate,      "d" },
+    { "action_move_directory", action_move_directory, "s" },
+    { "action_copy_directory", action_copy_directory, "s" },
+  };
 
   public signal void execute( int index, string fname );
   public signal bool duplicated( int index, ref bool enable, ref string label );
@@ -40,92 +42,106 @@ public class RuleList : EnableList {
     base( w );
 
     /* Set ourselves up to be a drag target */
-    Gtk.drag_dest_set( list_box, DestDefaults.MOTION | DestDefaults.DROP, DRAG_TARGETS, Gdk.DragAction.COPY );
-    list_box.drag_motion.connect( handle_drag_motion );
-    list_box.drag_data_received.connect( handle_drag_data_received );
-    list_box.drag_leave.connect( handle_drag_leave );
-
-  }
-
-  private bool handle_drag_motion( Gdk.DragContext ctx, int x, int y, uint t ) {
-    return( highlight_row( (double)y ) );
-  }
-
-  private void handle_drag_data_received( Gdk.DragContext ctx, int x, int y, Gtk.SelectionData data, uint info, uint t ) {
-    if( info == DragTypes.URI ) {
+    var drop = new DropTarget( Type.STRING, Gdk.DragAction.COPY );
+    drop.motion.connect((x, y) => {
+      return( highlight_row( y ) ? Gdk.DragAction.COPY : 0 );
+    });
+    drop.leave.connect(() => {
       if( _current_box != null ) {
-        var index = get_index_for_y( (double)y );
-        foreach (var uri in data.get_uris()) {
-          var fname = Filename.from_uri( uri );
-          execute( index, fname );
-        }
+        _current_box.get_style_context().remove_class( "rulelist-droppable" );
+      }
+    });
+    drop.drop.connect( handle_drop );
+
+    add_controller( drop );
+
+    /* Set the stage for menu actions */
+    var actions = new SimpleActionGroup ();
+    actions.add_action_entries( action_entries, this );
+    insert_action_group( "rulelist", actions );
+
+  }
+
+  private bool handle_drop( Value val, double x, double y ) {
+    if( _current_box != null ) {
+      var index = get_index_for_y( (double)y );
+      var uri   = val.get_string();
+      var fname = Filename.from_uri( uri );
+      execute( index, fname );
+      _current_box.get_style_context().remove_class( "rulelist-droppable" );
+      return( true );
+    }
+    return( false );
+  }
+
+  /* Populates and returns the contextual menu */
+  protected override GLib.Menu? get_contextual_menu( int index ) {
+
+    var dup_menu = new GLib.Menu();
+    dup_menu.append( _( "Duplicate" ), "rulelist.action_duplicate('%d')".printf( index ) );
+
+    var move_menu = new GLib.Menu();
+    var copy_menu = new GLib.Menu();
+    var dirs      = win.get_app().dirlist;
+
+    for( int i=0; i<dirs.size(); i++ ) {
+      int dir_index = i;
+      if( dirs.get_directory( i ) != dirs.current_dir ) {
+        move_menu.append( dirs.get_directory( i ).dirname, "action_move_directory('%d:%d')".printf( index, i ) );
+        copy_menu.append( dirs.get_directory( i ).dirname, "action_copy_directory('%d:%d')".printf( index, i ) );
       }
     }
-    if( _current_box != null ) {
-      _current_box.get_style_context().remove_class( "rulelist-droppable" );
-    }
-    Gtk.drag_finish( ctx, true, false, t );
+
+    var other_menu = new GLib.Menu();
+    other_menu.append_submenu( _( "Move To Directory" ), move_menu );
+    other_menu.append_submenu( _( "Copy To Directory" ), copy_menu );
+
+    var menu = new GLib.Menu();
+    menu.append_section( null, dup_menu );
+    menu.append_section( null, other_menu );
+
+    return( menu );
+
   }
 
-  private void handle_drag_leave( Gdk.DragContext ctx, uint t ) {
-    if( _current_box != null ) {
-      _current_box.get_style_context().remove_class( "rulelist-droppable" );
-    }
-  }
-
-  protected override Gtk.Menu? get_contextual_menu( int index ) {
-
-    var menu = new Gtk.Menu();
-
-    var dup = new Gtk.MenuItem.with_label( _( "Duplicate" ) );
-    dup.activate.connect(() => {
-      bool   enable = true;
-      string label  = "";
+  /* Performs duplication action */
+  private void action_duplicate( SimpleAction action, Variant? variant ) {
+    if( variant != null ) {
+      var index  = variant.get_int32();
+      var enable = true;
+      var label  = "";
       if( duplicated( index, ref enable, ref label ) ) {
         var row = (int)list_box.get_children().length();
         add_row( enable, label, true );
         select_row( row );
         selected( row );
       }
-    });
-
-    var move_menu = new Gtk.Menu();
-    var copy_menu = new Gtk.Menu();
-    var dirs = win.get_app().dirlist;
-
-    for( int i=0; i<dirs.size(); i++ ) {
-      int dir_index = i;
-      if( dirs.get_directory( i ) != dirs.current_dir ) {
-        var move_dir = new Gtk.MenuItem.with_label( dirs.get_directory( i ).dirname );
-        move_dir.activate.connect(() => {
-          move_rule( index, dir_index );
-          select_row( -1 );
-          list_box.remove( list_box.get_children().nth_data( index ) );
-          selected( -1 );
-        });
-        var copy_dir = new Gtk.MenuItem.with_label( dirs.get_directory( i ).dirname );
-        copy_dir.activate.connect(() => {
-          copy_rule( index, dir_index );
-        });
-        move_menu.add( move_dir );
-        copy_menu.add( copy_dir );
-      }
     }
+  }
 
-    var move = new Gtk.MenuItem.with_label( _( "Move To Directory" ) );
-    move.set_submenu( move_menu );
+  /* Moves the directory */
+  private void action_move_directory( SimpleAction action, Variant? variant ) {
+    if( variant != null ) {
+      var val       = variant.get_string();
+      var vals      = val.split( ":" );
+      var index     = int.parse( vals[0] );
+      var dir_index = int.parse( vals[1] );
+      move_rule( index, dir_index );
+      select_row( -1 );
+      list_box.remove( list_box.get_children().nth_data( index ) );
+      selected( -1 );
+    }
+  }
 
-    var copy = new Gtk.MenuItem.with_label( _( "Copy To Directory" ) );
-    copy.set_submenu( copy_menu );
-
-    menu.add( dup );
-    menu.add( new Gtk.SeparatorMenuItem() );
-    menu.add( move );
-    menu.add( copy );
-    menu.show_all();
-
-    return( menu );
-
+  /* Copies the directory */
+  private void action_copy_directory( SimpleAction action, Variant? variant ) {
+    if( variant != null ) {
+      var val       = variant.get_string();
+      var vals      = val.split( ":" );
+      var index     = int.parse( vals[0] );
+      var dir_index = int.parse( vals[1] );
+      copy_rule( index, dir_index );
+    }
   }
 
   /* Causes the given row to be selected */

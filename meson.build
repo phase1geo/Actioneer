@@ -35,25 +35,10 @@ subdir('po')
 subdir('src')
 subdir('tests')
 
-# If the GTK version is higher than 3.22, add a define to indicate that
-gtk_dep = dependency('gtk+-3.0')
-if gtk_dep.version().version_compare('>=3.22.0')
-  add_project_arguments(['--define=GTK322'], language: 'vala')
-endif
-
 # If the valac version is greater than or equal to 0.48, add a define for cross-compile purposes
 if meson.get_compiler('vala').version().version_compare('>=0.48.0')
   add_project_arguments(['--define=VALAC048'], language: 'vala')
   message('Using VALAC048')
-endif
-
-# Check the granite dependency
-granite = dependency('granite', version: '>=6.0', required: false)
-if granite.found()
-  add_project_arguments(['--define=GRANITE_6_OR_LATER'], language: 'vala')
-else
-  granite = dependency('granite', required: true)
-  message('Using older version of granite')
 endif
 
 add_project_arguments([
@@ -67,10 +52,9 @@ dependencies = [
     dependency('gobject-2.0'),
     dependency('glib-2.0'),
     dependency('gee-0.8'),
-    granite,
-    dependency('gtk+-3.0'),
+    dependency('gtk4'),
+    dependency('granite-7'),
     dependency('libxml-2.0'),
-    dependency('libhandy-1'),
     dependency('libsecret-1')
 ]
 

@@ -5,7 +5,7 @@ public class SearchPanel : Revealer {
 
   private MainWindow       _win;
   private SearchEntry      _entry;
-  private Gtk.Menu         _history;
+  private GLib.Menu        _history;
   private MenuButton       _history_btn;
   private SList<SearchCompletion> _completers;
 
@@ -18,7 +18,7 @@ public class SearchPanel : Revealer {
     Object( reveal_child: false );
 
     _win     = win;
-    _history = new Gtk.Menu();
+    _history = new GLib.Menu();
 
     _entry = new SearchEntry();
     _entry.completion = new EntryCompletion();
@@ -94,25 +94,23 @@ public class SearchPanel : Revealer {
   /* Adds the given strings to the search history menu */
   public void set_search_history( SearchHistory history ) {
 
-    /* Clear the history menu */
-    _history.get_children().foreach((item) => {
-      _history.remove( item );
-    });
+    _history.remove_all();
 
     /* Populate the history menu */
     for( int i=0; i<history.size(); i++ ) {
       var text = history.get_item( i );
-      var item = new Gtk.MenuItem.with_label( text );
-      item.activate.connect(() => {
-        _entry.text = text;
-      });
-      _history.add( item );
+      _history.append( text, "action_history('%s')".printf( text ) );
     }
-    _history.show_all();
 
     /* If we have no history to show, grey out the history button */
     _history_btn.set_sensitive( history.size() > 0 );
 
+  }
+
+  private void action_history( SimpleAction action, Variant? variant ) {
+    if( variant != null ) {
+      _entry.text = variant.get_string();
+    }
   }
 
   /* Called when this widget is requested by the user to begin a search */

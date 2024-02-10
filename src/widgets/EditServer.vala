@@ -22,7 +22,7 @@
 using Gtk;
 using Gdk;
 
-public class EditServer : Hdy.ApplicationWindow {
+public class EditServer : ApplicationWindow {
 
   public signal void completed( int index );
 

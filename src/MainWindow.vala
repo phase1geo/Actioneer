@@ -22,13 +22,12 @@
 using Gtk;
 using Gdk;
 
-public class MainWindow : Hdy.ApplicationWindow {
+public class MainWindow : Gtk.ApplicationWindow {
 
   private GLib.Settings   _settings;
-  private Hdy.HeaderBar   _left_header;
-  private Hdy.HeaderBar   _right_header;
+  private HeaderBar       _left_header;
+  private HeaderBar       _right_header;
   private Switch          _enable;
-  private Gtk.AccelGroup? _accel_group = null;
   private DirectoryList   _dir_list;
   private RuleList        _rule_list;
   private RuleStack       _rule_stack;
@@ -90,14 +89,8 @@ public class MainWindow : Hdy.ApplicationWindow {
 
     _settings = settings;
 
-    var window_x = settings.get_int( "window-x" );
-    var window_y = settings.get_int( "window-y" );
     var window_w = settings.get_int( "window-w" );
     var window_h = settings.get_int( "window-h" );
-
-    /* Create the accelerator group for the window */
-    _accel_group = new Gtk.AccelGroup();
-    this.add_accel_group( _accel_group );
 
     /* Set the main window data */
     title = _( "Actioneer" );
@@ -117,7 +110,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     add_keyboard_shortcuts( app );
 
     /* Create the header bar */
-    _left_header = new Hdy.HeaderBar();
+    _left_header = new HeaderBar();
     _left_header.set_show_close_button( false );
     populate_left_header();
 
@@ -140,7 +133,7 @@ public class MainWindow : Hdy.ApplicationWindow {
     left_panel.pack_start( _left_header, false, true, 0 );
     left_panel.pack_start( _list_stack,  true,  true, 0 );
 
-    _right_header = new Hdy.HeaderBar();
+    _right_header = new HeaderBar();
     _right_header.set_show_close_button( true );
     populate_right_header();
 
@@ -192,10 +185,6 @@ public class MainWindow : Hdy.ApplicationWindow {
       STYLE_PROVIDER_PRIORITY_APPLICATION
     );
 
-  }
-
-  static construct {
-    Hdy.init();
   }
 
   /* Adds keyboard shortcuts for the menu actions */

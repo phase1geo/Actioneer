@@ -27,36 +27,30 @@ public enum DragTypes {
 
 public class DirectoryList : EnableList {
 
-  public static const Gtk.TargetEntry[] DRAG_TARGETS = {
-    {"text/uri-list", 0, DragTypes.URI},
-  };
-
   /* Create the main window UI */
   public DirectoryList( MainWindow w ) {
 
     base( w );
 
-    /* Set ourselves up to be a drag target */
-    Gtk.drag_dest_set( this, DestDefaults.MOTION | DestDefaults.DROP, DRAG_TARGETS, Gdk.DragAction.COPY );
-    drag_motion.connect( handle_drag_motion );
-    drag_data_received.connect( handle_drag_data_received );
+    var drop = new DropTarget( Type.STRING, Gdk.DragAction.COPY );
+
+    drop.motion.connect((x, y) => {
+      return( Gdk.DragAction.COPY );
+    });
+    drop.drop.connect((val, x, y) => {
+    });
+
+    add_controller( drop );
 
   }
 
-  private bool handle_drag_motion( Gdk.DragContext ctx, int x, int y, uint t ) {
-    return( true );
-  }
-
-  private void handle_drag_data_received( Gdk.DragContext ctx, int x, int y, Gtk.SelectionData data, uint info, uint t ) {
-    if( info == DragTypes.URI ) {
-      foreach (var uri in data.get_uris()) {
-        var fname = Filename.from_uri( uri );
-        if( added( fname ) ) {
-          add_row( true, fname, true );
-        }
-      }
+  private bool handle_drag_data_received( Value val, double x, double y ) {
+    var fname = Filename.from_uri( val.get_string() );
+    if( added( fname ) ) {
+      add_row( true, fname, true );
+      return( true );
     }
-    Gtk.drag_finish( ctx, true, false, t );
+    return( false );
   }
 
   protected override Pango.EllipsizeMode ellipsize_mode() {

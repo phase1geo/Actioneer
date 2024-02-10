@@ -19,34 +19,36 @@ public class ActionRenameBox : ActionBase {
     base( type );
 
     var label = new Label( type.pretext() );
-    pack_start( label, false, false, 0 );
 
-    var add = new Button.from_icon_name( "list-add-symbolic", IconSize.SMALL_TOOLBAR );
-    add.set_tooltip_text( _( "Click to select filename rename token" ) );
+    GLib.Menu menu;
+    add_token_menu( out menu, null, TokenModifyType.BEFORE );
+
+    var add = new MenuButton() {
+      icon_name    = "list-add-symbolic",
+      tooltip_text = _( "Click to select filename rename token" ),
+      menu_model   = menu
+    };
     add.get_style_context().add_class( "circular" );
     add.get_style_context().add_class( "token" );
-    add.clicked.connect(() => {
-      Gtk.Menu menu;
-      add_token_menu( out menu, null, TokenModifyType.BEFORE );
-      menu.show_all();
-      menu.popup_at_widget( add, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
-    });
-    _add_reveal = new Gtk.Revealer();
-    _add_reveal.transition_type     = RevealerTransitionType.NONE;
-    _add_reveal.transition_duration = 0;
-    _add_reveal.add( add );
-    pack_start( _add_reveal, false, false, 0 );
+
+    _add_reveal = new Gtk.Revealer() {
+      transition_type     = RevealerTransitionType.NONE,
+      transition_duration = 0,
+      child               = add
+    };
 
     _tbox = new Box( Orientation.HORIZONTAL, 2 );
 
-    var sw = new ScrolledWindow( null, null );
-    sw.hscrollbar_policy = PolicyType.EXTERNAL;
-    sw.vscrollbar_policy = PolicyType.NEVER;
-    sw.hexpand = true;
-    sw.hexpand_set = true;
-    sw.add( _tbox );
+    var sw = new ScrolledWindow() {
+      hscrollbar_policy = PolicyType.EXTERNAL,
+      vscrollbar_policy = PolicyType.NEVER,
+      hexpand = true,
+      child = _tbox
+    };
 
-    pack_start( sw, true, true, 0 );
+    append( label );
+    append( _add_reveal );
+    append( sw );
 
     /* Create default tokens */
     insert_token( 0, TextTokenType.FILE_BASE, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
@@ -80,8 +82,8 @@ public class ActionRenameBox : ActionBase {
     }
   }
 
-  private void add_token_menu( out Gtk.Menu menu, Widget? w, TokenModifyType type ) {
-    menu = new Gtk.Menu();
+  private void add_token_menu( out GLib.Menu menu, Widget? w, TokenModifyType type ) {
+    menu = new GLib.Menu();
     for( int i=0; i<TextTokenType.NUM; i++ ) {
       var token_type = (TextTokenType)i;
       if( (token_type == TextTokenType.UNIQUE_ID) && _id_used ) continue;
@@ -101,11 +103,9 @@ public class ActionRenameBox : ActionBase {
             insert_token( index, token_type, null, TextTokenModifier.NONE, TextTokenFormat.NO_ZERO );
             break;
         }
-        show_all();
       });
-      menu.add( item );
+      menu.append( token_type.label(), "rename.action_add_token('%d:%d')".printf( i, i ) );
     }
-    menu.show_all();
   }
 
   private void add_change_remove( Gtk.Menu menu, Widget w, TextTokenType type ) {
