@@ -193,23 +193,14 @@ public class Utils {
     Pixbuf.get_file_info( pathname, out width, out height );
     return( height );
   }
-
-  /* Show the specified popover */
-  public static void show_popover( Popover popover ) {
-#if GTK322
-    popover.popup();
-#else
-    popover.show();
-#endif
-  }
-
-  /* Hide the specified popover */
-  public static void hide_popover( Popover popover ) {
-#if GTK322
-    popover.popdown();
-#else
-    popover.hide();
-#endif
+  
+  /* Returns the child widget at the given index of the parent widget (or null if one does not exist) */
+  public static Widget? get_child_at_index( Widget parent, int index ) {
+    var child = parent.get_first_child();
+    while( (child != null) && (index-- > 0) ) {
+      child = child.get_next_sibling();
+    }
+    return( child );
   }
 
 }

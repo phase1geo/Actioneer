@@ -59,17 +59,18 @@ public class ActionRenameBox : ActionBase {
 
   /* Returns the index of the given widget in the tbox */
   private int get_index( Widget? w ) {
-    var index = -1;
     if( w != null ) {
       var i = 0;
-      _tbox.get_children().foreach((item) => {
-        if( item == w ) {
-          index = i;
-        }
+      var child = _tbox.get_first_child();
+      while( (child != null) && (child != w) ) {
+        child = child.get_next_sibling();
         i++;
-      });
+      }
+      if( child != null ) {
+        return( i );
+      }
     }
-    return( index );
+    return( -1 );
   }
 
   /* Inserts the given token */
@@ -87,6 +88,11 @@ public class ActionRenameBox : ActionBase {
     for( int i=0; i<TextTokenType.NUM; i++ ) {
       var token_type = (TextTokenType)i;
       if( (token_type == TextTokenType.UNIQUE_ID) && _id_used ) continue;
+      switch( type ) {
+        case TokenModifyType.BEFORE  :  menu.append( token_type.label(), "rename.action_add_before(%d)".printf( index ) );  break;
+        case TokenModifyType.AFTER   :  menu.append( token_type.label(), "rename.action_add_after(%d)".printf( index + 1 ) );  break;
+        case TokenModifyType.REPLACE :  menu.append( token_type.label(), "rename.action_add_replace(%d)".printf( index ) );  break;
+      }
       var item       = new Gtk.MenuItem.with_label( token_type.label() );
       var mtype      = type;
       item.activate.connect(() => {
@@ -108,21 +114,14 @@ public class ActionRenameBox : ActionBase {
     }
   }
 
-  private void add_change_remove( Gtk.Menu menu, Widget w, TextTokenType type ) {
+  private void add_change_remove( GLib.Menu menu, Widget w, TextTokenType type ) {
 
-    Gtk.Menu submenu;
+    GLib.Menu submenu;
+    GLib.Menu before, after, replace;
 
-    var before = new Gtk.MenuItem.with_label( _( "Add Before" ) );
-    add_token_menu( out submenu, w, TokenModifyType.BEFORE );
-    before.submenu = submenu;
-
-    var after  = new Gtk.MenuItem.with_label( _( "Add After" ) );
-    add_token_menu( out submenu, w, TokenModifyType.AFTER );
-    after.submenu = submenu;
-
-    var replace = new Gtk.MenuItem.with_label( _( "Replace With" ) );
-    add_token_menu( out submenu, w, TokenModifyType.REPLACE );
-    replace.submenu = submenu;
+    add_token_menu( out before,  w, TokenModifyType.BEFORE );
+    add_token_menu( out after,   w, TokenModifyType.AFTER );
+    add_token_menu( out replace, w, TokenModifyType.REPLACE );
 
     var remove = new Gtk.MenuItem.with_label( _( "Remove" ) );
     remove.activate.connect(() => {
@@ -136,14 +135,15 @@ public class ActionRenameBox : ActionBase {
       show_all();
     });
 
-    menu.add( before );
-    menu.add( after );
-    menu.add( replace );
-    menu.add( remove );
+    menu.append_submenu( _( "Add Before" ),   before );
+    menu.append_submenu( _( "Add After" ),    after );
+    menu.append_submenu( _( "Replace With" ), replace );
+    menu.append( _( "Remove" ), "rename.action_remove" );
 
   }
 
-  private void add_id_format( Gtk.Menu menu, Widget w ) {
+  private GLib.Menu add_id_format( Widget w ) {
+    var menu = new GLib.Menu();
     for( int i=0; i<TextTokenFormat.NUM; i++ ) {
       var fmt  = (TextTokenFormat)i;
       var item = new Gtk.MenuItem.with_label( fmt.label() );
@@ -151,11 +151,13 @@ public class ActionRenameBox : ActionBase {
         var btn = (Button)w;
         btn.label = fmt.label();
       });
-      menu.add( item );
+      menu.append( item );
     }
+    return( menu );
   }
 
-  private void add_modifiers( Gtk.Menu menu, Widget w ) {
+  private GLib.Menu add_modifiers( Gtk.Menu menu, Widget w ) {
+    var menu = new GLib.Menu();
     for( int i=0; i<TextTokenModifier.NUM; i++ ) {
       var mod  = (TextTokenModifier)i;
       var item = new Gtk.MenuItem.with_label( mod.label() );
@@ -163,8 +165,9 @@ public class ActionRenameBox : ActionBase {
         var btn = (Button)w;
         btn.label = mod.format( btn.label );
       });
-      menu.add( item );
+      menu.append( item );
     }
+    return( menu );
   }
 
   private void edit_text( Label label ) {
@@ -191,28 +194,30 @@ public class ActionRenameBox : ActionBase {
 
   /* Inserts a text entry */
   private Widget insert_text( string? text ) {
-    var label = new Label( text ?? "" );
-    label.margin_left  = 3;
-    label.margin_right = 3;
-    var frame = new Frame( null );
-    frame.add( label );
+    var click = new GestureClick() {
+      button = Gdk.BUTTON_SECONDARY
+    };
+    var frame = new Frame( text ?? "" );
+    frame.add_controller( click );
     frame.get_style_context().add_class( "token" );
+    click.pressed.connect((n_press, x, y) => {
+      var menu = new Gtk.Menu();
+      var edit = new Gtk.MenuItem.with_label( _( "Edit..." ) );
+      edit.activate.connect(() => {
+        edit_text( label );
+      });
+      menu.add( edit );
+      menu.add( new SeparatorMenuItem() );
+      add_change_remove( menu, ebox, TextTokenType.TEXT );
+      menu.popup_at_widget( frame, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
+    });
     var ebox = new EventBox();
     ebox.add( frame );
     ebox.button_press_event.connect((e) => {
       if( e.button == Gdk.BUTTON_PRIMARY ) {
         // Start a drag event?
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
-        var menu = new Gtk.Menu();
-        var edit = new Gtk.MenuItem.with_label( _( "Edit..." ) );
-        edit.activate.connect(() => {
-          edit_text( label );
-        });
-        menu.add( edit );
-        menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, ebox, TextTokenType.TEXT );
-        menu.show_all();
-        menu.popup_at_widget( frame, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
+
       }
       return( true );
     });
@@ -234,15 +239,13 @@ public class ActionRenameBox : ActionBase {
     btn.button_press_event.connect((e) => {
       if( e.button == Gdk.BUTTON_PRIMARY ) {
       } else if( e.button == Gdk.BUTTON_SECONDARY ) {
-        var menu = new Gtk.Menu();
+        var menu = new GLib.Menu();
         if( is_id ) {
-          add_id_format( menu, btn );
+          menu.append_section( null, add_id_format( btn ) );
         } else {
-          add_modifiers( menu, btn );
+          menu.append_section( null, add_modifiers( btn ) );
         }
-        menu.add( new SeparatorMenuItem() );
-        add_change_remove( menu, btn, type );
-        menu.show_all();
+        menu.append_section( null, add_change_remove( btn, type );
         menu.popup_at_widget( btn, Gravity.SOUTH_WEST, Gravity.NORTH_WEST );
       }
       return( true );
