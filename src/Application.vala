@@ -49,6 +49,8 @@ public class Actioneer : Granite.Application {
     Intl.bind_textdomain_codeset( GETTEXT_PACKAGE, "UTF-8" );
     Intl.textdomain( GETTEXT_PACKAGE );
 
+    Environment.set_application_name( _( "Actioneer" ) );
+
     startup.connect( start_application );
 
   }
