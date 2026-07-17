@@ -27,7 +27,7 @@ function test {
     initialize
 
     export DISPLAY=:0
-    ./com.github.phase1geo.actioneer --run-tests
+    ./io.github.phase1geo.actioneer --run-tests
     result=$?
 
     export DISPLAY=":0.0"
@@ -48,8 +48,8 @@ case $1 in
 "generate-i18n")
     grep -rc _\( * | grep ^src | grep -v :0 | cut -d : -f 1 | sort -o po/POTFILES
     initialize
-    ninja com.github.phase1geo.actioneer-pot
-    ninja com.github.phase1geo.actioneer-update-po
+    ninja io.github.phase1geo.actioneer-pot
+    ninja io.github.phase1geo.actioneer-update-po
     ninja extra-pot
     ninja extra-update-po
     cp data/* ../data
@@ -76,26 +76,27 @@ case $1 in
     ;;
 "run")
     initialize
-    ./com.github.phase1geo.actioneer "${@:2}"
+    ./io.github.phase1geo.actioneer "${@:2}"
     ;;
 "debug")
     initialize
-    G_DEBUG=fatal-criticals gdb --args ./com.github.phase1geo.actioneer "${@:2}"
-    # G_DEBUG=fatal-warnings gdb --args ./com.github.phase1geo.actioneer "${@:2}"
+    G_DEBUG=fatal-criticals gdb --args ./io.github.phase1geo.actioneer "${@:2}"
+    # G_DEBUG=fatal-warnings gdb --args ./io.github.phase1geo.actioneer "${@:2}"
     ;;
 "test")
     test
     ;;
 "test-run")
     test
-    ./com.github.phase1geo.actioneer "${@:2}"
+    ./io.github.phase1geo.actioneer "${@:2}"
     ;;
 "uninstall")
     initialize
     sudo ninja uninstall
     ;;
-"flatpak")
-    sudo flatpak-builder --install --force-clean ../build-actioneer com.github.phase1geo.actioneer.yml
+"elementary")
+    flatpak-builder --user --install --force-clean ../build-actioneer-elementary elementary/io.github.phase1geo.actioneer.yml
+    flatpak install --user --reinstall --assumeyes "$(pwd)/.flatpak-builder/cache" io.github.phase1geo.actioneer.Debug
     ;;
 *)
     echo "Usage:"
@@ -110,6 +111,7 @@ case $1 in
     echo "  test              Builds and runs testing for the application"
     echo "  test-run          Builds application, runs testing and if successful application is started"
     echo "  uninstall         Removes the application from the system (requires sudo)"
-    echo "  flatpak           Builds and installs the Flatpak version of the application"
+    echo "  elementary        Builds and installs the elementary OS Flatpak version of the application"
+    echo "  run-flatpak       Runs the installed Flatpak"
     ;;
 esac

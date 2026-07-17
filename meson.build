@@ -1,4 +1,4 @@
-  project('com.github.phase1geo.actioneer', ['vala', 'c'],
+  project('io.github.phase1geo.actioneer', ['vala', 'c'],
     version : '1.0.0',
     license: 'GPL-3.0'
 )
@@ -74,7 +74,7 @@ dependencies = [
     dependency('libsecret-1')
 ]
 
-e = executable('com.github.phase1geo.actioneer',
+e = executable('io.github.phase1geo.actioneer',
     sources,
     config_file,
     gresource,

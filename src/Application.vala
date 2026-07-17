@@ -1,5 +1,5 @@
- /*
-* Copyright (c) 2018 (https://github.com/phase1geo/Actioneer)
+/*
+* Copyright (c) 2018-2026 (https://github.com/phase1geo/Actioneer)
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public
@@ -42,7 +42,7 @@ public class Actioneer : Granite.Application {
 
   public Actioneer () {
 
-    Object( application_id: "com.github.phase1geo.actioneer", flags: ApplicationFlags.HANDLES_OPEN );
+    Object( application_id: "io.github.phase1geo.actioneer", flags: ApplicationFlags.HANDLES_OPEN );
 
     Intl.setlocale( LocaleCategory.ALL, "" );
     Intl.bindtextdomain( GETTEXT_PACKAGE, LOCALEDIR );
@@ -55,43 +55,44 @@ public class Actioneer : Granite.Application {
 
   }
 
-  /* First method called in the startup process */
+  //-------------------------------------------------------------
+  // First method called in the startup process
   private void start_application() {
 
-    /* Initialize the settings */
-    settings = new GLib.Settings( "com.github.phase1geo.actioneer" );
+    // Initialize the settings
+    settings = new GLib.Settings( "io.github.phase1geo.actioneer" );
 
-    /* Add the application-specific icons */
+    // Add the application-specific icons
     weak IconTheme default_theme = IconTheme.get_default();
-    default_theme.add_resource_path( "/com/github/phase1geo/actioneer" );
+    default_theme.add_resource_path( "/io/github/phase1geo/actioneer" );
 
-    /* Add the application CSS */
+    // Add the application CSS
     var provider = new Gtk.CssProvider ();
-    provider.load_from_resource( "/com/github/phase1geo/actioneer/Application.css" );
+    provider.load_from_resource( "/io/github/phase1geo/actioneer/Application.css" );
     Gtk.StyleContext.add_provider_for_screen( Gdk.Screen.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION );
 
-    /* Handle dark mode changes */
+    // Handle dark mode changes
     handle_dark_mode_preference();
 
-    /* Create the main window */
+    // Create the main window
     appwin = new MainWindow( this, settings );
 
-    /* List of servers */
+    // List of servers
     servers = new Servers();
     servers.load();
 
-    /* Search history */
+    // Search history
     history = new SearchHistory();
     history.load();
 
-    /* List of directories and their rules */
+    // List of directories and their rules
     dirlist = new DirList();
     dirlist.load();
 
-    /* Create the data controller */
+    // Create the data controller
     controller = new Controller( appwin, dirlist, history );
 
-    /* Handle any changes to the position of the window */
+    // Handle any changes to the position of the window
     appwin.configure_event.connect(() => {
       int root_x, root_y;
       int size_w, size_h;
@@ -106,7 +107,8 @@ public class Actioneer : Granite.Application {
 
   }
 
-  /* Handles any changes to the user dark mode preference */
+  //-------------------------------------------------------------
+  // Handles any changes to the user dark mode preference
   private void handle_dark_mode_preference() {
 
     // First we get the default instances for Granite.Settings and Gtk.Settings
@@ -123,25 +125,27 @@ public class Actioneer : Granite.Application {
 
   }
 
-  /* Called if we have no files to open */
+  //-------------------------------------------------------------
+  // Called if we have no files to open
   protected override void activate() {
     hold();
     Gtk.main();
     release();
   }
 
-  /* Parse the command-line arguments */
+  //-------------------------------------------------------------
+  // Parse the command-line arguments
   private void parse_arguments( ref unowned string[] args ) {
 
     var context = new OptionContext( "- Actioneer Options" );
     var options = new OptionEntry[4];
 
-    /* Create the command-line options */
+    // Create the command-line options
     options[0] = {"version", 0, 0, OptionArg.NONE, ref show_version, _( "Display version number" ), null};
     options[1] = {"run", 'r', 0, OptionArg.NONE, ref run_rules, _( "Runs Actioneer rules" ), null};
     options[3] = {null};
 
-    /* Parse the arguments */
+    // Parse the arguments
     try {
       context.set_help_enabled( true );
       context.add_main_entries( options, null );
@@ -152,7 +156,7 @@ public class Actioneer : Granite.Application {
       Process.exit( 1 );
     }
 
-    /* If the version was specified, output it and then exit */
+    // If the version was specified, output it and then exit
     if( show_version ) {
       stdout.printf( version + "\n" );
       Process.exit( 0 );
@@ -160,13 +164,14 @@ public class Actioneer : Granite.Application {
 
   }
 
-  /* Main routine which gets everything started */
+  //-------------------------------------------------------------
+  // Main routine which gets everything started
   public static int main( string[] args ) {
 
     var app = new Actioneer();
     app.parse_arguments( ref args );
 
-    /* If we need to run rules, do it now */
+    // If we need to run rules, do it now
     if( run_rules ) {
       var dirlist = new DirList();
       dirlist.load();

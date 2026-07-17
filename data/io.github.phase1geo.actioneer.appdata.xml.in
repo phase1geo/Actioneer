@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2018 Trevor Williams <phase1geo@icloud.com> -->
+<component type="desktop-application">
+  <id>io.github.phase1geo.actioneer</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>Actioneer</name>
+  <summary>Automate directory and file actions in your filesystem</summary>
+  <description>
+    <p>
+      Create rules to automate operations on files or directories found within directories.  Actioneer allows
+      you to powerfully simplify and organize the content in your file system.
+    </p>
+    <ul>
+      <li>Watch multiple directories to run operations on.</li>
+      <li>Create multiple rules per directory.</li>
+      <li>Each rule can act on file matching one or more conditions and can perform one or more actions on those files.</li>
+      <li>File actions include: move, copy, rename.</li>
+    </ul>
+  </description>
+  <provides>
+    <binary>io.github.phase1geo.actioneer</binary>
+  </provides>
+  <screenshots>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/phase1geo/Actioneer/master/data/screenshots/screenshot-light.png</image>
+    </screenshot>
+    <!--<screenshot>
+      <image>https://raw.githubusercontent.com/phase1geo/Actioneer/master/data/screenshots/screenshot-dark.png</image>
+    </screenshot>-->
+  </screenshots>
+  <developer_name>Trevor Williams</developer_name>
+  <url type="homepage">https://github.com/phase1geo/actioneer/</url>
+  <url type="bugtracker">https://github.com/phase1geo/actioneer/issues/</url>
+  <custom>
+    <value key="x-appcenter-color-primary">#603461</value>
+    <value key="x-appcenter-color-primary-text">rgb(255, 255, 255)</value>
+    <value key="x-appcenter-suggested-price">10</value>
+  </custom>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="1.0.0" date="2022-01-14">
+      <p>Initial release.</p>
+    </release>
+  </releases>
+</component>
