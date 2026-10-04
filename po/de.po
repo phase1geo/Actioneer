@@ -1,0 +1,766 @@
+# GERMAN TRANSLATION.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.phase1geo.actioneer package.
+# Benjamin Weis <benjamin.weis@gmx.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.phase1geo.actioneer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-22 00:19-0600\n"
+"PO-Revision-Date: 2026-10-04 16:29+0200\n"
+"Last-Translator: Benjamin Weis <benjamin.weis@gmx.com>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#: src/ActionConditions.vala:39
+msgid "Match ALL of the following"
+msgstr "Mit ALLEN der folgenden übereinstimmen"
+
+#: src/ActionConditions.vala:40
+msgid "Match ANY of the following"
+msgstr "Mit JEDER der folgenden übereinstimmen"
+
+#: src/ActionConditions.vala:41
+msgid "Match NONE of the following"
+msgstr "Mit KEINER der folgenden übereinstimmen"
+
+#: src/ActionCondition.vala:69
+msgid "File Kind"
+msgstr "Dateityp"
+
+#: src/ActionCondition.vala:70
+msgid "Name"
+msgstr "Name"
+
+#: src/ActionCondition.vala:71 src/TokenText.vala:57
+msgid "Extension"
+msgstr "Erweiterung"
+
+#: src/ActionCondition.vala:72
+msgid "Full Name"
+msgstr "Vollständiger Name"
+
+#: src/ActionCondition.vala:73 src/TokenText.vala:58
+msgid "Creation Date"
+msgstr "Erstellungsdatum"
+
+#: src/ActionCondition.vala:74 src/TokenText.vala:59
+msgid "Modification Date"
+msgstr "Änderungsdatum"
+
+#: src/ActionCondition.vala:75
+msgid "MIME Type"
+msgstr "MIME-Typ"
+
+#: src/ActionCondition.vala:76
+msgid "Content"
+msgstr "Inhalt"
+
+#: src/ActionCondition.vala:77
+msgid "Download URL"
+msgstr "URL zum Herunterladen"
+
+#: src/ActionCondition.vala:78
+msgid "File Size"
+msgstr "Dateigröße"
+
+#: src/ActionCondition.vala:79
+msgid "Owner"
+msgstr "Eigentümer"
+
+#: src/ActionCondition.vala:80
+msgid "Group"
+msgstr "Gruppe"
+
+#: src/ActionCondition.vala:81
+msgid "Tags"
+msgstr "Schlagwörter"
+
+#: src/ActionCondition.vala:82 src/FileAction.vala:59
+msgid "Rating"
+msgstr "Bewertung"
+
+#: src/ActionCondition.vala:83 src/FileAction.vala:60
+msgid "Comment"
+msgstr "Kommentar"
+
+#: src/ActionCondition.vala:84 src/TokenText.vala:64
+msgid "Image Width"
+msgstr "Bildbreite"
+
+#: src/ActionCondition.vala:85 src/TokenText.vala:65
+msgid "Image Height"
+msgstr "Bildhöhe"
+
+#: src/ActionCondition.vala:86
+msgid "Condition Group"
+msgstr "Bedingungsgruppe"
+
+#: src/Application.vala:133
+msgid "Display version number"
+msgstr "Versionsnummer anzeigen"
+
+#: src/Application.vala:134
+msgid "Runs Actioneer rules"
+msgstr "Führt Actioneer-Regeln aus"
+
+#: src/Application.vala:143
+#, c-format
+msgid "ERROR: %s\n"
+msgstr "FEHLER: %s\n"
+
+#: src/Application.vala:144
+#, c-format
+msgid "Run '%s --help' to see valid options\n"
+msgstr "Führe ‚%s --help‘ aus, um gültige Optionen zu sehen\n"
+
+#: src/Controller.vala:212 src/FileAction.vala:49
+msgid "Copy"
+msgstr "Kopieren"
+
+#: src/FileAction.vala:48
+msgid "Move"
+msgstr "Verschieben"
+
+#: src/FileAction.vala:50
+msgid "Rename"
+msgstr "Umbenennen"
+
+#: src/FileAction.vala:51
+msgid "Alias"
+msgstr "Alias"
+
+#: src/FileAction.vala:52
+msgid "Upload"
+msgstr "Hochladen"
+
+#: src/FileAction.vala:53
+msgid "Compress"
+msgstr "Komprimieren"
+
+#: src/FileAction.vala:54
+msgid "Decompress"
+msgstr "Entpacken"
+
+#: src/FileAction.vala:55
+msgid "Trash"
+msgstr "Papierkorb"
+
+#: src/FileAction.vala:56
+msgid "Add Tag"
+msgstr "Schlagwort hinzufügen"
+
+#: src/FileAction.vala:57
+msgid "Remove Tag"
+msgstr "Schlagwort entfernen"
+
+#: src/FileAction.vala:58
+msgid "Clear Tags"
+msgstr "Schlagwörter löschen"
+
+#: src/FileAction.vala:61
+msgid "Resize Image"
+msgstr "Bildgröße ändern"
+
+#: src/FileAction.vala:62
+msgid "Convert Image"
+msgstr "Bild konvertieren"
+
+#: src/FileAction.vala:63
+msgid "Notify"
+msgstr "Benachrichtigen"
+
+#: src/FileAction.vala:64
+msgid "Run Script"
+msgstr "Skript ausführen"
+
+#: src/FileAction.vala:65
+msgid "Open"
+msgstr "Öffnen"
+
+#: src/FileAction.vala:72 src/FileAction.vala:73
+msgid "to folder"
+msgstr "zu Ordner"
+
+#: src/FileAction.vala:74
+msgid "file as"
+msgstr "Datei als"
+
+#: src/FileAction.vala:75
+msgid "from folder"
+msgstr "aus Ordner"
+
+#: src/FileAction.vala:76
+msgid "to"
+msgstr "nach"
+
+#: src/FileAction.vala:77
+msgid "file to format"
+msgstr "Zu formatierende Datei"
+
+#: src/FileAction.vala:78
+msgid "compressed file"
+msgstr "komprimierte Datei"
+
+#: src/FileAction.vala:79 src/KindCondition.vala:22
+msgid "file"
+msgstr "Datei"
+
+#: src/FileAction.vala:80
+msgid "to file"
+msgstr "zu Datei"
+
+#: src/FileAction.vala:81 src/FileAction.vala:82
+msgid "from file"
+msgstr "aus Datei"
+
+#: src/FileAction.vala:83 src/FileAction.vala:84
+msgid "for file"
+msgstr "für Datei"
+
+#: src/FileAction.vala:86
+msgid "with format"
+msgstr "mit Format"
+
+#: src/FileAction.vala:87
+msgid "with message"
+msgstr "mit Nachricht"
+
+#: src/FileAction.vala:89
+msgid "with application"
+msgstr "mit Anwendung"
+
+#: src/FileAction.vala:236 src/MainWindow.vala:103
+msgid "Actioneer"
+msgstr "Actioneer"
+
+#: src/FileAction.vala:496 src/widgets/menubuttons/OpenOptMenu.vala:41
+msgid "Default"
+msgstr "Standard"
+
+#: src/Imager.vala:74
+msgid "JPG"
+msgstr "JPG"
+
+#: src/Imager.vala:75
+msgid "PNG"
+msgstr "PNG"
+
+#: src/Imager.vala:76
+msgid "BMP"
+msgstr "BMP"
+
+#: src/KindCondition.vala:23
+msgid "folder"
+msgstr "Ordner"
+
+#: src/KindCondition.vala:24
+msgid "alias"
+msgstr "alias"
+
+#: src/KindCondition.vala:25
+msgid "hidden"
+msgstr "versteckt"
+
+#: src/KindCondition.vala:26
+msgid "any"
+msgstr "jede"
+
+#: src/MainWindow.vala:186
+#, c-format
+msgid "Unable to load background color: %s"
+msgstr "Hintergrundfarbe kann nicht geladen werden: %s"
+
+#: src/MainWindow.vala:218
+msgid "Background processor enable"
+msgstr "Hintergrundprozessor aktivieren"
+
+#: src/MainWindow.vala:229
+msgid "Run Rules"
+msgstr "Regeln ausführen"
+
+#: src/MainWindow.vala:236
+msgid "Show Pinned Rules"
+msgstr "Angeheftete Regeln anzeigen"
+
+#: src/MainWindow.vala:245
+msgid "Manage servers"
+msgstr "Server verwalten"
+
+#: src/MainWindow.vala:250
+msgid "Search"
+msgstr "Suchen"
+
+#: src/SizeCondition.vala:92
+msgid "byte(s)"
+msgstr "Byte(s)"
+
+#: src/SizeCondition.vala:93
+msgid "kilobyte(s)"
+msgstr "Kilobyte(s)"
+
+#: src/SizeCondition.vala:94
+msgid "megabyte(s)"
+msgstr "Megabyte(s)"
+
+#: src/SizeCondition.vala:95
+msgid "gigabyte(s)"
+msgstr "Gigabyte(s)"
+
+#: src/SizeCondition.vala:96
+msgid "terabyte(s)"
+msgstr "Terabyte(s)"
+
+#: src/TokenText.vala:54
+msgid "Text"
+msgstr "Text"
+
+#: src/TokenText.vala:55
+msgid "Filename"
+msgstr "Dateiname"
+
+#: src/TokenText.vala:56
+msgid "Basename"
+msgstr "Basisname"
+
+#: src/TokenText.vala:60
+msgid "Today"
+msgstr "Heute"
+
+#: src/TokenText.vala:61
+msgid "File Owner"
+msgstr "Dateieigentümer"
+
+#: src/TokenText.vala:62
+msgid "File Group"
+msgstr "Dateigruppe"
+
+#: src/TokenText.vala:63
+msgid "Unique ID"
+msgstr "Eindeutige Kennung"
+
+#: src/TokenText.vala:141
+msgid "No change"
+msgstr "Keine Änderung"
+
+#: src/TokenText.vala:142
+msgid "Lowercase"
+msgstr "Kleinbuchstaben"
+
+#: src/TokenText.vala:143
+msgid "Uppercase"
+msgstr "Großbuchstaben"
+
+#: src/TokenText.vala:144
+msgid "Titlecase"
+msgstr "Titelkapitalisierung"
+
+#: src/widgets/ActionBoxList.vala:9
+msgid "Add Action"
+msgstr "Aktion hinzufügen"
+
+#: src/widgets/actions/ActionCompressBox.vala:14
+msgid "with compression level"
+msgstr "mit Komprimierungsstufe"
+
+#: src/widgets/actions/ActionFileBox.vala:16
+msgid "Select a folder"
+msgstr "Ordner auswählen"
+
+#: src/widgets/actions/ActionFileBox.vala:21
+msgid "Browse filesystem"
+msgstr "Dateisystem durchsuchen"
+
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:79
+msgid "Choose Directory"
+msgstr "Verzeichnis auswählen"
+
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:79
+#: src/widgets/RuleForm.vala:178
+msgid "Choose"
+msgstr "Auswählen"
+
+#: src/widgets/actions/ActionFileBox.vala:33 src/widgets/DirectoryList.vala:79
+#: src/widgets/EditServer.vala:149 src/widgets/RuleForm.vala:128
+#: src/widgets/RuleForm.vala:178
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: src/widgets/actions/ActionRenameBox.vala:25
+msgid "Click to select filename rename token"
+msgstr "Klicken, um das Token für die Umbenennung des Dateinamens auszuwählen"
+
+#: src/widgets/actions/ActionRenameBox.vala:115
+#: src/widgets/tokenbox/TokenBox.vala:267
+msgid "Add Before"
+msgstr "Hinzufügen bevor"
+
+#: src/widgets/actions/ActionRenameBox.vala:119
+#: src/widgets/tokenbox/TokenBox.vala:271
+msgid "Add After"
+msgstr "Hinzufügen nach"
+
+#: src/widgets/actions/ActionRenameBox.vala:123
+#: src/widgets/tokenbox/TokenBox.vala:275
+msgid "Replace With"
+msgstr "Ersetzen durch"
+
+#: src/widgets/actions/ActionRenameBox.vala:127
+#: src/widgets/tokenbox/TokenBox.vala:279
+msgid "Remove"
+msgstr "Entfernen"
+
+#: src/widgets/actions/ActionRenameBox.vala:207
+#: src/widgets/tokenbox/TokenBox.vala:141
+#: src/widgets/tokenbox/TokenBox.vala:226
+msgid "Edit..."
+msgstr "Bearbeiten ..."
+
+#: src/widgets/actions/ActionResizeBox.vala:48
+#: src/widgets/actions/ActionResizeBox.vala:68
+msgid "Width in pixels"
+msgstr "Breite in Pixeln"
+
+#: src/widgets/actions/ActionResizeBox.vala:50
+msgid "x"
+msgstr "x"
+
+#: src/widgets/actions/ActionResizeBox.vala:53
+#: src/widgets/actions/ActionResizeBox.vala:81
+msgid "Height in pixels"
+msgstr "Höhe in Pixeln"
+
+#: src/widgets/actions/ActionResizeBox.vala:94
+msgid "Percent"
+msgstr "Prozent"
+
+#: src/widgets/actions/ActionTextBox.vala:21
+#, c-format
+msgid "Enter text, %f will be replaced with the filename"
+msgstr "Text eingeben, %f wird durch den Dateinamen ersetzt"
+
+#: src/widgets/actions/ActionUploadBox.vala:33
+msgid "Remote pathname"
+msgstr "Entfernter Pfadname"
+
+#: src/widgets/BoxList.vala:105
+msgid "Add Group"
+msgstr "Gruppe hinzufügen"
+
+#: src/widgets/CondBoxList.vala:9
+msgid "Add Condition"
+msgstr "Bedingung hinzufügen"
+
+#: src/widgets/DirectoryList.vala:67
+msgid "Directories"
+msgstr "Verzeichnisse"
+
+#: src/widgets/DirectoryList.vala:71
+msgid "Add Directory"
+msgstr "Verzeichnis hinzufügen"
+
+#: src/widgets/DirectoryList.vala:75
+msgid "Remove Selected Directory"
+msgstr "Ausgewähltes Verzeichnis entfernen"
+
+#: src/widgets/EditServer.vala:32 src/widgets/menubuttons/ServerOptMenu.vala:40
+#: src/widgets/menubuttons/.ServerOptMenu.vala.swp:20
+msgid "Add Server"
+msgstr "Server hinzufügen"
+
+#: src/widgets/EditServer.vala:32
+msgid "Edit Server"
+msgstr "Server bearbeiten"
+
+#: src/widgets/EditServer.vala:40
+msgid "Name:"
+msgstr "Name:"
+
+#: src/widgets/EditServer.vala:42
+msgid "Host URL:"
+msgstr "Host-URL:"
+
+#: src/widgets/EditServer.vala:44
+msgid "Type:"
+msgstr "Typ:"
+
+#: src/widgets/EditServer.vala:46
+msgid "Port:"
+msgstr "Port:"
+
+#: src/widgets/EditServer.vala:48
+msgid "Username:"
+msgstr "Benutzername:"
+
+#: src/widgets/EditServer.vala:50
+msgid "Password:"
+msgstr "Passwort:"
+
+#: src/widgets/EditServer.vala:52
+msgid "Passwords are saved in your system keyring"
+msgstr "Passwörter werden im Schlüsselbund deines Systems gespeichert"
+
+#: src/widgets/EditServer.vala:68 src/widgets/EditServer.vala:73
+msgid "Show Password"
+msgstr "Passwort anzeigen"
+
+#: src/widgets/EditServer.vala:77
+msgid "Hide Password"
+msgstr "Passwort ausblenden"
+
+#: src/widgets/EditServer.vala:107
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/widgets/EditServer.vala:119
+msgid "Test and Save"
+msgstr "Testen und speichern"
+
+#: src/widgets/EditServer.vala:142
+msgid "Unable to connect to server"
+msgstr "Verbindung zum Server konnte nicht hergestellt werden"
+
+#: src/widgets/menubuttons/ServerOptMenu.vala:44
+#: src/widgets/menubuttons/.ServerOptMenu.vala.swp:20
+msgid "Select Server"
+msgstr "Server auswählen"
+
+#: src/widgets/PinList.vala:96
+msgid "Pinned Rules"
+msgstr "Angeheftete Regeln"
+
+#: src/widgets/PinList.vala:112 src/widgets/RuleList.vala:162
+msgid "Remove Selected Rule"
+msgstr "Ausgewählte Regel entfernen"
+
+#: src/widgets/PinList.vala:116 src/widgets/RuleList.vala:166
+msgid "New Rule"
+msgstr "Neue Regel"
+
+#: src/widgets/RuleForm.vala:5
+msgid "Match ALL Conditions"
+msgstr "Mit ALLEN Bedingungen übereinstimmen"
+
+#: src/widgets/RuleForm.vala:6
+msgid "Match ANY Condition"
+msgstr "Mit JEDER Bedingung übereinstimmen"
+
+#: src/widgets/RuleForm.vala:62
+msgid "Rule Name"
+msgstr "Regelname"
+
+#: src/widgets/RuleForm.vala:75
+msgid "Conditions"
+msgstr "Bedingungen"
+
+#: src/widgets/RuleForm.vala:97
+msgid "Actions"
+msgstr "Aktionen"
+
+#: src/widgets/RuleForm.vala:112 src/widgets/RuleForm.vala:114
+msgid "Pin Rule"
+msgstr "Regel anheften"
+
+#: src/widgets/RuleForm.vala:114
+msgid "Unpin Rule"
+msgstr "Regel loslösen"
+
+#: src/widgets/RuleForm.vala:117
+msgid "Test"
+msgstr "Testen"
+
+#: src/widgets/RuleForm.vala:122
+msgid "Save Changes"
+msgstr "Änderungen speichern"
+
+#: src/widgets/RuleForm.vala:177
+msgid "Choose File"
+msgstr "Datei auswählen"
+
+#: src/widgets/RuleList.vala:80
+msgid "Duplicate"
+msgstr "Duplikat"
+
+#: src/widgets/RuleList.vala:115
+msgid "Move To Directory"
+msgstr "In Verzeichnis verschieben"
+
+#: src/widgets/RuleList.vala:118
+msgid "Copy To Directory"
+msgstr "In Verzeichnis kopieren"
+
+#: src/widgets/RuleList.vala:154
+msgid "Rules"
+msgstr "Regeln"
+
+#: src/widgets/RuleList.vala:158
+msgid "Add Rule"
+msgstr "Regel hinzufügen"
+
+#: src/widgets/RuleStack.vala:17
+msgid "Welcome to Actioneer"
+msgstr "Willkommen bei Actioneer"
+
+#: src/widgets/RuleStack.vala:17
+msgid "Automate actions on your files!"
+msgstr "Aktionen für deine Dateien automatisieren!"
+
+#: src/widgets/RuleStack.vala:18
+msgid "Add a directory to monitor"
+msgstr "Verzeichnis zum Überwachen hinzufügen"
+
+#: src/widgets/RuleStack.vala:18 src/widgets/RuleStack.vala:28
+msgid "Or click on the plus (+) button in the Directories panel"
+msgstr "Oder klicke auf die Plus-Schaltfläche (+) im Bereich Verzeichnisse"
+
+#: src/widgets/RuleStack.vala:27
+msgid "Nicely Done!"
+msgstr "Gut gemacht!"
+
+#: src/widgets/RuleStack.vala:28
+msgid "Add another directory to monitor"
+msgstr "Weiteres Verzeichnis zum Überwachen hinzufügen"
+
+#: src/widgets/RuleStack.vala:29
+msgid "Add a rule for the currently selected directory"
+msgstr "Eine Regel für das aktuell ausgewählte Verzeichnis hinzufügen"
+
+#: src/widgets/RuleStack.vala:29
+msgid "Or click on the plus (+) button in the Rules panel"
+msgstr "Oder klicke auf die Plus-Schaltfläche (+) im Bereich Regeln"
+
+#: src/widgets/RuleStack.vala:39
+msgid "Welcome to Pinned Rules"
+msgstr "Willkommen bei angehefteten Regeln"
+
+#: src/widgets/RuleStack.vala:40
+msgid ""
+"Drag and drop files onto a pinned rule to the left to execute that rule's "
+"conditions and actions"
+msgstr ""
+"Dateien auf eine links angeheftete Regel ziehen und dort ablegen, um die "
+"Bedingungen und Aktionen dieser Regel auszuführen"
+
+#: src/widgets/SearchPanel.vala:49
+msgid "Advanced Search Help"
+msgstr "Hilfe zur erweiterten Suche"
+
+#: src/widgets/SearchPanel.vala:54
+msgid ""
+"<b><u>Advanced search syntax:</u></b>\n"
+"\n"
+msgstr ""
+"<b><u>Erweiterte Suchsyntax:</u></b>\n"
+"\n"
+
+#: src/widgets/SearchPanel.vala:55
+msgid "- All searching is case-insensitive\n"
+msgstr ""
+"- Bei allen Suchvorgängen wird die Groß-/Kleinschreibung nicht "
+"berücksichtigt\n"
+
+#: src/widgets/SearchPanel.vala:56
+msgid ""
+"- Use <b><tt>:</tt></b> within a search term to specify a condition/action "
+"label (left) and an associated value (right)\n"
+msgstr ""
+"- <b><tt>:</tt></b> innerhalb eines Suchbegriffs verwenden, um eine "
+"Bedingung/Aktionsbezeichnung (links) und einen zugehörigen Wert (rechts) "
+"anzugeben\n"
+
+#: src/widgets/SearchPanel.vala:57
+msgid ""
+"- Add double-quotes (<b><tt>\"</tt></b>) around search terms containing "
+"spaces\n"
+msgstr ""
+"- Suchbegriffe, die Leerzeichen enthalten, müssen in doppelte "
+"Anführungszeichen gesetzt werden (<b><tt>\"</tt></b>)\n"
+
+#: src/widgets/SearchPanel.vala:58
+msgid ""
+"- Add parenthesis around search terms to group them into a single search "
+"term\n"
+msgstr ""
+"- Suchbegriffe mit Klammern umschließen, um sie zu einem einzigen "
+"Suchbegriff zusammenzufassen\n"
+
+#: src/widgets/SearchPanel.vala:59
+msgid ""
+"- Use <b><tt>&amp;</tt></b> between search terms to require both to be true\n"
+msgstr ""
+"- <b><tt>&amp;</tt></b> zwischen Suchbegriffen verwenden, damit beide "
+"erfüllt sein müssen\n"
+
+#: src/widgets/SearchPanel.vala:60
+msgid ""
+"- Use <b><tt>|</tt></b> between search terms to require one or both to be "
+"true\n"
+msgstr ""
+"- <b><tt>|</tt></b> zwischen Suchbegriffen verwenden, damit eine oder beide "
+"erfüllt sein müssen\n"
+
+#: src/widgets/SearchPanel.vala:61
+msgid ""
+"- Use <b><tt>!</tt></b> before a search term to require the term to be "
+"false\n"
+msgstr ""
+"- <b><tt>!</tt></b> vor einem Suchbegriff verwenden, damit der Begriff als "
+"falsch gewertet wird\n"
+
+#: src/widgets/SearchPanel.vala:62
+msgid ""
+"- Whitespace is ignored unless used within double-quotes\n"
+"\n"
+msgstr ""
+"- Leerzeichen werden ignoriert, sofern sie nicht in doppelten "
+"Anführungszeichen stehen\n"
+"\n"
+
+#: src/widgets/SearchPanel.vala:63
+msgid ""
+"<b><u>Examples:</u></b>\n"
+"\n"
+msgstr ""
+"<b><u>Beispiele:</u></b>\n"
+"\n"
+
+#: src/widgets/SearchPanel.vala:64
+msgid "- Search for any rules that include \"Example Rule\" in their name\n"
+msgstr "- Suche nach allen Regeln, deren Name „Beispielregel“ enthält\n"
+
+#: src/widgets/SearchPanel.vala:65
+msgid "    <tt>\"Example Rule\"</tt>\n"
+msgstr "    <tt>„Beispielregel“</tt>\n"
+
+#: src/widgets/SearchPanel.vala:66
+msgid ""
+"- Searches any rules containing the Upload file action using a server called "
+"\"Test Server\":\n"
+msgstr ""
+"- Sucht nach allen Regeln, die die Aktion zum Hochladen einer Datei "
+"enthalten und einen Server namens „Testserver“ verwenden:\n"
+
+#: src/widgets/SearchPanel.vala:67
+msgid "    <tt>Upload:\"Test Server\"</tt>\n"
+msgstr "    <tt>Hochladen: „Testserver“</tt>\n"
+
+#: src/widgets/SearchPanel.vala:68
+msgid ""
+"- Search for any rules with Example and contains either an Extension "
+"condition of jpg or jpeg:\n"
+msgstr ""
+"- Suche nach allen Regeln mit Beispiel und die entweder die "
+"Erweiterungsbedingung jpg oder jpeg enthalten:\n"
+
+#: src/widgets/SearchPanel.vala:69
+msgid "    <tt>Example &amp; (Extension:jpg | Extension:jpeg)</tt>\n"
+msgstr "    <tt>Beispiel &amp; (Erweiterung:jpg | Erweiterung:jpeg)</tt>\n"
+
+#: src/widgets/SearchPanel.vala:81
+msgid "Search History"
+msgstr "Suchverlauf"
